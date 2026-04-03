@@ -128,15 +128,39 @@ jobs:
       - name: send-discord-dm
         run: |
           DM_JSON=$(curl -sS -X POST "https://discord.com/api/v10/users/@me/channels" \
-            -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
-            -H "Content-Type: application/json" \
-            -d '{"recipient_id":"${{ env.ID_TADO }}"}')
-
+          -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
+          -H "Content-Type: application/json" \
+          -d '{"recipient_id":"${{ env.ID_TADO }}"}')
           CHANNEL_ID=$(printf '%s' "$DM_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))')
-
           [ -z "$CHANNEL_ID" ] && echo "DM channel introuvable: $DM_JSON" && exit 1
+          # Construire le message avec les erreurs
+          ERRORS=""
+          if [ -f error.txt ]; then
+            while IFS= read -r line; do
+              file=$(echo "$line" | cut -d':' -f1)
+              linenum=$(echo "$line" | cut -d':' -f2)
+              degree=$(echo "$line" | grep -iEo "Major|Minor|Info")
+              errno=$(echo "$line" | grep -oE 'C-[A-Z][0-9]+')
+              message=$(echo "$line" | grep -oP '(?<=\] )[^(]+')
+              ERRORS="$ERRORS\n[$degree] $file:$linenum - $errno $message"
+            done < <(grep "\[Banana\]" error.txt)
+          fi
 
-          curl -sS -X POST "https://discord.com/api/v10/channels/$CHANNEL_ID/messages" \
-            -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
-            -H "Content-Type: application/json" \
-            -d '{"content":"❌ Workflow failed sur `${{ github.repository }}`"}'
+          if [ -z "$ERRORS" ]; then
+            CONTENT="❌ Workflow failed sur \`${{ github.repository }}\`\nAucune erreur de coding style trouvée."
+          else
+            CONTENT="❌ Workflow failed sur \`${{ github.repository }}\`\n\n**Erreurs de coding style :**\n$ERRORS"
+          fi
+
+          python3 -c "
+          import json, subprocess
+          content = '''$CONTENT'''
+          payload = json.dumps({'content': content})
+          subprocess.run([
+          'curl', '-sS', '-X', 'POST',
+          'https://discord.com/api/v10/channels/$CHANNEL_ID/messages',
+          '-H', 'Authorization: Bot ${{ secrets.TOKEN_DISCORD }}',
+          '-H', 'Content-Type: application/json',
+          '-d', payload
+          ])
+          "
