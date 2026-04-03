@@ -1,0 +1,143 @@
+name: La Mira
+
+on:
+  push:
+    branches-ignore:
+      - 'no-ga/**'
+  pull_request:
+    branches-ignore:
+      - 'no-ga/**'
+
+env:
+  MIRROR_SSH_URL: git@github.com:EpitechPGE1-2025/G-DOP-200-NCE-2-1-chocolatine-19.git
+  MIRROR_REPO: EpitechPGE1-2025/G-DOP-200-NCE-2-1-chocolatine-19
+  EXEC: 42sh
+  ID_TADO: "837999039995183125"
+  ID_PEKKA: "609714833746558995"
+  ID_LKS: "1383041054760112198"
+  ID_ONI: "403173164651380736"
+
+jobs:
+  check_compilation_and_coding_style:
+    runs-on: ubuntu-latest
+    name: check_compilation_and_coding_style
+    container:
+      image: epitechcontent/epitest-docker
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: banana-check-repo
+        run: banana-check-repo
+      - name: compile-with-make
+        timeout-minutes: 2
+        run: make 2>&1 | tee error.txt
+        env:
+          CC: epiclang
+      - name: coding-style-check
+        if: always()
+        run: |
+          grep "\[Banana\]" error.txt | while IFS= read -r line; do
+            file=$(echo "$line" | cut -d':' -f1)
+            linenum=$(echo "$line" | cut -d':' -f2)
+            col=$(echo "$line" | cut -d':' -f3)
+            degree=$(echo "$line" | grep -iEo "Major|Minor|Info")
+            errno=$(echo "$line" | grep -oE 'C-[A-Z][0-9]+')
+            message=$(echo "$line" | grep -oP '(?<=\] )[^(]+')
+            echo "::error file=$file,line=$linenum,col=$col,title=[$degree] coding style error::$errno - $message"
+          done
+      - name: check-for-fail
+        run: |
+            if [[ "${{ env.MIRROR_REPO }}" == "${{ github.repository }}" ]]; then
+              exit 1
+            fi
+            if [ -f error.txt ] && grep -qi '\[banana\]' error.txt; then
+              exit 1
+            fi
+      - name: discord-integration-fail
+        if: failure()
+        run: |
+          curl -X POST ${{ secrets.NYA_BOT }} \
+          -H "Content-Type: application/json" \
+          -d '{"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`.","color":15158332}]}'
+      - name: make-clean
+        run: make clean
+      - name: test-exec
+        run: |
+          for file in $EXEC; do
+            if [ ! -f "$file" ]; then
+              echo "file doesnt exist"
+              exit 1
+            fi
+            if [ ! -x "$file" ]; then
+              echo "file not a executable"
+              exit 1
+            fi
+          done
+      - name: discord-integration-success
+        if: success()
+        run: |
+            curl -X POST ${{ secrets.NYA_BOT }} \
+            -H "Content-Type: application/json" \
+            -d '{"embeds":[{"title":"✅ Nya success","description":"Le workflow a réussi sur `${{ github.repository }}`. \nAucune erreur enregistrer. \nAucune erreur de coding style \nDM envoyé","color":15158332}]}'
+      - name: upload-file
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: error-file
+          path: error.txt
+  run_test:
+    runs-on: ubuntu-latest
+    name: runs_tests
+    needs: [check_compilation_and_coding_style]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && (needs.check_compilation_and_coding_style.result == 'success')
+    container:
+      image: epitechcontent/epitest-docker
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: runs_tests
+        timeout-minutes: 2
+        run: make tests_run
+  push_to_mirror:
+    runs-on: ubuntu-latest
+    needs: check_compilation_and_coding_style
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.check_compilation_and_coding_style.result == 'success'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ${{ env.MIRROR_SSH_URL}}
+          ssh_private_key:
+            ${{ secrets.SSH_KEY_42SH }}
+  dm_me:
+    runs-on: ubuntu-latest
+    needs: [check_compilation_and_coding_style, run_test]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
+    steps:
+      - name: recup-text
+        uses: actions/download-artifact@v4
+        with:
+          name: error.txt
+      - name: send-discord-dm
+        if: success()
+        run: |
+          DM_JSON=$(curl -sS -X POST "https://discord.com/api/v10/users/@me/channels" \
+            -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
+            -H "Content-Type: application/json" \
+            -d '{"recipient_id":"${{ env.ID_TADO }}"}')
+
+          CHANNEL_ID=$(printf '%s' "$DM_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))')
+
+          [ -z "$CHANNEL_ID" ] && echo "DM channel introuvable: $DM_JSON" && exit 1
+
+          curl -sS -X POST "https://discord.com/api/v10/channels/$CHANNEL_ID/messages" \
+            -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
+            -H "Content-Type: application/json" \
+            -d '{"content":"❌ Workflow failed sur `${{ github.repository }}`"}'
