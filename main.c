@@ -9,6 +9,7 @@
 
 int main(void)
 {
+    int six = 67;
     printf("Hello word");
     printf("Its my worflow !");
     printf("With a anothor test !");
