@@ -83,7 +83,7 @@ jobs:
             -d '{"embeds":[{"title":"✅ Nya success","description":"Le workflow a réussi sur `${{ github.repository }}`. \nAucune erreur enregistrer. \nAucune erreur de coding style \nDM envoyé","color":15158332}]}'
       - name: upload-file
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: error-file
           path: error.txt
@@ -122,7 +122,7 @@ jobs:
     if: always() && github.event_name == 'push' && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
     steps:
       - name: recup-text
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: error-file
       - name: send-discord-dm
