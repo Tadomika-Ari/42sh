@@ -126,7 +126,6 @@ jobs:
         with:
           name: error-file
       - name: send-discord-dm
-        if: failure()
         run: |
           DM_JSON=$(curl -sS -X POST "https://discord.com/api/v10/users/@me/channels" \
             -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
