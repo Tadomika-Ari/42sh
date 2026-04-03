@@ -119,12 +119,12 @@ jobs:
   dm_me:
     runs-on: ubuntu-latest
     needs: [check_compilation_and_coding_style, run_test]
-    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
+    if: always() && github.event_name == 'push' && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
     steps:
       - name: recup-text
         uses: actions/download-artifact@v4
         with:
-          name: error.txt
+          name: error-file
       - name: send-discord-dm
         if: failure()
         run: |
