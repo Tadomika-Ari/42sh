@@ -127,16 +127,32 @@ jobs:
           name: error-file
       - name: send-discord-dm
         run: |
+          CONTENT=$(python3 - <<'PY'
+          from pathlib import Path
+          text = Path("error.txt").read_text(errors="replace")
+          print(text[:1800])
+          PY
+          )
+
           DM_JSON=$(curl -sS -X POST "https://discord.com/api/v10/users/@me/channels" \
             -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
             -H "Content-Type: application/json" \
             -d '{"recipient_id":"${{ env.ID_TADO }}"}')
 
           CHANNEL_ID=$(printf '%s' "$DM_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))')
+          [ -z "$CHANNEL_ID" ] && exit 1
 
-          [ -z "$CHANNEL_ID" ] && echo "DM channel introuvable: $DM_JSON" && exit 1
-
-          curl -sS -X POST "https://discord.com/api/v10/channels/$CHANNEL_ID/messages" \
-            -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
-            -H "Content-Type: application/json" \
-            -d '{"content":"❌ Workflow failed sur `${{ github.repository }}`"}'
+          python3 - <<PY
+          import json, urllib.request
+          content = ${CONTENT@Q}
+          req = urllib.request.Request(
+          f"https://discord.com/api/v10/channels/$CHANNEL_ID/messages",
+          data=json.dumps({"content": "```\\n" + content + "\\n```"}).encode(),
+          headers={
+          "Authorization": "Bot ${{ secrets.TOKEN_DISCORD }}",
+          "Content-Type": "application/json",
+          },
+          method="POST",
+          )
+          urllib.request.urlopen(req)
+          PY
