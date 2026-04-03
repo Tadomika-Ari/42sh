@@ -16,6 +16,8 @@ env:
   ID_PEKKA: "609714833746558995"
   ID_LKS: "1383041054760112198"
   ID_ONI: "403173164651380736"
+  ID_GAL: "1051643862537490452"
+  ID_AL: "613188332373147648"
 
 jobs:
   check_compilation_and_coding_style:
@@ -127,10 +129,33 @@ jobs:
           name: error-file
       - name: send-discord-dm
         run: |
+          ACTOR="${{ github.actor }}"
+          case "$ACTOR" in
+            "ALCIBIADE3EMEDUNOMDELORDREDELOTRICK's")
+              RECIPIENT_ID="${{ env.ID_AL }}"
+              ;;
+            "galypack's")
+              RECIPIENT_ID="${{ env.ID_GAL }}"
+              ;;
+            "Pekkatrol")
+              RECIPIENT_ID="${{ env.ID_PEKKA }}"
+              ;;
+            "Ugo-Pas")
+              RECIPIENT_ID="${{ env.ID_ONI }}"
+              ;;
+            "Tadomika-Ari")
+              RECIPIENT_ID="${{ env.ID_TADO }}"
+              ;;
+            *)
+              echo "Acteur inconnu: $ACTOR"
+              exit 1
+              ;;
+          esac
+
           DM_JSON=$(curl -sS -X POST "https://discord.com/api/v10/users/@me/channels" \
           -H "Authorization: Bot ${{ secrets.TOKEN_DISCORD }}" \
           -H "Content-Type: application/json" \
-          -d '{"recipient_id":"${{ env.ID_TADO }}"}')
+          -d "{\"recipient_id\":\"$RECIPIENT_ID\"}")
           CHANNEL_ID=$(printf '%s' "$DM_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))')
           [ -z "$CHANNEL_ID" ] && echo "DM channel introuvable: $DM_JSON" && exit 1
           # Construire le message avec les erreurs
@@ -149,7 +174,7 @@ jobs:
           if [ -z "$ERRORS" ]; then
             CONTENT="❌ Workflow failed sur \`${{ github.repository }}\`\nAucune erreur de coding style trouvée."
           else
-            CONTENT="❌ Workflow ${{ github.actor }} failed sur \`${{ github.repository }}\`\n\n**Erreurs de coding style :**\n$ERRORS"
+            CONTENT="❌ Workflow failed sur \`${{ github.repository }}\`\n\n**Erreurs de coding style :**\n$ERRORS"
           fi
 
           python3 -c "
