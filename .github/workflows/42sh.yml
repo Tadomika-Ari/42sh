@@ -149,7 +149,7 @@ jobs:
           if [ -z "$ERRORS" ]; then
             CONTENT="❌ Workflow failed sur \`${{ github.repository }}\`\nAucune erreur de coding style trouvée."
           else
-            CONTENT="❌ Workflow failed sur \`${{ github.repository }}\`\n\n**Erreurs de coding style :**\n$ERRORS"
+            CONTENT="❌ Workflow ${{ github.actor }} failed sur \`${{ github.repository }}\`\n\n**Erreurs de coding style :**\n$ERRORS"
           fi
 
           python3 -c "
