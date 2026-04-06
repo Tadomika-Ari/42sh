@@ -30,13 +30,16 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
       - name: banana-check-repo
         run: banana-check-repo
+
       - name: compile-with-make
         timeout-minutes: 2
         run: make 2>&1 | tee error.txt
         env:
           CC: epiclang
+
       - name: coding-style-check
         if: always()
         run: |
@@ -49,6 +52,7 @@ jobs:
             message=$(echo "$line" | grep -oP '(?<=\] )[^(]+')
             echo "::error file=$file,line=$linenum,col=$col,title=[$degree] coding style error::$errno - $message"
           done
+
       - name: check-for-fail
         run: |
             if [[ "${{ env.MIRROR_REPO }}" == "${{ github.repository }}" ]]; then
@@ -57,14 +61,17 @@ jobs:
             if [ -f error.txt ] && grep -qi '\[banana\]' error.txt; then
               exit 1
             fi
+
       - name: discord-integration-fail
         if: failure()
         run: |
           curl -X POST ${{ secrets.NYA_BOT }} \
           -H "Content-Type: application/json" \
-          -d '{"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`.","color":15158332}]}'
+          -d '{"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`. DM envoyé.","color":15158332}]}'
+
       - name: make-clean
         run: make clean
+
       - name: test-exec
         run: |
           for file in $EXEC; do
@@ -77,18 +84,21 @@ jobs:
               exit 1
             fi
           done
+
       - name: discord-integration-success
         if: success()
         run: |
             curl -X POST ${{ secrets.NYA_BOT }} \
             -H "Content-Type: application/json" \
-            -d '{"embeds":[{"title":"✅ Nya success","description":"Le workflow a réussi sur `${{ github.repository }}`. \nAucune erreur enregistrer. \nAucune erreur de coding style \nDM envoyé","color":15158332}]}'
+            -d '{"embeds":[{"title":"✅ Nya success","description":"Le workflow a réussi sur `${{ github.repository }}`.","color":15158332}]}'
+
       - name: upload-file
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: error-file
           path: error.txt
+
   run_test:
     runs-on: ubuntu-latest
     name: runs_tests
@@ -101,9 +111,11 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
       - name: runs_tests
         timeout-minutes: 2
         run: make tests_run
+
   push_to_mirror:
     runs-on: ubuntu-latest
     needs: check_compilation_and_coding_style
@@ -112,12 +124,14 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
       - uses: pixta-dev/repository-mirroring-action@v1
         with:
           target_repo_url:
             ${{ env.MIRROR_SSH_URL}}
           ssh_private_key:
             ${{ secrets.SSH_KEY_42SH }}
+
   dm_me:
     runs-on: ubuntu-latest
     needs: [check_compilation_and_coding_style, run_test]
@@ -127,6 +141,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: error-file
+
       - name: send-discord-dm
         run: |
           ACTOR="${{ github.actor }}"
