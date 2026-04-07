@@ -65,7 +65,7 @@ jobs:
       - name: discord-integration-fail
         if: failure()
         run: |
-          curl -X POST ${{ secrets.NYA_BOT }} \
+          curl -X POST ${{ secrets.NYA_BOT_42SH }} \
           -H "Content-Type: application/json" \
           -d '{"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`. Personne qui sait pas codé : ${{ github.actor }}. DM envoyé.","color":15158332}]}'
 
@@ -88,7 +88,7 @@ jobs:
       - name: discord-integration-success
         if: success()
         run: |
-            curl -X POST ${{ secrets.NYA_BOT }} \
+            curl -X POST ${{ secrets.NYA_BOT_42SH }} \
             -H "Content-Type: application/json" \
             -d '{"embeds":[{"title":"✅ Nya success","description":"Le workflow a réussi sur `${{ github.repository }}`.","color":15158332}]}'
 
