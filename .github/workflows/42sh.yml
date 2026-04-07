@@ -2,15 +2,15 @@ name: La Mira
 
 on:
   push:
-    branches-ignore:
-      - 'no-ga/**'
+    branches:
+      - main
   pull_request:
-    branches-ignore:
-      - 'no-ga/**'
+    branches:
+      - main
 
 env:
-  MIRROR_SSH_URL: git@github.com:Tadomika-Ari/42sh.git
-  MIRROR_REPO: EpitechPGE1-2025/G-DOP-200-NCE-2-1-chocolatine-19
+  MIRROR_SSH_URL: git@github.com:EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2.git
+  MIRROR_REPO: EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2
   EXEC: 42sh
   ID_TADO: "837999039995183125"
   ID_PEKKA: "609714833746558995"
