@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - 1-create-worflow
   pull_request:
     branches:
       - main
+      - 1-create-worflow
 
 env:
   MIRROR_SSH_URL: git@github.com:EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2.git

@@ -31,7 +31,7 @@ OBJ = 	$(SRC:.c=.o)
 
 TEST_NAME = unit_tests
 
-NAME =	mysh
+NAME =	42sh
 
 all:	$(NAME)
 
