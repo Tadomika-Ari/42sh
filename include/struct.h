@@ -8,6 +8,10 @@
 #ifndef MY_TOP_STRUCT_H
     #define MY_TOP_STRUCT_H
     #include "my.h"
+    #include <termios.h>
+    #define INITIAL_CAPACITY 128
+    #define MAX_LINE 1024
+
 
 typedef enum exit
 {
@@ -27,6 +31,19 @@ typedef struct history
     int index;
 }history_t;
 
+typedef struct getline
+{
+    struct termios old_t;
+    struct termios raw_t;
+    size_t cap;
+    size_t line_len;
+    char *line;
+    char c;
+    ssize_t rd;
+    int statut_getline;
+    int statut_exit_getline;
+    int statut_echo;
+}getline_t;
 
 typedef struct tcsh {
     nodes_t *env;
