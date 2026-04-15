@@ -6,4 +6,3 @@
 *.gnca
 unit_tests
 include/my.h
-.idea/*
