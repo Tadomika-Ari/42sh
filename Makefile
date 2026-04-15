@@ -26,6 +26,7 @@ SRC = 	main.c							\
 		loop_tcsh/child.c				\
 		loop_tcsh/error_handling_pipe.c	\
 		error/error_term.c			\
+		history/history.c\
 
 OBJ = 	$(SRC:.c=.o)
 

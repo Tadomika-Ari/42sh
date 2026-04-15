@@ -20,6 +20,7 @@ static int take_argument(char **cmd, tcsh_t *term)
     }
     if (!*cmd)
         return FAILURE_EXIT;
+    push_to_history(term, cmd[0]);
     return SUCCESS_EXIT;
 }
 
