@@ -51,8 +51,9 @@ int search_command(tcsh_t *term, char **command, char *cmd)
     char *lign = NULL;
 
     if (!path)
-        return command_not_found(command[0]);
-    bin = my_str_to_word_array(path->data, ":=\n");
+        bin = my_str_to_word_array("/usr/bin:/bin:/usr/local/bin", ":=\n");
+    else
+        bin = my_str_to_word_array(path->data, ":=\n");
     if (!bin)
         return command_not_found(command[0]);
     for (int i = 0; bin[i]; i++) {

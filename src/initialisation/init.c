@@ -31,12 +31,6 @@ static int get_env(tcsh_t *term, char **env)
             return FAILURE_EXIT;
         push_back(&term->env, new);
     }
-    if (!term->env) {
-        new = create_new_node("PATH=/usr/bin:/bin");
-        if (!new)
-            return FAILURE_EXIT;
-        push_back(&term->env, new);
-    }
     return SUCCESS_EXIT;
 }
 
