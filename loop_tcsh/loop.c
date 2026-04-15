@@ -7,6 +7,16 @@
 
 #include "../include/struct.h"
 
+static int is_only_spaces(const char *cmd)
+{
+    if (!cmd)
+        return 1;
+    for (int i = 0; cmd[i] != '\0'; i++)
+        if (cmd[i] != ' ' && cmd[i] != '\t' && cmd[i] != '\n' && cmd[i] != '\r')
+            return 0;
+    return 1;
+}
+
 int filter_command(tcsh_t *term, int value)
 {
     char *cmd = NULL;
@@ -15,6 +25,10 @@ int filter_command(tcsh_t *term, int value)
 
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
+    if (is_only_spaces(cmd)) {
+        free(cmd);
+        return 0;
+    }
     tmp = my_str_to_word_array(cmd, ";");
     for (int i = 0; tmp[i] != NULL; i++) {
         return_value = choose_command(term, tmp[i]);

@@ -8,8 +8,6 @@
 #include "../include/struct.h"
 #include <termios.h>
 
-#define INITIAL_CAPACITY 128
-
 static int ensure_capacity(char **line, size_t *cap, size_t wanted)
 {
     char *tmp = NULL;
@@ -42,82 +40,114 @@ static int handle_escape_sequence(void)
     return 0;
 }
 
-int my_getline(char **cmd, size_t *len)
+getline_t init_my_getline(char **cmd, size_t *len)
 {
-    struct termios old_t = {0};
-    struct termios raw_t = {0};
-    size_t cap = (len && *len > 0) ? *len : INITIAL_CAPACITY;
-    size_t line_len = 0;
-    char *line = NULL;
-    char c = 0;
-    ssize_t rd = 0;
+    getline_t st_g = {0};
 
+    st_g.cap = (len && *len > 0) ? *len : INITIAL_CAPACITY;
+    st_g.line_len = 0;
+    st_g.line = NULL;
+    st_g.c = 0;
+    st_g.rd = 0;
+    st_g.statut_getline = TRUE;
+    st_g.statut_echo = 0;
+    st_g.statut_exit_getline = 0;
+    return st_g;
+}
+
+static int return_reset(getline_t *st_g)
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, &st_g->old_t);
+    free(st_g->line);
+    return -1;
+}
+
+static void set_terminal_start(getline_t *st_g)
+{
+    st_g->raw_t = st_g->old_t;
+    st_g->raw_t.c_lflag &= ~(ICANON | ECHO);
+    st_g->raw_t.c_cc[VMIN] = 1;
+    st_g->raw_t.c_cc[VTIME] = 0;
+}
+
+static int loop_getline_final(getline_t *st_g)
+{
+    if (!isprint((unsigned char)st_g->c))
+        return 0;
+    if (ensure_capacity(&st_g->line, &st_g->cap,
+            st_g->line_len + 1) == -1)
+        return return_reset(st_g);
+    st_g->line[st_g->line_len] = st_g->c;
+    st_g->line_len++;
+    st_g->line[st_g->line_len] = '\0';
+    write(STDOUT_FILENO, &st_g->c, 1);
+    return SUCCESS_EXIT;
+}
+
+static int loop_getline(getline_t *st_g)
+{
+    st_g->rd = read(STDIN_FILENO, &st_g->c, 1);
+    if (st_g->rd <= 0)
+        return return_reset(st_g);
+    if (st_g->c == '\n' || st_g->c == '\r') {
+        write(STDOUT_FILENO, "\n", 1);
+        st_g->statut_getline = FALSE;
+    }
+    if (st_g->c == 4 && st_g->line_len == 0)
+        return return_reset(st_g);
+    if ((st_g->c == 127 || st_g->c == 8) && st_g->line_len > 0) {
+        st_g->line_len--;
+        st_g->line[st_g->line_len] = '\0';
+        write(STDOUT_FILENO, "\b \b", 3);
+        return 0;
+    }
+    if (st_g->c == 27) {
+        handle_escape_sequence();
+        return 0;
+    }
+    return loop_getline_final(st_g);
+}
+
+static int loop_st_gart(getline_t *st_g, char **cmd, size_t *len)
+{
     if (!isatty(STDIN_FILENO))
         return getline(cmd, len, stdin);
-    line = malloc(cap);
-    if (!line)
+    st_g->line = malloc(st_g->cap);
+    if (!st_g->line)
         return -1;
-    line[0] = '\0';
-    if (tcgetattr(STDIN_FILENO, &old_t) == -1) {
-        free(line);
+    st_g->line[0] = '\0';
+    if (tcgetattr(STDIN_FILENO, &st_g->old_t) == -1) {
+        free(st_g->line);
         return getline(cmd, len, stdin);
     }
-    raw_t = old_t;
-    raw_t.c_lflag &= ~(ICANON | ECHO);
-    raw_t.c_cc[VMIN] = 1;
-    raw_t.c_cc[VTIME] = 0;
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &raw_t) == -1) {
-        free(line);
+    set_terminal_start(st_g);
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &st_g->raw_t) == -1) {
+        free(st_g->line);
         return getline(cmd, len, stdin);
     }
-    while (1) {
-        rd = read(STDIN_FILENO, &c, 1);
-        if (rd <= 0) {
-            tcsetattr(STDIN_FILENO, TCSANOW, &old_t);
-            free(line);
-            return -1;
-        }
-        if (c == '\n' || c == '\r') {
-            write(STDOUT_FILENO, "\n", 1);
-            break;
-        }
-        if (c == 4 && line_len == 0) {
-            tcsetattr(STDIN_FILENO, TCSANOW, &old_t);
-            free(line);
-            return -1;
-        }
-        if ((c == 127 || c == 8) && line_len > 0) {
-            line_len--;
-            line[line_len] = '\0';
-            write(STDOUT_FILENO, "\b \b", 3);
-            continue;
-        }
-        if (c == 27) {
-            handle_escape_sequence();
-            continue;
-        }
-        if (!isprint((unsigned char)c))
-            continue;
-        if (ensure_capacity(&line, &cap, line_len + 1) == -1) {
-            tcsetattr(STDIN_FILENO, TCSANOW, &old_t);
-            free(line);
-            return -1;
-        }
-        line[line_len] = c;
-        line_len++;
-        line[line_len] = '\0';
-        write(STDOUT_FILENO, &c, 1);
+    return SUCCESS_EXIT;
+}
+
+int my_getline(char **cmd, size_t *len)
+{
+    getline_t st_g = init_my_getline(cmd, len);
+    int t = loop_st_gart(&st_g, cmd, len);
+
+    if (t != SUCCESS_EXIT)
+        return t;
+    while (st_g.statut_getline == TRUE) {
+        loop_getline(&st_g);
     }
-    tcsetattr(STDIN_FILENO, TCSANOW, &old_t);
-    if (ensure_capacity(&line, &cap, line_len + 1) == -1) {
-        free(line);
+    tcsetattr(STDIN_FILENO, TCSANOW, &st_g.old_t);
+    if (ensure_capacity(&st_g.line, &st_g.cap, st_g.line_len + 1) == -1) {
+        free(st_g.line);
         return -1;
     }
-    line[line_len] = '\n';
-    line[line_len + 1] = '\0';
+    st_g.line[st_g.line_len] = '\n';
+    st_g.line[st_g.line_len + 1] = '\0';
     free(*cmd);
-    *cmd = line;
+    *cmd = st_g.line;
     if (len)
-        *len = cap;
-    return (int)(line_len + 1);
+        *len = st_g.cap;
+    return (int)(st_g.line_len + 1);
 }
