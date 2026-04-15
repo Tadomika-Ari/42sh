@@ -27,7 +27,7 @@ SRC = 	src/main.c							\
 		src/loop_tcsh/error_handling_pipe.c	\
 		src/error/error_term.c			\
 		src/history/history.c\
-		src/special_variable/my_cwd.c
+		src/special_variable/sepecial_variable.c
 
 OBJ = 	$(SRC:.c=.o)
 
