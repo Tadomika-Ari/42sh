@@ -5,7 +5,7 @@
 ** cd
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int new_path(tcsh_t *term, char *old)
 {

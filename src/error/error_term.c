@@ -5,7 +5,7 @@
 ** error_term
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int error_syntax(char *cmd)
 {

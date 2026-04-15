@@ -5,7 +5,7 @@
 ** history
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 static nodes_t *init_node_history(char *cmd, int index)
 {

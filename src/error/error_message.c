@@ -5,7 +5,7 @@
 ** error_message
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int path_not_found(char *path)
 {

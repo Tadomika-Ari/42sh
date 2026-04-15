@@ -5,7 +5,7 @@
 ** file
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int is_it_file(char *path)
 {

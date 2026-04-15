@@ -5,7 +5,7 @@
 ** init
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 nodes_t *create_new_node(char *lign_env)
 {

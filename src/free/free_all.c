@@ -5,7 +5,7 @@
 ** free_all
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 void free_node(nodes_t *head)
 {

@@ -1,0 +1,9 @@
+.idea
+*.o
+*.a
+42sh
+*.gnco
+*.gnca
+unit_tests
+include/my.h
+.idea/*

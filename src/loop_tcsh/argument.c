@@ -5,7 +5,7 @@
 ** argument
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 static int take_argument(char **cmd, tcsh_t *term)
 {

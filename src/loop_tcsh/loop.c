@@ -5,7 +5,7 @@
 ** loop
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int filter_command(tcsh_t *term, int value)
 {

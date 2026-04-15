@@ -5,7 +5,7 @@
 ** unsetenv
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 void in_list(nodes_t *last, char *argv)
 {

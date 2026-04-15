@@ -5,7 +5,7 @@
 ** child
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 static void signaled(int *result)
 {

@@ -5,7 +5,7 @@
 ** setenv
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 char *new_categorize(char *categorize)
 {

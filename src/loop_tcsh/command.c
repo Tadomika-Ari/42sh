@@ -5,7 +5,7 @@
 ** command
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 static void close_if_valid(int *fd)
 {
@@ -81,8 +81,10 @@ static int apply_command(tcsh_t *term, char *cmd)
         status = exec(my_strdup(command[0]), command, term, cmd);
     if (status == -1)
         command_not_found(command[0]);
-    if (status == 1)
+    if (status == 1) {
+        free_array(command);
         return -1;
+    }
     free_array(command);
     return status;
 }

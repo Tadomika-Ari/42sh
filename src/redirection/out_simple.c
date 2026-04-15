@@ -5,7 +5,7 @@
 ** right_simple
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 static char *take_name(char *argv)
 {

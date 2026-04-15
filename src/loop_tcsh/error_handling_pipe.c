@@ -5,7 +5,7 @@
 ** error_handling_pipe
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 void delete_red(char **cmd)
 {

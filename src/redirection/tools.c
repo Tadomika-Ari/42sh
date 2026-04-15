@@ -5,7 +5,7 @@
 ** right_simple
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int search_ind(char *argv, char c)
 {

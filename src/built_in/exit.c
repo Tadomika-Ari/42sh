@@ -5,7 +5,7 @@
 ** exit
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int my_exit(tcsh_t *term, char **argv)
 {

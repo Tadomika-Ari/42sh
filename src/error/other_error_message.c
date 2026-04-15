@@ -5,7 +5,7 @@
 ** other_error_message
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int error_alphanumeric(char *cmd)
 {

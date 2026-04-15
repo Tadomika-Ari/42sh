@@ -5,7 +5,7 @@
 ** env
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int env(tcsh_t *term, char **argv)
 {

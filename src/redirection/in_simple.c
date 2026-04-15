@@ -5,7 +5,7 @@
 ** in_simple
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int exist(char *str)
 {

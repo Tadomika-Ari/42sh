@@ -5,7 +5,7 @@
 ** my_free
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int my_free(void **pointer, int max, int exit)
 {
