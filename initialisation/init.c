@@ -64,6 +64,8 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_exit, "exit") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, my_history, "history") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
 }
 
@@ -75,6 +77,8 @@ int init(tcsh_t *term, char **env)
     term->func = NULL;
     term->life = LIFE;
     term->old = NULL;
+    term->history = NULL;
+    term->len_history = 0;
     if (get_env(term, env) == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (fill_function(term) == FAILURE_EXIT)
