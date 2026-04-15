@@ -125,4 +125,6 @@ int my_history(tcsh_t *term, char **cmd);
 
 int push_to_history(tcsh_t *term, char *cmd);
 
+int my_cwd(tcsh_t *term, char **cmd);
+
 #endif
