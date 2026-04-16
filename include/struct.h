@@ -20,6 +20,14 @@ typedef enum exit
     FAILURE_EXIT = 84,
 }exit_t;
 
+typedef struct history
+{
+    char *cmd;
+    char *time;
+    int index;
+}history_t;
+
+
 typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
@@ -30,12 +38,24 @@ typedef struct tcsh {
     bool first;
     bool last;
     int prev;
+    nodes_t *history;
+    int len_history;
 } tcsh_t;
 
 typedef struct function {
     const char *name;
     int (*cmd)(tcsh_t *, char **);
 } function_t;
+
+typedef struct parse {
+    int in_quote;
+    int in_tick;
+    int parent;
+    int brack;
+    int count;
+    int start;
+    int i;
+} parse_t;
 
 int init(tcsh_t *term, char **env);
 
@@ -110,5 +130,11 @@ int correct_lign(char *cmd, char **cmd_pipe);
 int my_free(void **pointer, int max, int exit);
 
 int argument_not_support(char *cmd);
+
+int my_history(tcsh_t *term, char **cmd);
+
+int push_to_history(tcsh_t *term, char *cmd);
+
+char **parser3000(char *str, char *sep);
 
 #endif
