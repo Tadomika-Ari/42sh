@@ -84,9 +84,13 @@ jobs:
       - name: discord-integration-fail
         if: failure()
         run: |
-          curl -X POST ${{ secrets.NYA_BOT_42SH }} \
-          -H "Content-Type: application/json" \
-          -d '{"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`. La personne qui ne sait pas coder : ${{ github.actor }}. DM envoyé.","color":15158332}]}'
+            payload=$(cat <<EOF
+            {"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`. DM envoyé à l'auteur de l'activation : ${{ github.actor }}. L'endroit de l'activation : ${{ github.event_name == 'pull_request' && format('pull request #{0} vers {1}', github.event.pull_request.number, github.base_ref) || format('push sur {0}', github.ref_name) }}","color":15158332}]}
+            EOF
+            )
+            curl -X POST "${{ secrets.NYA_BOT_42SH }}" \
+            -H "Content-Type: application/json" \
+            -d "$payload"
 
       - name: discord-integration-success
         if: success()
