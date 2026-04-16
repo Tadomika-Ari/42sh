@@ -9,6 +9,8 @@
     #define MY_TOP_STRUCT_H
     #include "my.h"
 
+    #define RC_FILE ".42rc"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -40,6 +42,7 @@ typedef struct tcsh {
     int prev;
     nodes_t *history;
     int len_history;
+    int fd_rc;
 } tcsh_t;
 
 typedef struct function {
@@ -58,6 +61,8 @@ typedef struct parse {
 } parse_t;
 
 int init(tcsh_t *term, char **env);
+
+int fill_rc(tcsh_t *term);
 
 int error_alphanumeric(char *cmd);
 
