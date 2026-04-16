@@ -68,7 +68,7 @@ int search_command(tcsh_t *term, char **command, char *cmd)
 
 static int apply_command(tcsh_t *term, char *cmd)
 {
-    char **command = my_str_to_word_array(cmd, "\n \t");
+    char **command = parser3000(cmd, "\n \t");
     int status = 0;
 
     if (!command)
