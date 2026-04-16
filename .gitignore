@@ -7,3 +7,4 @@
 unit_tests
 include/my.h
 divzero*
+.42rc

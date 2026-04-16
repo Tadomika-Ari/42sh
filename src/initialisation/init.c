@@ -83,5 +83,7 @@ int init(tcsh_t *term, char **env)
         return FAILURE_EXIT;
     if (fill_function(term) == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (fill_rc(term) == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
 }
