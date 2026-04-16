@@ -5,7 +5,7 @@
 ** occ
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 int is_protected(parse_t *parse)
 {
