@@ -1,0 +1,8 @@
+*.o
+.vscode
+unit_tests
+*.gcno
+*.gda
+*.gcda
+a.out
+42sh
