@@ -47,6 +47,16 @@ typedef struct function {
     int (*cmd)(tcsh_t *, char **);
 } function_t;
 
+typedef struct parse {
+    int in_quote;
+    int in_tick;
+    int parent;
+    int brack;
+    int count;
+    int start;
+    int i;
+} parse_t;
+
 int init(tcsh_t *term, char **env);
 
 int error_alphanumeric(char *cmd);
@@ -124,5 +134,7 @@ int argument_not_support(char *cmd);
 int my_history(tcsh_t *term, char **cmd);
 
 int push_to_history(tcsh_t *term, char *cmd);
+
+char **parser3000(char *str, char *sep);
 
 #endif
