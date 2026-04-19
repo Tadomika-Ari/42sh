@@ -86,6 +86,8 @@ cover: tests_run
 
 clean:
 	@rm -f $(OBJ)
+	@rm -f *.gcno
+	@rm -f *.gcda
 
 fclean: clean
 	make fclean -C lib/my/
