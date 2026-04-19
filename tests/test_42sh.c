@@ -30,10 +30,12 @@ Test(shell, init_shell, .init = redirect_all_std)
 
 Test(shell, fill_rc, .init = redirect_all_std)
 {
-    tcsh_t *term = malloc(sizeof(tcsh_t));
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
 
     fill_rc(term);
+    free(term);
 }
+
 Test(shell, error_alphanumeric, .init = redirect_all_std)
 {
     error_alphanumeric("CMD");
@@ -163,4 +165,66 @@ Test(shell, reinit, .init = redirect_all_std)
     reinit(term, "kirby triple deluxe", tab);
     free(term);
     free_array(tab);
+}
+
+Test(shell, my_unsetenv, .init = redirect_all_std)
+{
+    char **tab = my_str_to_word_array("setenv toto", "\n \t");
+    char **tab2 = my_str_to_word_array("unsetenv toto", "\n \t");
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+
+    my_setenv(term, tab);
+    my_unsetenv(term, tab2);
+    free_array(tab);
+    free_array(tab2);
+    free(term);
+}
+
+Test(shell, error_ambigious, .init = redirect_all_std)
+{
+    error_ambigious();
+}
+
+Test(shell, error_not_a_directory, .init = redirect_all_std)
+{
+    error_not_a_directory("THIS IS A BUCKET");
+}
+
+Test(shell, is_it_file, .init = redirect_all_std)
+{
+    is_it_file("THIS IS A BUCKET");
+}
+
+Test(shell, crop, .init = redirect_all_std)
+{
+    crop("THIS IS A BUCKET");
+}
+
+Test(shell, choose_command, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("pelophlyax kl esculentus | 2 147 483 648");
+
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, search_ind, .init = redirect_all_std)
+{
+    search_ind("tahm kench", 'c');
+}
+
+Test(shell, search_out, .init = redirect_all_std)
+{
+    search_out("cat < ls");
+}
+
+Test(shell, search_in, .init = redirect_all_std)
+{
+    search_in("cat < ls");
+}
+
+Test(shell, error_null, .init = redirect_all_std)
+{
+    error_null();
 }
