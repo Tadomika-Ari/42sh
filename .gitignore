@@ -2,8 +2,8 @@
 *.o
 *.a
 42sh
-*.gnco
-*.gnca
+*.gcno
+*.gcda
 unit_tests
 include/my.h
 divzero*
