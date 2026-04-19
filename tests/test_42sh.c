@@ -228,3 +228,39 @@ Test(shell, error_null, .init = redirect_all_std)
 {
     error_null();
 }
+
+Test(shell, correct_lign, .init = redirect_all_std)
+{
+    char *cmd = my_strdup("toto | tata");
+    char **tab = my_str_to_word_array(cmd, "|");
+
+    correct_lign(cmd, tab);
+    free(cmd);
+    free_array(tab);
+}
+
+Test(shell, my_free, .init = redirect_all_std)
+{
+    my_free(NULL, 0, 84);
+}
+
+Test(shell, argument_not_support, .init = redirect_all_std)
+{
+    argument_not_support("la lib lapin n'est plus disponible");
+}
+
+Test(shell, my_history, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("history", "\t \n");
+
+    my_history(term, tab);
+    free_array(tab);
+}
+
+Test(shell, push_to_history, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+
+    push_to_history(term, "jungle diff");
+}
