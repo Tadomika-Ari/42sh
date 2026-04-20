@@ -29,6 +29,8 @@ SRC = 	src/main.c							\
 		src/history/history.c               \
 		src/tools/parser.c                  \
 		src/initialisation/fill_rc.c        \
+		src/tools/correct_tab.c             \
+		src/error/put_err.c			        \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -58,6 +60,8 @@ TEST_SRC = tests/test_42sh.c \
 		src/history/history.c               \
 		src/tools/parser.c                  \
 		src/initialisation/fill_rc.c        \
+		src/tools/correct_tab.c             \
+		src/error/put_err.c			        \
 
 
 NAME =	42sh

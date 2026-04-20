@@ -93,5 +93,7 @@ char **parser3000(char *str, char *sep)
     }
     copy_next(&parse, str, res);
     res[parse.count] = NULL;
+    if (correct_tab(res) == FALSE)
+        return NULL;
     return res;
 }

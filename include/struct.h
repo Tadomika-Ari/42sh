@@ -11,6 +11,8 @@
 
     #define RC_FILE ".42rc"
 
+    #define UNMATCH_SINGLE "Unmatched '''.\n"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -141,5 +143,9 @@ int my_history(tcsh_t *term, char **cmd);
 int push_to_history(tcsh_t *term, char *cmd);
 
 char **parser3000(char *str, char *sep);
+
+int correct_tab(char **tab);
+
+int put_err(char *str);
 
 #endif
