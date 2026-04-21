@@ -13,6 +13,10 @@
     #define MAX_LINE 1024
 
 
+    #define RC_FILE ".42rc"
+
+    #define UNMATCH_SINGLE "Unmatched '''.\n"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -58,6 +62,7 @@ typedef struct tcsh {
     int prev;
     nodes_t *history;
     int len_history;
+    int fd_rc;
 } tcsh_t;
 
 typedef struct function {
@@ -65,7 +70,19 @@ typedef struct function {
     int (*cmd)(tcsh_t *, char **);
 } function_t;
 
+typedef struct parse {
+    int in_quote;
+    int in_tick;
+    int parent;
+    int brack;
+    int count;
+    int start;
+    int i;
+} parse_t;
+
 int init(tcsh_t *term, char **env);
+
+int fill_rc(tcsh_t *term);
 
 int error_alphanumeric(char *cmd);
 
@@ -148,5 +165,11 @@ int my_getline(char **cmd, size_t *len, tcsh_t *term);
 int check_history_up(tcsh_t *term, getline_t *st_g);
 
 int check_history_down(tcsh_t *term, getline_t *st_g);
+
+char **parser3000(char *str, char *sep);
+
+int correct_tab(char **tab);
+
+int put_err(char *str);
 
 #endif

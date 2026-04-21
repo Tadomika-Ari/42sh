@@ -1,0 +1,10 @@
+.idea
+*.o
+*.a
+42sh
+*.gcno
+*.gcda
+unit_tests
+include/my.h
+divzero*
+.42rc
