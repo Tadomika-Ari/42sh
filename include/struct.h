@@ -43,6 +43,7 @@ typedef struct getline
     int statut_getline;
     int statut_exit_getline;
     int statut_echo;
+    int statut_history;
 }getline_t;
 
 typedef struct tcsh {
@@ -142,6 +143,10 @@ int my_history(tcsh_t *term, char **cmd);
 
 int push_to_history(tcsh_t *term, char *cmd);
 
-int my_getline(char **cmd, size_t *len);
+int my_getline(char **cmd, size_t *len, tcsh_t *term);
+
+int check_history_up(tcsh_t *term, getline_t *st_g);
+
+int check_history_down(tcsh_t *term, getline_t *st_g);
 
 #endif

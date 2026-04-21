@@ -23,7 +23,7 @@ static int ensure_capacity(char **line, size_t *cap, size_t wanted)
     return 0;
 }
 
-static int handle_escape_sequence(void)
+static int handle_escape_sequence(tcsh_t *term, getline_t *st_g)
 {
     char seq[2] = {0};
 
@@ -34,9 +34,9 @@ static int handle_escape_sequence(void)
     if (seq[0] != '[')
         return 0;
     if (seq[1] == 'A')
-        printf("debug: fleche haut\n");
+        check_history_up(term, st_g);
     if (seq[1] == 'B')
-        printf("debug: fleche bas\n");
+        check_history_down(term, st_g);
     return 0;
 }
 
@@ -52,6 +52,7 @@ getline_t init_my_getline(char **cmd, size_t *len)
     st_g.statut_getline = TRUE;
     st_g.statut_echo = 0;
     st_g.statut_exit_getline = 0;
+    st_g.statut_history = 0;
     return st_g;
 }
 
@@ -84,7 +85,7 @@ static int loop_getline_final(getline_t *st_g)
     return SUCCESS_EXIT;
 }
 
-static int loop_getline(getline_t *st_g)
+static int loop_getline(getline_t *st_g, tcsh_t *term)
 {
     st_g->rd = read(STDIN_FILENO, &st_g->c, 1);
     if (st_g->rd <= 0)
@@ -102,7 +103,7 @@ static int loop_getline(getline_t *st_g)
         return 0;
     }
     if (st_g->c == 27) {
-        handle_escape_sequence();
+        handle_escape_sequence(term, st_g);
         return 0;
     }
     return loop_getline_final(st_g);
@@ -128,7 +129,7 @@ static int loop_st_gart(getline_t *st_g, char **cmd, size_t *len)
     return SUCCESS_EXIT;
 }
 
-int my_getline(char **cmd, size_t *len)
+int my_getline(char **cmd, size_t *len, tcsh_t *term)
 {
     getline_t st_g = init_my_getline(cmd, len);
     int t = loop_st_gart(&st_g, cmd, len);
@@ -136,7 +137,7 @@ int my_getline(char **cmd, size_t *len)
     if (t != SUCCESS_EXIT)
         return t;
     while (st_g.statut_getline == TRUE) {
-        loop_getline(&st_g);
+        loop_getline(&st_g, term);
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &st_g.old_t);
     if (ensure_capacity(&st_g.line, &st_g.cap, st_g.line_len + 1) == -1) {
