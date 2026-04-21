@@ -5,7 +5,7 @@
 ** check_history
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 
 static void clear_current_input(size_t len)
 {

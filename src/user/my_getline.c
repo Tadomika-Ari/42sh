@@ -5,7 +5,7 @@
 ** my_getline
 */
 
-#include "../include/struct.h"
+#include "../../include/struct.h"
 #include <termios.h>
 
 static int ensure_capacity(char **line, size_t *cap, size_t wanted)
