@@ -43,9 +43,6 @@ int correct_tab(char **tab)
             free_array(tab);
             return FALSE;
         }
-        if (my_strlen(tab[i]) > 1) {
-            change(tab, i);
-        }
     }
     return TRUE;
 }
