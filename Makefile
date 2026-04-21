@@ -31,9 +31,9 @@ SRC = 	src/main.c							\
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
-		user/my_getline.c           		\
-		user/check_history_up.c 			\
-		user/check_history_down.c 			\
+		src/user/my_getline.c           	\
+		src/user/check_history_up.c 		\
+		src/user/check_history_down.c 		\
 
 OBJ = 	$(SRC:.c=.o)
 
