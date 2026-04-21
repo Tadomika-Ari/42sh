@@ -25,6 +25,8 @@ int history_init_down(tcsh_t *term, getline_t *st_g, nodes_t *node)
         return 84;
     if (st_g->statut_history >= term->len_history)
         st_g->statut_history = term->len_history - 1;
+    if (st_g->statut_history <= 0)
+        return 84;
     return 0;
 }
 
@@ -55,7 +57,7 @@ int check_history_down(tcsh_t *term, getline_t *st_g)
 
     if (history_init_down(term, st_g, node) == 84)
         return 0;
-    target = st_g->statut_history - 1;
+    target = term->len_history - st_g->statut_history;
     for (int i = 0; node != NULL && i < target; i++)
         node = node->next;
     if (node == NULL || node->data == NULL)
