@@ -63,6 +63,7 @@ int my_last_cmd(tcsh_t *termn, char **cmd)
         current = current->next;
     if (current->data != NULL) {
         tmp = current->data;
+        printf("%s", tmp->cmd);
         return choose_command(termn, tmp->cmd);
     } else {
         printf("0: Event not found.\n");
