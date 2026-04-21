@@ -9,6 +9,10 @@
     #define MY_TOP_STRUCT_H
     #include "my.h"
 
+    #define RC_FILE ".42rc"
+
+    #define UNMATCH_SINGLE "Unmatched '''.\n"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -40,6 +44,7 @@ typedef struct tcsh {
     int prev;
     nodes_t *history;
     int len_history;
+    int fd_rc;
 } tcsh_t;
 
 typedef struct function {
@@ -47,7 +52,19 @@ typedef struct function {
     int (*cmd)(tcsh_t *, char **);
 } function_t;
 
+typedef struct parse {
+    int in_quote;
+    int in_tick;
+    int parent;
+    int brack;
+    int count;
+    int start;
+    int i;
+} parse_t;
+
 int init(tcsh_t *term, char **env);
+
+int fill_rc(tcsh_t *term);
 
 int error_alphanumeric(char *cmd);
 
@@ -124,5 +141,11 @@ int argument_not_support(char *cmd);
 int my_history(tcsh_t *term, char **cmd);
 
 int push_to_history(tcsh_t *term, char *cmd);
+
+char **parser3000(char *str, char *sep);
+
+int correct_tab(char **tab);
+
+int put_err(char *str);
 
 #endif
