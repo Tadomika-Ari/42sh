@@ -148,4 +148,8 @@ int correct_tab(char **tab);
 
 int put_err(char *str);
 
+int my_last_cmd(tcsh_t *termn, char **cmd);
+
+int choose_command(tcsh_t *term, char *cmd);
+
 #endif
