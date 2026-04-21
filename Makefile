@@ -28,6 +28,8 @@ SRC = 	main.c							\
 		error/error_term.c			\
 		history/history.c\
 		user/my_getline.c           \
+		user/check_history_up.c \
+		user/check_history_down.c \
 
 OBJ = 	$(SRC:.c=.o)
 
