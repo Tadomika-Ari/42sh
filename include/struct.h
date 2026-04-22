@@ -63,6 +63,7 @@ typedef struct tcsh {
     nodes_t *history;
     int len_history;
     int fd_rc;
+    int check_history;
 } tcsh_t;
 
 typedef struct function {
