@@ -17,6 +17,18 @@ static void clear_current_input(size_t len)
         write(1, "\b", 1);
 }
 
+int reset_line(tcsh_t *term, getline_t *st_g, nodes_t *node)
+{
+    if (term->check_history != 0 && term->check_history != 2) {
+        term->check_history = 0;
+        clear_current_input(st_g->line_len);
+        st_g->line_len = 0;
+        if (st_g->line != NULL)
+            st_g->line[0] = '\0';
+    }
+    return 84;
+}
+
 int history_init_down(tcsh_t *term, getline_t *st_g, nodes_t *node)
 {
     if (term == NULL || st_g == NULL || node == NULL)
@@ -26,14 +38,7 @@ int history_init_down(tcsh_t *term, getline_t *st_g, nodes_t *node)
     if (st_g->statut_history >= term->len_history)
         st_g->statut_history = term->len_history - 1;
     if (st_g->statut_history <= 0) {
-        if (term->check_history != 0 && term->check_history != 2) {
-            term->check_history = 0;
-            clear_current_input(st_g->line_len);
-            st_g->line_len = 0;
-            if (st_g->line != NULL)
-                st_g->line[0] = '\0';
-        }
-        return 84;
+        return reset_line(term, st_g, node);
     }
     return 0;
 }
