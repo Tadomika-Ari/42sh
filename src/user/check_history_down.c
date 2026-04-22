@@ -25,8 +25,16 @@ int history_init_down(tcsh_t *term, getline_t *st_g, nodes_t *node)
         return 84;
     if (st_g->statut_history >= term->len_history)
         st_g->statut_history = term->len_history - 1;
-    if (st_g->statut_history <= 0)
+    if (st_g->statut_history <= 0) {
+        if (term->check_history != 0 && term->check_history != 2) {
+            term->check_history = 0;
+            clear_current_input(st_g->line_len);
+            st_g->line_len = 0;
+            if (st_g->line != NULL)
+                st_g->line[0] = '\0';
+        }
         return 84;
+    }
     return 0;
 }
 

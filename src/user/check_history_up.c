@@ -25,6 +25,7 @@ int history_init(tcsh_t *term, getline_t *st_g, nodes_t *node)
         return 84;
     if (st_g->statut_history >= term->len_history)
         st_g->statut_history = term->len_history - 1;
+    term->check_history = 1;
     return 0;
 }
 
