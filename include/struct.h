@@ -173,4 +173,8 @@ int correct_tab(char **tab);
 
 int put_err(char *str);
 
+int left_key(tcsh_t *term, getline_t *st_g);
+
+int right_key(tcsh_t *term, getline_t *st_g);
+
 #endif
