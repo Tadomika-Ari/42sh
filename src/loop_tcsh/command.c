@@ -69,7 +69,7 @@ int search_command(tcsh_t *term, char **command, char *cmd)
 
 static int apply_command(tcsh_t *term, char *cmd)
 {
-    char **command = parser3000(cmd, "\n \t");
+    char **command = sweeper(cmd);
     int status = 0;
 
     if (!command)
