@@ -9,6 +9,9 @@
 
 int right_key(tcsh_t *term, getline_t *st_g)
 {
-    write(STDOUT_FILENO, "\x1b[C", 3);
+    if (term->whereiscursor + 1 <= term->maxposcursor) {
+        write(STDOUT_FILENO, "\x1b[C", 3);
+        term->whereiscursor++;
+    }
     return 0;
 }
