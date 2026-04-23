@@ -46,13 +46,12 @@ static void edit_list(nodes_t *list, int index)
 
 static void free_list(nodes_t *list)
 {
-    nodes_t *prev = list;
+    nodes_t *next = NULL;
 
-    for (nodes_t *current = list; current->next; current = current->next) {
-        prev = current;
-        free(prev);
+    for (nodes_t *current = list; current != NULL; current = next) {
+        next = current->next;
+        free(current);
     }
-    free(prev);
 }
 
 char **sweeper(char *str)
