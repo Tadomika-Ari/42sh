@@ -36,6 +36,7 @@ SRC = 	src/main.c							\
 		src/user/check_history_down.c 		\
 		src/user/left_key.c  				\
 		src/user/right_key.c				\
+		src/user/all_for_len.c      		\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -72,6 +73,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/user/check_history_down.c 		\
 		src/user/left_key.c  				\
 		src/user/right_key.c				\
+		src/user/all_for_len.c    			\
 
 
 NAME =	42sh
