@@ -64,6 +64,8 @@ typedef struct tcsh {
     int len_history;
     int fd_rc;
     int check_history;
+    int whereiscursor;
+    int maxposcursor;
 } tcsh_t;
 
 typedef struct function {
@@ -176,5 +178,7 @@ int put_err(char *str);
 int left_key(tcsh_t *term, getline_t *st_g);
 
 int right_key(tcsh_t *term, getline_t *st_g);
+
+int all_for_len(tcsh_t *term, history_t *tmp);
 
 #endif
