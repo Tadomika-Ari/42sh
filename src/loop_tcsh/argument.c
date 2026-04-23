@@ -11,7 +11,7 @@ static int take_argument(char **cmd, tcsh_t *term)
 {
     size_t len = 0;
 
-    if (getline(cmd, &len, stdin) == -1) {
+    if (my_getline(cmd, &len, term) == -1) {
         if (isatty(0) == 0)
             return FAILURE_EXIT;
         write(1, "exit\n", 5);

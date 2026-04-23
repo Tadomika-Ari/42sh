@@ -35,6 +35,9 @@ SRC = 	src/main.c							\
 		src/tools/check_str.c               \
 		src/tools/sweeper.c                 \
 		src/tools/translate.c               \
+		src/user/my_getline.c           	\
+		src/user/check_history_up.c 		\
+		src/user/check_history_down.c 		\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -70,6 +73,9 @@ TEST_SRC = tests/test_42sh.c \
 		src/tools/check_str.c               \
 		src/tools/sweeper.c                 \
 		src/tools/translate.c               \
+		src/user/my_getline.c           	\
+		src/user/check_history_up.c 		\
+		src/user/check_history_down.c 		\
 
 
 NAME =	42sh
