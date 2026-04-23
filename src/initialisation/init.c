@@ -80,6 +80,8 @@ int init(tcsh_t *term, char **env)
     term->history = NULL;
     term->len_history = 0;
     term->check_history = 2;
+    term->whereiscursor = 0;
+    term->maxposcursor = 0;
     if (get_env(term, env) == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (fill_function(term) == FAILURE_EXIT)
