@@ -9,6 +9,9 @@
 
 int left_key(tcsh_t *term, getline_t *st_g)
 {
-    write(STDOUT_FILENO, "\x1b[D", 3);
+    if (term->whereiscursor - 1 >= 0) {
+        write(STDOUT_FILENO, "\x1b[D", 3);
+        term->whereiscursor--;
+    }
     return 0;
 }
