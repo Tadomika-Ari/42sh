@@ -31,6 +31,10 @@ SRC = 	src/main.c							\
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
+		src/tools/array_to_node.c           \
+		src/tools/check_str.c               \
+		src/tools/sweeper.c                 \
+		src/tools/translate.c               \
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\
@@ -65,6 +69,10 @@ TEST_SRC = tests/test_42sh.c \
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
+		src/tools/array_to_node.c           \
+		src/tools/check_str.c               \
+		src/tools/sweeper.c                 \
+		src/tools/translate.c               \
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\

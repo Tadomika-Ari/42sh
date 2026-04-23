@@ -173,4 +173,15 @@ int correct_tab(char **tab);
 
 int put_err(char *str);
 
+char **sweeper(char *str);
+
+int is_parenthesis(char *str);
+
+int is_inihbitor(char *str);
+
+char **translate(char *str);
+
+nodes_t *array_to_node(char **array);
+
+void free_node(nodes_t *head);
 #endif
