@@ -31,6 +31,10 @@ SRC = 	src/main.c							\
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
+		src/tools/array_to_node.c           \
+		src/tools/check_str.c               \
+		src/tools/sweeper.c                 \
+		src/tools/translate.c               \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -62,6 +66,10 @@ TEST_SRC = tests/test_42sh.c \
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
+		src/tools/array_to_node.c           \
+		src/tools/check_str.c               \
+		src/tools/sweeper.c                 \
+		src/tools/translate.c               \
 
 
 NAME =	42sh
