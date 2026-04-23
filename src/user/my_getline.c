@@ -75,7 +75,7 @@ static void set_terminal_start(getline_t *st_g)
     st_g->raw_t.c_cc[VTIME] = 0;
 }
 
-static int loop_getline_final(getline_t *st_g)
+static int loop_getline_final(getline_t *st_g, tcsh_t *term)
 {
     if (!isprint((unsigned char)st_g->c))
         return 0;
@@ -86,6 +86,8 @@ static int loop_getline_final(getline_t *st_g)
     st_g->line_len++;
     st_g->line[st_g->line_len] = '\0';
     write(STDOUT_FILENO, &st_g->c, 1);
+    term->whereiscursor += 1;
+    term->maxposcursor += 1;
     return SUCCESS_EXIT;
 }
 
@@ -110,7 +112,7 @@ static int loop_getline(getline_t *st_g, tcsh_t *term)
         handle_escape_sequence(term, st_g);
         return 0;
     }
-    return loop_getline_final(st_g);
+    return loop_getline_final(st_g, term);
 }
 
 static int loop_st_gart(getline_t *st_g, char **cmd, size_t *len)
