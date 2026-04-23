@@ -38,6 +38,7 @@ SRC = 	src/main.c							\
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\
+		src/special_variable/sepecial_variable.c\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -76,6 +77,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\
+		src/special_variable/sepecial_variable.c \
 
 
 NAME =	42sh

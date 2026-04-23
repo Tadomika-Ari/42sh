@@ -184,4 +184,6 @@ char **translate(char *str);
 nodes_t *array_to_node(char **array);
 
 void free_node(nodes_t *head);
+
+int sepecial_variable(tcsh_t *term, char *cmd);
 #endif
