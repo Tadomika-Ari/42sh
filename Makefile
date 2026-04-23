@@ -23,6 +23,7 @@ SRC = 	src/main.c							\
 		src/error/other_error_message.c		\
 		src/tools/file.c					\
 		src/free/my_free.c					\
+		src/built_in/set.c					\
 		src/loop_tcsh/child.c				\
 		src/loop_tcsh/error_handling_pipe.c	\
 		src/error/error_term.c			\

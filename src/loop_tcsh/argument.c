@@ -14,6 +14,7 @@ static int take_argument(char **cmd, tcsh_t *term)
     if (getline(cmd, &len, stdin) == -1) {
         if (isatty(0) == 0)
             return FAILURE_EXIT;
+        free(*cmd);
         write(1, "exit\n", 5);
         term->life = DEAD;
         return SUCCESS_EXIT;

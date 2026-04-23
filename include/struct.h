@@ -31,6 +31,7 @@ typedef struct history
 typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
+    nodes_t *locals;
     int life;
     char *old;
     int fd[2];
@@ -46,6 +47,11 @@ typedef struct function {
     const char *name;
     int (*cmd)(tcsh_t *, char **);
 } function_t;
+
+typedef struct locals {
+    char *name;
+    char *value;
+} locals_t;
 
 int init(tcsh_t *term, char **env);
 
@@ -75,7 +81,7 @@ void algo_exit(int *result);
 
 int error_expression_syntax(char *cmd);
 
-nodes_t *create_new_node(char *lign_env);
+nodes_t *create_new_node(void *data);
 
 int my_exit(tcsh_t *term, char **argv);
 
@@ -83,11 +89,17 @@ char *take_value(nodes_t *head, char *cat);
 
 int my_setenv(tcsh_t *term, char **argv);
 
+void free_locals(locals_t *locals);
+
 int correct_type(char **cmd);
 
 int reinit(tcsh_t *term, char *cmd, char **cmd_pipe);
 
 int my_unsetenv(tcsh_t *term, char **argv);
+
+int my_set(tcsh_t *term, char **argv);
+
+int correct_name(char *name, char *cmd);
 
 int user_entry(tcsh_t *term, char **cmd);
 

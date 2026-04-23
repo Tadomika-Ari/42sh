@@ -23,6 +23,33 @@ void free_node(nodes_t *head)
     }
 }
 
+void free_locals(locals_t *locals)
+{
+    if (locals != NULL) {
+        if (locals->name)
+            free(locals->name);
+        if (locals->value)
+            free(locals->value);
+        free(locals);
+    }
+}
+
+void free_node_locals(nodes_t *head)
+{
+    nodes_t *forward = NULL;
+
+    if (!head)
+        return;
+    forward = head;
+    while (head != NULL) {
+        forward = forward->next;
+        if (head->data)
+            free_locals(head->data);
+        free(head);
+        head = forward;
+    }
+}
+
 static void free_history(history_t *history)
 {
     if (history != NULL && history->cmd != NULL)
@@ -55,6 +82,7 @@ void free_all(tcsh_t *term)
         return;
     free_node(term->env);
     free_node(term->func);
+    free_node_locals(term->locals);
     free_node_history(term->history);
     if (term->old)
         free(term->old);
