@@ -44,6 +44,17 @@ static void edit_list(nodes_t *list, int index)
     }
 }
 
+static void free_list(nodes_t *list)
+{
+    nodes_t *prev = list;
+
+    for (nodes_t *current = list; current->next; current = current->next) {
+        prev = current;
+        free(prev);
+    }
+    free(prev);
+}
+
 char **sweeper(char *str)
 {
     char **tab = parser3000(str, "\n \t");
@@ -59,5 +70,6 @@ char **sweeper(char *str)
     free_array(tab);
     edit_list(list, 2);
     tab = node_to_array(list);
+    free_list(list);
     return tab;
 }
