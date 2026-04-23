@@ -37,6 +37,10 @@ static int handle_escape_sequence(tcsh_t *term, getline_t *st_g)
         check_history_up(term, st_g);
     if (seq[1] == 'B')
         check_history_down(term, st_g);
+    if (seq[1] == 'C')
+        right_key(term, st_g);
+    if (seq[1] == 'D')
+        left_key(term, st_g);
     return 0;
 }
 
