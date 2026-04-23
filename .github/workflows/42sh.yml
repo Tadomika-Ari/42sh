@@ -65,13 +65,6 @@ jobs:
               exit 1
             fi
 
-      - name: discord-integration-fail
-        if: failure()
-        run: |
-          curl -X POST ${{ secrets.NYA_BOT_42SH }} \
-          -H "Content-Type: application/json" \
-          -d '{"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`. La personne qui ne sait pas coder : ${{ github.actor }}. DM envoyé.","color":15158332}]}'
-
       - name: make-clean
         run: make clean
 
@@ -88,12 +81,27 @@ jobs:
             fi
           done
 
+      - name: discord-integration-fail
+        if: failure()
+        run: |
+            payload=$(cat <<EOF
+            {"embeds":[{"title":"❌ Nya failed","description":"Le workflow a échoué sur `${{ github.repository }}`. DM envoyé à l'auteur de l'activation : ${{ github.actor }}. L'endroit de l'activation : ${{ github.event_name == 'pull_request' && format('pull request #{0} vers {1}', github.event.pull_request.number, github.base_ref) || format('push sur {0}', github.ref_name) }}","color":15158332}]}
+            EOF
+            )
+            curl -X POST "${{ secrets.NYA_BOT_42SH }}" \
+            -H "Content-Type: application/json" \
+            -d "$payload"
+
       - name: discord-integration-success
         if: success()
         run: |
-            curl -X POST ${{ secrets.NYA_BOT_42SH }} \
+            payload=$(cat <<EOF
+            {"embeds":[{"title":"✅ Nya success","description":"Le workflow a réussi sur `${{ github.repository }}`. Auteur de l'activation : ${{ github.actor }}. L'endroit de l'activation : ${{ github.event_name == 'pull_request' && format('pull request #{0} vers {1}', github.event.pull_request.number, github.base_ref) || format('push sur {0}', github.ref_name) }}","color":15158332}]}
+            EOF
+            )
+            curl -X POST "${{ secrets.NYA_BOT_42SH }}" \
             -H "Content-Type: application/json" \
-            -d '{"embeds":[{"title":"✅ Nya success","description":"Le workflow a réussi sur `${{ github.repository }}`.","color":15158332}]}'
+            -d "$payload"
 
       - name: upload-file
         if: failure()
@@ -138,7 +146,7 @@ jobs:
   dm_me:
     runs-on: ubuntu-latest
     needs: [check_compilation_and_coding_style, run_test]
-    if: github.repository != 'EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2' && always() && github.event_name == 'push' && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
+    if: github.repository != 'EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2' && always() && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
     steps:
       - name: recup-text
         uses: actions/download-artifact@v8

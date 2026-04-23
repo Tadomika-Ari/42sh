@@ -17,6 +17,14 @@ static void signaled(int *result)
         *result = 128 + WTERMSIG(*result);
         return;
     }
+    if (WTERMSIG(*result) == SIGFPE) {
+        write(1, "Floating exception", 18);
+        if (WCOREDUMP(*result))
+            write(1, " (core dumped)", 14);
+        write(1, "\n", 1);
+        *result = 128 + WTERMSIG(*result);
+        return;
+    }
     *result = -1;
 }
 

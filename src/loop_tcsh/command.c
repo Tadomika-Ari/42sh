@@ -83,7 +83,7 @@ static int normalize(tcsh_t *term, char *cmd, char **command, int status)
 
 static int apply_command(tcsh_t *term, char *cmd)
 {
-    char **command = my_str_to_word_array(cmd, "\n \t");
+    char **command = sweeper(cmd);
     int status = 0;
 
     if (!command)
