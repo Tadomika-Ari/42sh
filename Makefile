@@ -65,6 +65,9 @@ TEST_SRC = tests/test_42sh.c \
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
+		src/user/my_getline.c           	\
+		src/user/check_history_up.c 		\
+		src/user/check_history_down.c 		\
 
 
 NAME =	42sh
