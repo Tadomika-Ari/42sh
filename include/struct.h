@@ -8,6 +8,14 @@
 #ifndef MY_TOP_STRUCT_H
     #define MY_TOP_STRUCT_H
     #include "my.h"
+    #include <termios.h>
+    #define INITIAL_CAPACITY 128
+    #define MAX_LINE 1024
+
+
+    #define RC_FILE ".42rc"
+
+    #define UNMATCH_SINGLE "Unmatched '''.\n"
 
 typedef enum exit
 {
@@ -27,6 +35,20 @@ typedef struct history
     int index;
 }history_t;
 
+typedef struct getline
+{
+    struct termios old_t;
+    struct termios raw_t;
+    size_t cap;
+    size_t line_len;
+    char *line;
+    char c;
+    ssize_t rd;
+    int statut_getline;
+    int statut_exit_getline;
+    int statut_echo;
+    int statut_history;
+}getline_t;
 
 typedef struct tcsh {
     nodes_t *env;
@@ -40,6 +62,8 @@ typedef struct tcsh {
     int prev;
     nodes_t *history;
     int len_history;
+    int fd_rc;
+    int check_history;
 } tcsh_t;
 
 typedef struct function {
@@ -47,7 +71,19 @@ typedef struct function {
     int (*cmd)(tcsh_t *, char **);
 } function_t;
 
+typedef struct parse {
+    int in_quote;
+    int in_tick;
+    int parent;
+    int brack;
+    int count;
+    int start;
+    int i;
+} parse_t;
+
 int init(tcsh_t *term, char **env);
+
+int fill_rc(tcsh_t *term);
 
 int error_alphanumeric(char *cmd);
 
@@ -125,6 +161,27 @@ int my_history(tcsh_t *term, char **cmd);
 
 int push_to_history(tcsh_t *term, char *cmd);
 
-int sepecial_variable(tcsh_t *term, char *cmd);
+int my_getline(char **cmd, size_t *len, tcsh_t *term);
 
+int check_history_up(tcsh_t *term, getline_t *st_g);
+
+int check_history_down(tcsh_t *term, getline_t *st_g);
+
+char **parser3000(char *str, char *sep);
+
+int correct_tab(char **tab);
+
+int put_err(char *str);
+
+char **sweeper(char *str);
+
+int is_parenthesis(char *str);
+
+int is_inihbitor(char *str);
+
+char **translate(char *str);
+
+nodes_t *array_to_node(char **array);
+
+void free_node(nodes_t *head);
 #endif
