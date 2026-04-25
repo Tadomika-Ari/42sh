@@ -44,15 +44,11 @@ int my_bg(tcsh_t *term, char **argv)
     job_t *job = NULL;
     int id = 0;
 
-    if (!term || !term->jobs) {
-        dprintf(STDERR_FILENO, "bg: No current job.\n");
-        return ALTERNATIVE_EXIT;
-    }
+    if (!term || !term->jobs)
+        return print_return(STDERR_FILENO, "bg: No current job.\n");
     if (argv && argv[0]) {
-        if (argv[1]) {
-            dprintf(STDERR_FILENO, "bg: usage: bg [%%job]\n");
-            return ALTERNATIVE_EXIT;
-        }
+        if (argv[1])
+            return print_return(STDERR_FILENO, "bg: usage: bg [%%job]\n");
         if (parse_job_id(argv[0], &id) == FAILURE_EXIT) {
             dprintf(STDERR_FILENO, "bg: %s: invalid job id.\n", argv[0]);
             return ALTERNATIVE_EXIT;
@@ -60,9 +56,7 @@ int my_bg(tcsh_t *term, char **argv)
         job = find_job_id(term, id);
     } else
         job = last_stopped_or_last(term->jobs);
-    if (!job) {
-        dprintf(STDERR_FILENO, "bg: No such job.\n");
+    if (no_such_job(job, "bg: No such job.\n") == ALTERNATIVE_EXIT)
         return ALTERNATIVE_EXIT;
-    }
     return continue_job_bg(term, job);
 }
