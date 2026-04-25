@@ -22,6 +22,18 @@ static int wait_foreground_group(pid_t pgid, int *status)
     return (w == -1) ? FAILURE_EXIT : SUCCESS_EXIT;
 }
 
+void set_fg_and_status(tcsh_t *term, int status, job_t *job)
+{
+    tcsetpgrp(STDIN_FILENO, term->shell_pgid);
+    term->fg_pgid = 0;
+    if (WIFSTOPPED(status))
+        job->state = STOPPED;
+    else {
+        job->state = DONE;
+        remove_job(term, job);
+    }
+}
+
 int continue_job_fg(tcsh_t *term, job_t *job)
 {
     int status = 0;
@@ -42,14 +54,7 @@ int continue_job_fg(tcsh_t *term, job_t *job)
         term->fg_pgid = 0;
         return FAILURE_EXIT;
     }
-    tcsetpgrp(STDIN_FILENO, term->shell_pgid);
-    term->fg_pgid = 0;
-    if (WIFSTOPPED(status))
-        job->state = STOPPED;
-    else {
-        job->state = DONE;
-        remove_job(term, job);
-    }
+    set_fg_and_status(term, status, job);
     return SUCCESS_EXIT;
 }
 
