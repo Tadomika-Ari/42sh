@@ -35,21 +35,6 @@ static job_t *last_job(job_t *jobs)
     return last;
 }
 
-int print_return(int fd, const char *str)
-{
-    dprintf(fd, "%s", str);
-    return ALTERNATIVE_EXIT;
-}
-
-int no_such_job(job_t *job, const char *str)
-{
-    if (!job) {
-        dprintf(STDERR_FILENO, "%s", str);
-        return ALTERNATIVE_EXIT;
-    }
-    return EXIT_SUCCESS;
-}
-
 int my_fg(tcsh_t *term, char **argv)
 {
     job_t *job = NULL;
