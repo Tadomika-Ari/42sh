@@ -50,6 +50,20 @@ typedef struct getline
     int statut_history;
 }getline_t;
 
+typedef enum job_state {
+    RUNNING,
+    STOPPED,
+    DONE
+} job_state_t;
+
+typedef struct job {
+    int id;
+    pid_t pgid;
+    char *cmd;
+    job_state_t state;
+    struct job *next;
+} job_t;
+
 typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
@@ -64,6 +78,10 @@ typedef struct tcsh {
     int len_history;
     int fd_rc;
     int check_history;
+    job_t *jobs;
+    pid_t shell_pgid;
+    struct termios shell_tmodes;
+    pid_t fg_pgid;
 } tcsh_t;
 
 typedef struct function {
@@ -184,4 +202,17 @@ char **translate(char *str);
 nodes_t *array_to_node(char **array);
 
 void free_node(nodes_t *head);
+
+int my_fg(tcsh_t *term, char **argv);
+int my_bg(tcsh_t *term, char **argv);
+
+int get_max_job_id(tcsh_t *term);
+void add_job(tcsh_t *term, pid_t pgid, char *cmd, job_state_t state);
+job_t *find_job_id(tcsh_t *term, int id);
+job_t *find_job_pid(tcsh_t *term, pid_t pgid);
+void remove_job(tcsh_t *term, job_t *job);
+void free_jobs(job_t *jobs);
+
+int continue_job_fg(tcsh_t *term, job_t *job);
+int continue_job_bg(tcsh_t *term, job_t *job);
 #endif
