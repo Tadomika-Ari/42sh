@@ -35,20 +35,31 @@ static job_t *last_job(job_t *jobs)
     return last;
 }
 
+int print_return(int fd, const char *str)
+{
+    dprintf(fd, "%s", str);
+    return ALTERNATIVE_EXIT;
+}
+
+int no_such_job(job_t *job, const char *str)
+{
+    if (!job) {
+        dprintf(STDERR_FILENO, "%s", str);
+        return ALTERNATIVE_EXIT;
+    }
+    return EXIT_SUCCESS;
+}
+
 int my_fg(tcsh_t *term, char **argv)
 {
     job_t *job = NULL;
     int id = 0;
 
-    if (!term || !term->jobs) {
-        dprintf(STDERR_FILENO, "fg: No current job.\n");
-        return ALTERNATIVE_EXIT;
-    }
+    if (!term || !term->jobs)
+        return print_return(STDERR_FILENO, "fg: No current job.\n");
     if (argv && argv[0]) {
-        if (argv[1]) {
-            dprintf(STDERR_FILENO, "fg: usage: fg [%%job]\n");
-            return ALTERNATIVE_EXIT;
-        }
+        if (argv[1])
+            return print_return(STDERR_FILENO, "fg: usage: fg [%%job]\n");
         if (parse_job_id(argv[0], &id) == FAILURE_EXIT) {
             dprintf(STDERR_FILENO, "fg: %s: invalid job id.\n", argv[0]);
             return ALTERNATIVE_EXIT;
@@ -56,9 +67,7 @@ int my_fg(tcsh_t *term, char **argv)
         job = find_job_id(term, id);
     } else
         job = last_job(term->jobs);
-    if (!job) {
-        dprintf(STDERR_FILENO, "fg: No such job.\n");
+    if (no_such_job(job, "fg: No such job.\n") == ALTERNATIVE_EXIT)
         return ALTERNATIVE_EXIT;
-    }
     return continue_job_fg(term, job);
 }
