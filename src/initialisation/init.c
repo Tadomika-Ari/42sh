@@ -66,7 +66,20 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_history, "history") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, my_fg, "fg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_bg, "bg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
+}
+
+void init_jobs(tcsh_t *term)
+{
+    term->jobs = NULL;
+    term->shell_pgid = getpid();
+    setpgid(term->shell_pgid, term->shell_pgid);
+    tcsetpgrp(STDERR_FILENO, term->shell_pgid);
+    tcgetattr(STDERR_FILENO, &term->shell_tmodes);
 }
 
 int init(tcsh_t *term, char **env)
@@ -80,6 +93,7 @@ int init(tcsh_t *term, char **env)
     term->history = NULL;
     term->len_history = 0;
     term->check_history = 2;
+    init_jobs(term);
     if (get_env(term, env) == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (fill_function(term) == FAILURE_EXIT)
