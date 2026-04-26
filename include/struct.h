@@ -82,6 +82,7 @@ typedef struct tcsh {
     pid_t shell_pgid;
     struct termios shell_tmodes;
     pid_t fg_pgid;
+    bool is_background;  // Ajoutez cette ligne
 } tcsh_t;
 
 typedef struct function {
@@ -226,4 +227,6 @@ int continue_job_bg(tcsh_t *term, job_t *job);
 int print_return(int fd, const char *str);
 
 int no_such_job(job_t *job, const char *str);
+
+int execute(nodes_t *func, char **command, tcsh_t *term);
 #endif
