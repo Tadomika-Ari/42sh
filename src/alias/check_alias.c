@@ -9,7 +9,7 @@
 
 char *get_rc_file(tcsh_t *term)
 {
-    int fd ;
+    int fd;
     struct stat sb;
     char *buf = NULL;
 
@@ -27,32 +27,22 @@ char *get_rc_file(tcsh_t *term)
     return buf;
 }
 
-char *check_alias(tcsh_t *term, char *alias)
+char *check_alias(tcsh_t *term, char *cmd)
 {
     char *buf = get_rc_file(term);
     char **tab = NULL;
+    char *alias = NULL;
 
     if (buf == NULL)
         return NULL;
-    tab = parser3000(buf, " \n");
+    tab = parser3000(buf, "# =\n");
     if (tab == NULL) {
         free(buf);
         return NULL;
     }
-    for (int i = 0; tab[i] != NULL; i++)
-        printf("(%s)", tab[i]);
+    for (int i = 0; tab[i + 2] != NULL; i += 3)
+        if (my_strcmp(tab[i], "alias") == 0 && my_strcmp(tab[i + 1], cmd) == 0)
+            alias = my_strdup(tab[i + 2]);
     free_array(tab);
-    return buf;
-    
-}
-
-int main(void)
-{
-    char *alias = NULL;
-
-    alias = check_alias(NULL, "cwdcmd");
-    if (alias != NULL)
-        printf("%s\n", alias);
-    free(alias);
-    return 0;
+    return alias;
 }
