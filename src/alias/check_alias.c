@@ -68,14 +68,3 @@ char *check_alias(tcsh_t *term, char *cmd)
     free(buf);
     return alias;
 }
-
-int main(void)
-{
-    char *alias = NULL;
-
-    alias = check_alias(NULL, "cwdcmd");
-    if (alias != NULL)
-        printf("%s\n", alias);
-    free(alias);
-    return 0;
-}
