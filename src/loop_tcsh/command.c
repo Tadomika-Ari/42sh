@@ -15,17 +15,6 @@ static void close_if_valid(int *fd)
     }
 }
 
-int execute(nodes_t *func, char **command, tcsh_t *term)
-{
-    int result = 0;
-
-    if (!command)
-        return FAILURE_EXIT;
-    result = ((function_t *)func->data)->cmd(term, command + 1);
-    free_array(command);
-    return result;
-}
-
 char *search_binary(char *path, char *command)
 {
     DIR *bin = opendir(path);
@@ -111,6 +100,17 @@ static void pipe_in(tcsh_t *term, int *pipe_fd, char **cmd_pipe)
     }
 }
 
+static void algo(int *pipe_fd, int *value, int count)
+{
+    for (int i = 0; i != count; i++) {
+        waitpid(pipe_fd[i], value, 0);
+        algo_exit(value);
+        if (pipe_fd[i] == -1)
+            *value = 1;
+        *value = *value == -1 ? 1 : *value;
+    }
+}
+
 int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
 {
     int value = 0;
@@ -118,13 +118,8 @@ int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
     pipe_in(term, pipe_fd, cmd_pipe);
     if (term->prev != -1)
         close(term->prev);
-    for (int i = 0; i != count; i++) {
-        waitpid(pipe_fd[i], &value, 0);
-        algo_exit(&value);
-        if (pipe_fd[i] == -1)
-            value = 1;
-        value = value == -1 ? 1 : value;
-    }
+    if (!term->is_background)
+        algo(pipe_fd, &value, count);
     free(pipe_fd);
     free_array(cmd_pipe);
     if (term->fd[0] != -1 && term->fd[0] != STDIN_FILENO)
@@ -134,14 +129,39 @@ int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
     return value;
 }
 
+static bool has_background_operator(char *cmd)
+{
+    char **parts = parser3000(cmd, "\n \t");
+    int len = 0;
+    bool result = false;
+
+    if (!parts)
+        return false;
+    len = len_array(parts);
+    if (len > 0 && my_strcmp(parts[len - 1], "&") == 0)
+        result = true;
+    free_array(parts);
+    return result;
+}
+
+static void reset_pipefd(int *pipe_fd, int count
+    , tcsh_t *term, bool is_background)
+{
+    for (int i = 0; i != count; i++)
+        pipe_fd[i] = -1;
+    term->is_background = is_background;
+}
+
 int choose_command(tcsh_t *term, char *cmd)
 {
     char **cmd_pipe = my_str_to_word_array(cmd, "|\n");
     int *pipe_fd = NULL;
     int count = 0;
+    bool is_background = false;
 
     if (correct_type(cmd_pipe) != 0 || correct_lign(cmd, cmd_pipe) != 0)
         return 1;
+    is_background = has_background_operator(cmd);
     if (reinit(term, cmd, cmd_pipe) != 0) {
         free_array(cmd_pipe);
         return ALTERNATIVE_EXIT;
@@ -152,7 +172,6 @@ int choose_command(tcsh_t *term, char *cmd)
         free_array(cmd_pipe);
         return FAILURE_EXIT;
     }
-    for (int i = 0; i != count; i++)
-        pipe_fd[i] = -1;
+    reset_pipefd(pipe_fd, count, term, is_background);
     return do_pipe(term, pipe_fd, count, cmd_pipe);
 }
