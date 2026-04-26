@@ -6,6 +6,9 @@
 */
 
 #include "../../include/struct.h"
+#include <signal.h>
+#include <unistd.h>
+#include <termios.h>
 
 nodes_t *create_new_node(char *lign_env)
 {
@@ -76,10 +79,30 @@ static int fill_function(tcsh_t *term)
 void init_jobs(tcsh_t *term)
 {
     term->jobs = NULL;
+    term->fg_pgid = 0;
+    term->is_background = false;
     term->shell_pgid = getpid();
     setpgid(term->shell_pgid, term->shell_pgid);
-    tcsetpgrp(STDERR_FILENO, term->shell_pgid);
-    tcgetattr(STDERR_FILENO, &term->shell_tmodes);
+    tcsetpgrp(STDIN_FILENO, term->shell_pgid);
+    tcgetattr(STDIN_FILENO, &term->shell_tmodes);
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGTTOU, SIG_IGN);
+}
+
+static void init_job_control(tcsh_t *term)
+{
+    term->shell_pgid = getpid();
+    setpgid(term->shell_pgid, term->shell_pgid);
+    tcsetpgrp(STDIN_FILENO, term->shell_pgid);
+    tcgetattr(STDIN_FILENO, &term->shell_tmodes);
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGTTOU, SIG_IGN);
 }
 
 int init(tcsh_t *term, char **env)
