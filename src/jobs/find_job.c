@@ -9,28 +9,30 @@
 
 job_t *find_job_id(tcsh_t *term, int id)
 {
-    job_t *tmp = NULL;
+    job_t *cur = NULL;
 
     if (!term)
         return NULL;
-    tmp = term->jobs;
-    for (; tmp; tmp = tmp->next) {
-        if (id == tmp->id)
-            return tmp;
+    cur = term->jobs;
+    while (cur) {
+        if (cur->id == id)
+            return cur;
+        cur = cur->next;
     }
     return NULL;
 }
 
 job_t *find_job_pid(tcsh_t *term, pid_t pgid)
 {
-    job_t *tmp = NULL;
+    job_t *cur = NULL;
 
     if (!term)
         return NULL;
-    tmp = term->jobs;
-    for (; tmp; tmp = tmp->next) {
-        if (pgid == tmp->pgid)
-            return tmp;
+    cur = term->jobs;
+    while (cur) {
+        if (cur->pgid == pgid)
+            return cur;
+        cur = cur->next;
     }
     return NULL;
 }
