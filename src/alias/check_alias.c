@@ -7,6 +7,26 @@
 
 #include "../../include/struct.h"
 
+static char *strip_single_quotes(char *word)
+{
+    int len = 0;
+    char *result = NULL;
+
+    if (word == NULL)
+        return NULL;
+    len = my_strlen(word);
+    if (len >= 2 && word[0] == '\'' && word[len - 1] == '\'') {
+        result = malloc(len - 1);
+        if (result == NULL)
+            return NULL;
+        for (int i = 1; i < len - 1; i++)
+            result[i - 1] = word[i];
+        result[len - 2] = '\0';
+        return result;
+    }
+    return my_strdup(word);
+}
+
 char *get_rc_file(tcsh_t *term)
 {
     int fd;
@@ -40,9 +60,22 @@ char *check_alias(tcsh_t *term, char *cmd)
         free(buf);
         return NULL;
     }
-    for (int i = 0; tab[i + 2] != NULL; i += 3)
+    for (int i = 0; tab[i] != NULL && tab[i + 1] != NULL && tab[i + 2] != NULL
+        ; i += 3)
         if (my_strcmp(tab[i], "alias") == 0 && my_strcmp(tab[i + 1], cmd) == 0)
-            alias = my_strdup(tab[i + 2]);
+            alias = strip_single_quotes(tab[i + 2]);
     free_array(tab);
+    free(buf);
     return alias;
+}
+
+int main(void)
+{
+    char *alias = NULL;
+
+    alias = check_alias(NULL, "cwdcmd");
+    if (alias != NULL)
+        printf("%s\n", alias);
+    free(alias);
+    return 0;
 }
