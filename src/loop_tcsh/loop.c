@@ -6,6 +6,7 @@
 */
 
 #include "../../include/struct.h"
+#include <sys/wait.h>
 
 static int is_only_spaces(const char *cmd)
 {
@@ -15,6 +16,28 @@ static int is_only_spaces(const char *cmd)
         if (cmd[i] != ' ' && cmd[i] != '\t' && cmd[i] != '\n' && cmd[i] != '\r')
             return 0;
     return 1;
+}
+
+static void reap_jobs(tcsh_t *term)
+{
+    int status = 0;
+    pid_t pid = 0;
+    job_t *job = NULL;
+
+    while (1) {
+        pid = waitpid(-1, &status, WNOHANG | WUNTRACED | WCONTINUED);
+        if (!(pid > 0))
+            break;
+        job = find_job_pid(term, pid);
+        if (!job)
+            continue;
+        if (WIFEXITED(status) || WIFSIGNALED(status))
+            remove_job(term, job);
+        if (WIFSTOPPED(status))
+            job->state = STOPPED;
+        if (WIFCONTINUED(status))
+            job->state = RUNNING;
+    }
 }
 
 int filter_command(tcsh_t *term, int value)
@@ -46,6 +69,7 @@ int running(tcsh_t *term)
     int tmp = 0;
 
     while (term->life == LIFE) {
+        reap_jobs(term);
         tmp = filter_command(term, return_value);
         if (tmp == -1)
             break;
