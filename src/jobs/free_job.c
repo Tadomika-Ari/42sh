@@ -11,10 +11,10 @@ void free_jobs(job_t *jobs)
 {
     job_t *next = NULL;
 
-    while (jobs) {
-        next = jobs->next;
-        free(jobs->cmd);
-        free(jobs);
-        jobs = next;
+    for (job_t *cur = jobs; cur; cur = next) {
+        next = cur->next;
+        if (cur->cmd)
+            free(cur->cmd);
+        free(cur);
     }
 }
