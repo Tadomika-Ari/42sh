@@ -229,4 +229,10 @@ int print_return(int fd, const char *str);
 int no_such_job(job_t *job, const char *str);
 
 int execute(nodes_t *func, char **command, tcsh_t *term);
+int sepecial_variable(tcsh_t *term, char *cmd);
+
+int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
+
+char *check_alias(tcsh_t *term, char *cmd);
+
 #endif

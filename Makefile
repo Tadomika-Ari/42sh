@@ -46,6 +46,8 @@ SRC = 	src/main.c							\
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/special_variable/sepecial_variable.c\
+		src/alias/check_alias.c\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -92,6 +94,8 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/special_variable/sepecial_variable.c \
+		src/alias/check_alias.c\
 
 
 NAME =	42sh

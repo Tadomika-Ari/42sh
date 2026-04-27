@@ -40,18 +40,10 @@ static void reap_jobs(tcsh_t *term)
     }
 }
 
-int filter_command(tcsh_t *term, int value)
+int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 {
-    char *cmd = NULL;
     char **tmp = NULL;
-    int return_value = value;
 
-    if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
-        return -1;
-    if (is_only_spaces(cmd)) {
-        free(cmd);
-        return 0;
-    }
     tmp = my_str_to_word_array(cmd, ";");
     for (int i = 0; tmp[i] != NULL; i++) {
         return_value = choose_command(term, tmp[i]);
@@ -61,6 +53,19 @@ int filter_command(tcsh_t *term, int value)
     free_array(tmp);
     free(cmd);
     return return_value;
+}
+
+int filter_command(tcsh_t *term, int value)
+{
+    char *cmd = NULL;
+
+    if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
+        return -1;
+    if (is_only_spaces(cmd)) {
+        free(cmd);
+        return 0;
+    }
+    return loops_multi_func(term, cmd, value);
 }
 
 int running(tcsh_t *term)

@@ -25,6 +25,7 @@ SRC     = my_str_to_word_array.c 	\
 		  node_to_array.c			\
 		  my_str_name.c				\
 		  directory.c				\
+		  my_strupcase.c \
 
 OBJ	= $(SRC:.c=.o)
 
