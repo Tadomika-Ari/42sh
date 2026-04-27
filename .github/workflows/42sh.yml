@@ -27,7 +27,7 @@ jobs:
     name: check_compilation_and_coding_style
     if: github.repository != 'EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2'
     container:
-      image: lukassgx/epigambling
+      image: lukassgx/epi-docker:tek-1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
