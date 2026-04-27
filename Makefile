@@ -31,6 +31,10 @@ SRC = 	src/main.c							\
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
+		src/tools/array_to_node.c           \
+		src/tools/check_str.c               \
+		src/tools/sweeper.c                 \
+		src/tools/translate.c               \
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\
@@ -38,6 +42,17 @@ SRC = 	src/main.c							\
 		src/user/right_key.c				\
 		src/user/all_for_len.c      		\
 		src/user/cursor_move.c     			\
+		src/built_in/fg.c					\
+        src/built_in/bg.c					\
+        src/jobs/add_job.c					\
+        src/jobs/find_job.c					\
+        src/jobs/remove_job.c				\
+        src/jobs/free_job.c					\
+        src/jobs/continue_job.c             \
+		src/jobs/printing.c                 \
+		src/special_variable/sepecial_variable.c\
+		src/alias/check_alias.c             \
+		src/loop_tcsh/search_binary.c       \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -69,6 +84,10 @@ TEST_SRC = tests/test_42sh.c \
 		src/initialisation/fill_rc.c        \
 		src/tools/correct_tab.c             \
 		src/error/put_err.c			        \
+		src/tools/array_to_node.c           \
+		src/tools/check_str.c               \
+		src/tools/sweeper.c                 \
+		src/tools/translate.c               \
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\
@@ -76,6 +95,17 @@ TEST_SRC = tests/test_42sh.c \
 		src/user/right_key.c				\
 		src/user/all_for_len.c    			\
 		src/user/cursor_move.c     			\
+		src/built_in/fg.c					\
+        src/built_in/bg.c					\
+        src/jobs/add_job.c					\
+        src/jobs/find_job.c					\
+        src/jobs/remove_job.c				\
+        src/jobs/free_job.c					\
+        src/jobs/continue_job.c             \
+		src/jobs/printing.c                 \
+		src/special_variable/sepecial_variable.c \
+		src/alias/check_alias.c             \
+		src/loop_tcsh/search_binary.c       \
 
 
 NAME =	42sh

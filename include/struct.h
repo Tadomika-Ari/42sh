@@ -50,6 +50,20 @@ typedef struct getline
     int statut_history;
 }getline_t;
 
+typedef enum job_state {
+    RUNNING,
+    STOPPED,
+    DONE
+} job_state_t;
+
+typedef struct job {
+    int id;
+    pid_t pgid;
+    char *cmd;
+    job_state_t state;
+    struct job *next;
+} job_t;
+
 typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
@@ -66,6 +80,11 @@ typedef struct tcsh {
     int check_history;
     int whereiscursor;
     int maxposcursor;
+    job_t *jobs;
+    pid_t shell_pgid;
+    struct termios shell_tmodes;
+    pid_t fg_pgid;
+    bool is_background;  // Ajoutez cette ligne
 } tcsh_t;
 
 typedef struct function {
@@ -190,5 +209,50 @@ void move_left(size_t count);
 int return_reset(getline_t *st_g);
 
 int ensure_capacity(char **line, size_t *cap, size_t wanted);
+char **sweeper(char *str);
+
+int is_parenthesis(char *str);
+
+int is_inihbitor(char *str);
+
+char **translate(char *str);
+
+nodes_t *array_to_node(char **array);
+
+void free_node(nodes_t *head);
+
+int my_fg(tcsh_t *term, char **argv);
+
+int my_bg(tcsh_t *term, char **argv);
+
+int get_max_job_id(tcsh_t *term);
+
+void add_job(tcsh_t *term, pid_t pgid, char *cmd, job_state_t state);
+
+job_t *find_job_id(tcsh_t *term, int id);
+
+job_t *find_job_pid(tcsh_t *term, pid_t pgid);
+
+void remove_job(tcsh_t *term, job_t *job);
+
+void free_jobs(job_t *jobs);
+
+int continue_job_fg(tcsh_t *term, job_t *job);
+
+int continue_job_bg(tcsh_t *term, job_t *job);
+
+int print_return(int fd, const char *str);
+
+int no_such_job(job_t *job, const char *str);
+
+int execute(nodes_t *func, char **command, tcsh_t *term);
+
+int sepecial_variable(tcsh_t *term, char *cmd);
+
+int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
+
+char *check_alias(tcsh_t *term, char *cmd);
+
+char *search_binary(char *path, char *command);
 
 #endif

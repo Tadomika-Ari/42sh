@@ -6,6 +6,9 @@
 */
 
 #include "../../include/struct.h"
+#include <signal.h>
+#include <unistd.h>
+#include <termios.h>
 
 nodes_t *create_new_node(char *lign_env)
 {
@@ -66,7 +69,46 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_history, "history") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, my_fg, "fg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_bg, "bg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
+}
+
+void init_jobs(tcsh_t *term)
+{
+    term->jobs = NULL;
+    term->fg_pgid = 0;
+    term->is_background = false;
+    term->shell_pgid = getpid();
+    setpgid(term->shell_pgid, term->shell_pgid);
+    tcsetpgrp(STDIN_FILENO, term->shell_pgid);
+    tcgetattr(STDIN_FILENO, &term->shell_tmodes);
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGTTOU, SIG_IGN);
+}
+
+static void init_job_control(tcsh_t *term)
+{
+    term->shell_pgid = getpid();
+    setpgid(term->shell_pgid, term->shell_pgid);
+    tcsetpgrp(STDIN_FILENO, term->shell_pgid);
+    tcgetattr(STDIN_FILENO, &term->shell_tmodes);
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGTTOU, SIG_IGN);
+}
+
+static void init_cursor(tcsh_t *term, char **env)
+{
+    term->whereiscursor = 0;
+    term->maxposcursor = 0;
 }
 
 int init(tcsh_t *term, char **env)
@@ -80,8 +122,8 @@ int init(tcsh_t *term, char **env)
     term->history = NULL;
     term->len_history = 0;
     term->check_history = 2;
-    term->whereiscursor = 0;
-    term->maxposcursor = 0;
+    init_jobs(term);
+    init_cursor(term, env);
     if (get_env(term, env) == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (fill_function(term) == FAILURE_EXIT)
