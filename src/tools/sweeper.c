@@ -54,6 +54,19 @@ static void free_list(nodes_t *list)
     }
 }
 
+static void remove_background_operator(char **tab)
+{
+    int len = 0;
+
+    if (!tab)
+        return;
+    len = len_array(tab);
+    if (len > 0 && my_strcmp(tab[len - 1], "&") == 0) {
+        free(tab[len - 1]);
+        tab[len - 1] = NULL;
+    }
+}
+
 char **sweeper(char *str)
 {
     char **tab = parser3000(str, "\n \t");
@@ -70,5 +83,6 @@ char **sweeper(char *str)
     edit_list(list, 2);
     tab = node_to_array(list);
     free_list(list);
+    remove_background_operator(tab);
     return tab;
 }

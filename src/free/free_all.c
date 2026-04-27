@@ -59,5 +59,6 @@ void free_all(tcsh_t *term)
     close(term->fd_rc);
     if (term->old)
         free(term->old);
+    free_jobs(term->jobs);
     free(term);
 }

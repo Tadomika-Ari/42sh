@@ -7,6 +7,17 @@
 
 #include "../../include/struct.h"
 
+int execute(nodes_t *func, char **command, tcsh_t *term)
+{
+    int result = 0;
+
+    if (!command)
+        return FAILURE_EXIT;
+    result = ((function_t *)func->data)->cmd(term, command + 1);
+    free_array(command);
+    return result;
+}
+
 static void signaled(int *result)
 {
     if (WTERMSIG(*result) == SIGSEGV) {
@@ -94,8 +105,16 @@ int exec(char *bin, char **command, tcsh_t *term, char *cmd)
         return res;
     pid = fork();
     if (pid == 0) {
+        setpgid(0, 0);
         free(cmd);
-        return child(bin, command, term, env);
+        _exit(child(bin, command, term, env));
+    }
+    if (pid < 0)
+        return my_free((void *[]){bin, env}, 2, FAILURE_EXIT);
+    setpgid(pid, pid);
+    if (term->is_background) {
+        add_job(term, pid, cmd, RUNNING);
+        return my_free((void *[]){bin, env}, 2, 0);
     }
     return my_free((void *[]){bin, env}, 2, pid);
 }

@@ -38,6 +38,14 @@ SRC = 	src/main.c							\
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\
+		src/built_in/fg.c					\
+        src/built_in/bg.c					\
+        src/jobs/add_job.c					\
+        src/jobs/find_job.c					\
+        src/jobs/remove_job.c				\
+        src/jobs/free_job.c					\
+        src/jobs/continue_job.c             \
+		src/jobs/printing.c                 \
 		src/special_variable/sepecial_variable.c\
 		src/alias/check_alias.c\
 
@@ -78,6 +86,14 @@ TEST_SRC = tests/test_42sh.c \
 		src/user/my_getline.c           	\
 		src/user/check_history_up.c 		\
 		src/user/check_history_down.c 		\
+		src/built_in/fg.c					\
+        src/built_in/bg.c					\
+        src/jobs/add_job.c					\
+        src/jobs/find_job.c					\
+        src/jobs/remove_job.c				\
+        src/jobs/free_job.c					\
+        src/jobs/continue_job.c             \
+		src/jobs/printing.c                 \
 		src/special_variable/sepecial_variable.c \
 		src/alias/check_alias.c\
 
