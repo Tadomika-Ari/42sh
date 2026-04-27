@@ -77,7 +77,7 @@ int check_history_down(tcsh_t *term, getline_t *st_g)
         return 0;
     tmp = node->data;
     old_len = st_g->line_len;
-    len = my_strlen(tmp->cmd);
+    len = all_for_len(term, tmp);
     if (len > 0 && tmp->cmd[len - 1] == '\n')
         len--;
     history_end_down(&old_len, st_g, len, tmp);
