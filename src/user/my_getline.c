@@ -8,21 +8,6 @@
 #include "../../include/struct.h"
 #include <termios.h>
 
-static int ensure_capacity(char **line, size_t *cap, size_t wanted)
-{
-    char *tmp = NULL;
-
-    if (wanted + 1 < *cap)
-        return 0;
-    while (wanted + 1 >= *cap)
-        *cap *= 2;
-    tmp = realloc(*line, *cap);
-    if (!tmp)
-        return -1;
-    *line = tmp;
-    return 0;
-}
-
 static int handle_escape_sequence(tcsh_t *term, getline_t *st_g)
 {
     char seq[2] = {0};
@@ -60,65 +45,12 @@ getline_t init_my_getline(char **cmd, size_t *len)
     return st_g;
 }
 
-static int return_reset(getline_t *st_g)
-{
-    tcsetattr(STDIN_FILENO, TCSANOW, &st_g->old_t);
-    free(st_g->line);
-    return -1;
-}
-
 static void set_terminal_start(getline_t *st_g)
 {
     st_g->raw_t = st_g->old_t;
     st_g->raw_t.c_lflag &= ~(ICANON | ECHO);
     st_g->raw_t.c_cc[VMIN] = 1;
     st_g->raw_t.c_cc[VTIME] = 0;
-}
-
-static void move_left(size_t count)
-{
-    for (size_t i = 0; i < count; i++)
-        write(STDOUT_FILENO, "\x1b[D", 3);
-}
-
-static int insert_char_at_cursor(getline_t *st_g, tcsh_t *term)
-{
-    size_t tail_len = 0;
-
-    if (ensure_capacity(&st_g->line, &st_g->cap, st_g->line_len + 1) == -1)
-        return return_reset(st_g);
-    memmove(st_g->line + term->whereiscursor + 1,
-        st_g->line + term->whereiscursor,
-        st_g->line_len - term->whereiscursor + 1);
-    st_g->line[term->whereiscursor] = st_g->c;
-    st_g->line_len++;
-    term->whereiscursor++;
-    term->maxposcursor++;
-    tail_len = st_g->line_len - term->whereiscursor;
-    write(STDOUT_FILENO, st_g->line + term->whereiscursor - 1, tail_len + 1);
-    move_left(tail_len);
-    return SUCCESS_EXIT;
-}
-
-static int delete_char_before_cursor(getline_t *st_g, tcsh_t *term)
-{
-    size_t tail_len = 0;
-
-    if (term->whereiscursor <= 0)
-        return 0;
-    term->whereiscursor--;
-    memmove(st_g->line + term->whereiscursor,
-        st_g->line + term->whereiscursor + 1,
-        st_g->line_len - term->whereiscursor);
-    st_g->line_len--;
-    term->maxposcursor--;
-    write(STDOUT_FILENO, "\x1b[D", 3);
-    tail_len = st_g->line_len - term->whereiscursor;
-    if (tail_len > 0)
-        write(STDOUT_FILENO, st_g->line + term->whereiscursor, tail_len);
-    write(STDOUT_FILENO, " ", 1);
-    move_left(tail_len + 1);
-    return 0;
 }
 
 static int loop_getline_final(getline_t *st_g, tcsh_t *term)
