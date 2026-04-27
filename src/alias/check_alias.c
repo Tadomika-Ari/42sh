@@ -29,21 +29,25 @@ static char *strip_single_quotes(char *word)
 
 char *get_rc_file(tcsh_t *term)
 {
-    int fd;
     struct stat sb;
     char *buf = NULL;
+    ssize_t rd = 0;
 
-    fd = open(RC_FILE, O_RDONLY);
-    if (fd == FAILURE_EXIT)
+    if (term->fd_rc == FAILURE_EXIT)
         return NULL;
-    if (stat(RC_FILE, &sb) == FAILURE_EXIT)
+    if (lseek(term->fd_rc, 0, SEEK_SET) == FAILURE_EXIT)
+        return NULL;
+    if (fstat(term->fd_rc, &sb) == FAILURE_EXIT)
         return NULL;
     buf = malloc(sb.st_size + 1);
     if (buf == NULL)
         return NULL;
-    read(fd, buf, sb.st_size);
-    buf[sb.st_size] = '\0';
-    close(fd);
+    rd = read(term->fd_rc, buf, sb.st_size);
+    if (rd < 0) {
+        free(buf);
+        return NULL;
+    }
+    buf[rd] = '\0';
     return buf;
 }
 
