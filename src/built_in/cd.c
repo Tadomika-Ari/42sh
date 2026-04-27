@@ -27,6 +27,7 @@ int new_path(tcsh_t *term, char *old)
 int to_path(char **argv, tcsh_t *term, char *pwd)
 {
     int exit = chdir(argv[0]);
+    char *alias = NULL;
 
     if (exit != 0) {
         free(pwd);
@@ -38,6 +39,9 @@ int to_path(char **argv, tcsh_t *term, char *pwd)
     }
     if (new_path(term, pwd) == FAILURE_EXIT)
         return FAILURE_EXIT;
+    alias = check_alias(term, "cwdcmd");
+    if (alias != NULL)
+        loops_multi_func(term, alias, SUCCESS_EXIT);
     return SUCCESS_EXIT;
 }
 
