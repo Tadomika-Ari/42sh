@@ -12,8 +12,11 @@ static int take_argument(char **cmd, tcsh_t *term)
     size_t len = 0;
 
     if (my_getline(cmd, &len, term) == -1) {
-        if (isatty(0) == 0)
+        if (isatty(0) == 0) {
+            free(*cmd);
+            *cmd = NULL;
             return FAILURE_EXIT;
+        }
         write(1, "exit\n", 5);
         term->life = DEAD;
         return SUCCESS_EXIT;
