@@ -107,6 +107,12 @@ static void init_job_control(tcsh_t *term)
     signal(SIGTTOU, SIG_IGN);
 }
 
+static void init_cursor(tcsh_t *term, char **env)
+{
+    term->whereiscursor = 0;
+    term->maxposcursor = 0;
+}
+
 int init(tcsh_t *term, char **env)
 {
     if (!env)
@@ -119,6 +125,7 @@ int init(tcsh_t *term, char **env)
     term->len_history = 0;
     term->check_history = 2;
     init_jobs(term);
+    init_cursor(term, env);
     if (get_env(term, env) == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (fill_function(term) == FAILURE_EXIT)

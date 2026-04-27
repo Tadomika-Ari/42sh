@@ -78,6 +78,8 @@ typedef struct tcsh {
     int len_history;
     int fd_rc;
     int check_history;
+    int whereiscursor;
+    int maxposcursor;
     job_t *jobs;
     pid_t shell_pgid;
     struct termios shell_tmodes;
@@ -192,6 +194,21 @@ int correct_tab(char **tab);
 
 int put_err(char *str);
 
+int left_key(tcsh_t *term, getline_t *st_g);
+
+int right_key(tcsh_t *term, getline_t *st_g);
+
+int all_for_len(tcsh_t *term, history_t *tmp);
+
+int insert_char_at_cursor(getline_t *st_g, tcsh_t *term);
+
+int delete_char_before_cursor(getline_t *st_g, tcsh_t *term);
+
+void move_left(size_t count);
+
+int return_reset(getline_t *st_g);
+
+int ensure_capacity(char **line, size_t *cap, size_t wanted);
 char **sweeper(char *str);
 
 int is_parenthesis(char *str);
@@ -229,6 +246,7 @@ int print_return(int fd, const char *str);
 int no_such_job(job_t *job, const char *str);
 
 int execute(nodes_t *func, char **command, tcsh_t *term);
+
 int sepecial_variable(tcsh_t *term, char *cmd);
 
 int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
@@ -236,5 +254,7 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 char *check_alias(tcsh_t *term, char *cmd);
 
 int my_alias(tcsh_t *term, char **cmd);
+
+char *search_binary(char *path, char *command);
 
 #endif
