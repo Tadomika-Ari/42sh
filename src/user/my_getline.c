@@ -75,6 +75,52 @@ static void set_terminal_start(getline_t *st_g)
     st_g->raw_t.c_cc[VTIME] = 0;
 }
 
+static void move_left(size_t count)
+{
+    for (size_t i = 0; i < count; i++)
+        write(STDOUT_FILENO, "\x1b[D", 3);
+}
+
+static int insert_char_at_cursor(getline_t *st_g, tcsh_t *term)
+{
+    size_t tail_len = 0;
+
+    if (ensure_capacity(&st_g->line, &st_g->cap, st_g->line_len + 1) == -1)
+        return return_reset(st_g);
+    memmove(st_g->line + term->whereiscursor + 1,
+        st_g->line + term->whereiscursor,
+        st_g->line_len - term->whereiscursor + 1);
+    st_g->line[term->whereiscursor] = st_g->c;
+    st_g->line_len++;
+    term->whereiscursor++;
+    term->maxposcursor++;
+    tail_len = st_g->line_len - term->whereiscursor;
+    write(STDOUT_FILENO, st_g->line + term->whereiscursor - 1, tail_len + 1);
+    move_left(tail_len);
+    return SUCCESS_EXIT;
+}
+
+static int delete_char_before_cursor(getline_t *st_g, tcsh_t *term)
+{
+    size_t tail_len = 0;
+
+    if (term->whereiscursor <= 0)
+        return 0;
+    term->whereiscursor--;
+    memmove(st_g->line + term->whereiscursor,
+        st_g->line + term->whereiscursor + 1,
+        st_g->line_len - term->whereiscursor);
+    st_g->line_len--;
+    term->maxposcursor--;
+    write(STDOUT_FILENO, "\x1b[D", 3);
+    tail_len = st_g->line_len - term->whereiscursor;
+    if (tail_len > 0)
+        write(STDOUT_FILENO, st_g->line + term->whereiscursor, tail_len);
+    write(STDOUT_FILENO, " ", 1);
+    move_left(tail_len + 1);
+    return 0;
+}
+
 static int loop_getline_final(getline_t *st_g, tcsh_t *term)
 {
     if (!isprint((unsigned char)st_g->c))
@@ -82,12 +128,7 @@ static int loop_getline_final(getline_t *st_g, tcsh_t *term)
     if (ensure_capacity(&st_g->line, &st_g->cap,
             st_g->line_len + 1) == -1)
         return return_reset(st_g);
-    st_g->line[st_g->line_len] = st_g->c;
-    st_g->line_len++;
-    st_g->line[st_g->line_len] = '\0';
-    write(STDOUT_FILENO, &st_g->c, 1);
-    term->whereiscursor += 1;
-    term->maxposcursor += 1;
+    insert_char_at_cursor(st_g, term);
     return SUCCESS_EXIT;
 }
 
@@ -103,9 +144,7 @@ static int loop_getline(getline_t *st_g, tcsh_t *term)
     if (st_g->c == 4 && st_g->line_len == 0)
         return return_reset(st_g);
     if ((st_g->c == 127 || st_g->c == 8) && st_g->line_len > 0) {
-        st_g->line_len--;
-        st_g->line[st_g->line_len] = '\0';
-        write(STDOUT_FILENO, "\b \b", 3);
+        delete_char_before_cursor(st_g, term);
         return 0;
     }
     if (st_g->c == 27) {
