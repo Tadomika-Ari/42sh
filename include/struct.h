@@ -181,4 +181,14 @@ int right_key(tcsh_t *term, getline_t *st_g);
 
 int all_for_len(tcsh_t *term, history_t *tmp);
 
+int insert_char_at_cursor(getline_t *st_g, tcsh_t *term);
+
+int delete_char_before_cursor(getline_t *st_g, tcsh_t *term);
+
+void move_left(size_t count);
+
+int return_reset(getline_t *st_g);
+
+int ensure_capacity(char **line, size_t *cap, size_t wanted);
+
 #endif
