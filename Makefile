@@ -37,6 +37,7 @@ SRC = 	src/main.c							\
 		src/user/left_key.c  				\
 		src/user/right_key.c				\
 		src/user/all_for_len.c      		\
+		src/user/cursor_move.c     			\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -74,6 +75,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/user/left_key.c  				\
 		src/user/right_key.c				\
 		src/user/all_for_len.c    			\
+		src/user/cursor_move.c     			\
 
 
 NAME =	42sh
