@@ -51,6 +51,7 @@ SRC = 	src/main.c							\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
 		src/special_variable/sepecial_variable.c\
+		src/alias/add_alias.c\
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
 
@@ -104,6 +105,7 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
 		src/special_variable/sepecial_variable.c \
+		src/alias/add_alias.c\
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
 

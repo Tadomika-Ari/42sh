@@ -253,6 +253,8 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 
 char *check_alias(tcsh_t *term, char *cmd);
 
+int my_alias(tcsh_t *term, char **cmd);
+
 char *search_binary(char *path, char *command);
 
 #endif
