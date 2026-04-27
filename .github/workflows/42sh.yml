@@ -146,7 +146,7 @@ jobs:
   dm_me:
     runs-on: ubuntu-latest
     needs: [check_compilation_and_coding_style, run_test]
-    if: github.repository != 'EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2' && always() && github.event_name == 'push' && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
+    if: github.repository != 'EpitechPGE1-2025/G-PSU-200-NCE-2-1-42sh-2' && always() && (needs.check_compilation_and_coding_style.result == 'failure' || needs.run_test.result == 'failure')
     steps:
       - name: recup-text
         uses: actions/download-artifact@v8

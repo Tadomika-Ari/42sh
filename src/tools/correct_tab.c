@@ -30,7 +30,7 @@ void change(char **tab, int i)
     char *tmp = NULL;
 
     if (tab[i][0] == '\'' && tab[i][len - 1] == '\'') {
-        tmp = strndup(&tab[i][1], len - 2);
+        tmp = strndup(&tab[i][0], len);
         free(tab[i]);
         tab[i] = tmp;
     }

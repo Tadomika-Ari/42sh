@@ -76,4 +76,6 @@ char *assembling(char *base, char *sep, char **argv);
 
 int is_it_directory(char *path);
 
+char *my_strupcase(char *str);
+
 #endif

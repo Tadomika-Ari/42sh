@@ -11,7 +11,7 @@ static int take_argument(char **cmd, tcsh_t *term)
 {
     size_t len = 0;
 
-    if (getline(cmd, &len, stdin) == -1) {
+    if (my_getline(cmd, &len, term) == -1) {
         if (isatty(0) == 0)
             return FAILURE_EXIT;
         write(1, "exit\n", 5);
@@ -56,7 +56,13 @@ void write_argument(char **cmd, tcsh_t *term)
 
 int user_entry(tcsh_t *term, char **cmd)
 {
-    if (isatty(0) != 0)
+    char *precmd = NULL;
+
+    if (isatty(0) != 0) {
+        precmd = check_alias(term, "precmd");
+        if (precmd != NULL)
+            loops_multi_func(term, precmd, SUCCESS_EXIT);
         write_argument(cmd, term);
+    }
     return take_argument(cmd, term);
 }
