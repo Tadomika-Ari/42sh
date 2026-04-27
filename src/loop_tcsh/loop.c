@@ -58,14 +58,25 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 int filter_command(tcsh_t *term, int value)
 {
     char *cmd = NULL;
+    char *alias = NULL;
+    int len = 0;
 
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
+    len = my_strlen(cmd);
+    while (len > 0 && (cmd[len - 1] == '\n' || cmd[len - 1] == '\r')) {
+        cmd[len - 1] = '\0';
+        len--;
+    }
     if (is_only_spaces(cmd)) {
         free(cmd);
         return 0;
     }
-    return loops_multi_func(term, cmd, value);
+    alias = check_alias(term, cmd);
+    if (alias == NULL)
+        return loops_multi_func(term, cmd, value);
+    free(cmd);
+    return loops_multi_func(term, alias, value);
 }
 
 int running(tcsh_t *term)
