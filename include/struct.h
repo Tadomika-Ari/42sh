@@ -84,7 +84,7 @@ typedef struct tcsh {
     pid_t shell_pgid;
     struct termios shell_tmodes;
     pid_t fg_pgid;
-    bool is_background;  // Ajoutez cette ligne
+    bool is_background;
 } tcsh_t;
 
 typedef struct function {
