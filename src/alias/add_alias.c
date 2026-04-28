@@ -9,6 +9,12 @@
 
 int my_alias(tcsh_t *term, char **cmd)
 {
+    if (cmd[0] == NULL || cmd[1] == NULL)
+        return ALTERNATIVE_EXIT;
+    if (my_strcmp("alias", cmd[0]) == 0) {
+        put_err("alias: Too dangerous to alias that.\n");
+        return ALTERNATIVE_EXIT;
+    }
     write(term->fd_rc, "alias ", 6);
     for (int i = 0; cmd[i] != NULL; i++) {
         write(term->fd_rc, cmd[i], my_strlen(cmd[i]));
