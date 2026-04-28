@@ -27,7 +27,7 @@ static char *strip_single_quotes(char *word)
     return my_strdup(word);
 }
 
-char *get_rc_file(tcsh_t *term)
+static char *get_rc_file(tcsh_t *term)
 {
     struct stat sb;
     char *buf = NULL;
@@ -71,4 +71,60 @@ char *check_alias(tcsh_t *term, char *cmd)
     free_array(tab);
     free(buf);
     return alias;
+}
+
+char *add_rest_to_alias(char *cmd, int i, char *alias)
+{
+    char *rest = NULL;
+    char *result = NULL;
+
+    if (cmd[i] == '\0')
+        return alias;
+    rest = cmd + i;
+    result = malloc(my_strlen(alias) + my_strlen(rest) + 1);
+    if (result == NULL)
+        return alias;
+    result[0] = '\0';
+    my_strcat(result, alias);
+    my_strcat(result, rest);
+    free(cmd);
+    free(alias);
+    return result;
+}
+
+static char *expand_first_word_alias(tcsh_t *term, char *cmd)
+{
+    char *first_word = NULL;
+    char *alias = NULL;
+    int i = 0;
+
+    if (cmd == NULL)
+        return NULL;
+    while (cmd[i] && cmd[i] != ' ' && cmd[i] != '\t')
+        i++;
+    first_word = malloc(i + 1);
+    if (first_word == NULL)
+        return cmd;
+    for (int j = 0; j < i; j++)
+        first_word[j] = cmd[j];
+    first_word[i] = '\0';
+    alias = check_alias(term, first_word);
+    free(first_word);
+    if (alias == NULL)
+        return cmd;
+    return add_rest_to_alias(cmd, i, alias);
+}
+
+char *alias(tcsh_t *term, char *cmd)
+{
+    char *new_expanded = NULL;
+    char *expanded = cmd;
+
+    while (1) {
+        new_expanded = expand_first_word_alias(term, expanded);
+        if (new_expanded == expanded)
+            break;
+        expanded = new_expanded;
+    }
+    return expanded;
 }

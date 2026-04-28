@@ -257,4 +257,6 @@ int my_alias(tcsh_t *term, char **cmd);
 
 char *search_binary(char *path, char *command);
 
+char *alias(tcsh_t *term, char *cmd);
+
 #endif
