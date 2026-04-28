@@ -84,7 +84,9 @@ void free_all(tcsh_t *term)
     free_node(term->func);
     free_node_locals(term->locals);
     free_node_history(term->history);
+    close(term->fd_rc);
     if (term->old)
         free(term->old);
+    free_jobs(term->jobs);
     free(term);
 }
