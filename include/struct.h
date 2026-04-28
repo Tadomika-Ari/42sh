@@ -259,4 +259,8 @@ char *search_binary(char *path, char *command);
 
 char *alias(tcsh_t *term, char *cmd);
 
+char *get_rc_file(tcsh_t *term);
+
+char *strip_single_quotes(char *word);
+
 #endif
