@@ -8,6 +8,7 @@
 #ifndef MY_TOP_STRUCT_H
     #define MY_TOP_STRUCT_H
     #include "my.h"
+    #include <sys/socket.h>
 
 typedef enum exit
 {
@@ -100,6 +101,10 @@ int my_unsetenv(tcsh_t *term, char **argv);
 int my_set(tcsh_t *term, char **argv);
 
 int correct_name(char *name, char *cmd);
+
+int my_if(tcsh_t *term, char **argv);
+
+int search_command(tcsh_t *term, char **command, char *cmd);
 
 int user_entry(tcsh_t *term, char **cmd);
 

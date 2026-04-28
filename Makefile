@@ -25,9 +25,10 @@ SRC = 	src/main.c							\
 		src/free/my_free.c					\
 		src/built_in/set.c					\
 		src/loop_tcsh/child.c				\
+		src/built_in/if.c					\
 		src/loop_tcsh/error_handling_pipe.c	\
-		src/error/error_term.c			\
-		src/history/history.c\
+		src/error/error_term.c				\
+		src/history/history.c				\
 
 OBJ = 	$(SRC:.c=.o)
 

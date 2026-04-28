@@ -64,6 +64,8 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_set, "set") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, my_if, "if") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
 }
 
