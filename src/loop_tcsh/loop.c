@@ -58,8 +58,8 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 int filter_command(tcsh_t *term, int value)
 {
     char *cmd = NULL;
-    char *alias = NULL;
     int len = 0;
+    char *expanded = NULL;
 
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
@@ -72,11 +72,8 @@ int filter_command(tcsh_t *term, int value)
         free(cmd);
         return 0;
     }
-    alias = check_alias(term, cmd);
-    if (alias == NULL)
-        return loops_multi_func(term, cmd, value);
-    free(cmd);
-    return loops_multi_func(term, alias, value);
+    expanded = alias(term, cmd);
+    return loops_multi_func(term, expanded, value);
 }
 
 int running(tcsh_t *term)
