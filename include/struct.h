@@ -84,7 +84,7 @@ typedef struct tcsh {
     pid_t shell_pgid;
     struct termios shell_tmodes;
     pid_t fg_pgid;
-    bool is_background;  // Ajoutez cette ligne
+    bool is_background;
 } tcsh_t;
 
 typedef struct function {
@@ -253,6 +253,14 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 
 char *check_alias(tcsh_t *term, char *cmd);
 
+int my_alias(tcsh_t *term, char **cmd);
+
 char *search_binary(char *path, char *command);
+
+char *alias(tcsh_t *term, char *cmd);
+
+char *get_rc_file(tcsh_t *term);
+
+char *strip_single_quotes(char *word);
 
 #endif

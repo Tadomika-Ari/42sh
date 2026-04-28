@@ -8,6 +8,18 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include "../include/struct.h"
+char *get_rc_file(tcsh_t *term);
+
+static void free_nodes_list(nodes_t *head)
+{
+    nodes_t *next = NULL;
+
+    for (nodes_t *cur = head; cur != NULL; cur = next) {
+        next = cur->next;
+        free(cur->data);
+        free(cur);
+    }
+}
 
 void redirect_all_std(void)
 {
@@ -256,6 +268,73 @@ Test(shell, my_history, .init = redirect_all_std)
 
     my_history(term, tab);
     free_array(tab);
+}
+
+Test(shell, my_alias_and_check_alias, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char path[] = "/tmp/42sh_alias_testXXXXXX";
+    char *alias = NULL;
+    char *content = NULL;
+    char *cmd[] = {"tata", "echo", "Test Marche bien", NULL};
+    int fd = mkstemp(path);
+
+    cr_assert(fd >= 0);
+    term.fd_rc = fd;
+    cr_assert_eq(my_alias(&term, cmd), SUCCESS_EXIT);
+    lseek(fd, 0, SEEK_SET);
+    content = get_rc_file(&term);
+    cr_assert_not_null(content);
+    cr_assert_str_eq(content, "alias tata='echo Test Marche bien'\n");
+    free(content);
+    alias = check_alias(&term, "tata");
+    cr_assert_not_null(alias);
+    cr_assert_str_eq(alias, "echo Test Marche bien");
+    free(alias);
+    close(fd);
+    unlink(path);
+}
+
+Test(shell, check_alias_not_found, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char path[] = "/tmp/42sh_alias_testXXXXXX";
+    char *alias = NULL;
+    int fd = mkstemp(path);
+
+    cr_assert(fd >= 0);
+    term.fd_rc = fd;
+    write(fd, "alias tata='echo ok'\n", 21);
+    alias = check_alias(&term, "toto");
+    cr_assert_null(alias);
+    close(fd);
+    unlink(path);
+}
+
+Test(shell, sepecial_variable_cwd, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char cmd[] = "$cwd";
+    int ret = 0;
+
+    push_back(&term.env, create_new_node("PWD=/tmp"));
+    ret = sepecial_variable(&term, cmd);
+    cr_assert_eq(ret, SUCCESS_EXIT);
+    cr_assert_stdout_eq_str("/tmp\n");
+    free_nodes_list(term.env);
+}
+
+Test(shell, sepecial_variable_unknown, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char cmd[] = "$idontexist";
+    int ret = 0;
+
+    push_back(&term.env, create_new_node("PWD=/tmp"));
+    ret = sepecial_variable(&term, cmd);
+    cr_assert_eq(ret, -1);
+    cr_assert_stdout_eq_str("");
+    free_nodes_list(term.env);
 }
 
 Test(shell, push_to_history, .init = redirect_all_std)

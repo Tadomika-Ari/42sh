@@ -86,22 +86,34 @@ static int loop_getline(getline_t *st_g, tcsh_t *term)
     return loop_getline_final(st_g, term);
 }
 
+static int is_getline(char **cmd, size_t *len)
+{
+    int rd = 0;
+
+    rd = getline(cmd, len, stdin);
+    if (rd == -1) {
+        free(*cmd);
+        *cmd = NULL;
+    }
+    return rd;
+}
+
 static int loop_st_gart(getline_t *st_g, char **cmd, size_t *len)
 {
     if (!isatty(STDIN_FILENO))
-        return getline(cmd, len, stdin);
+        return is_getline(cmd, len);
     st_g->line = malloc(st_g->cap);
     if (!st_g->line)
         return -1;
     st_g->line[0] = '\0';
     if (tcgetattr(STDIN_FILENO, &st_g->old_t) == -1) {
         free(st_g->line);
-        return getline(cmd, len, stdin);
+        return is_getline(cmd, len);
     }
     set_terminal_start(st_g);
     if (tcsetattr(STDIN_FILENO, TCSANOW, &st_g->raw_t) == -1) {
         free(st_g->line);
-        return getline(cmd, len, stdin);
+        return is_getline(cmd, len);
     }
     return SUCCESS_EXIT;
 }
