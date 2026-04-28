@@ -7,7 +7,7 @@
 
 #include "../../include/struct.h"
 
-static char *strip_single_quotes(char *word)
+char *strip_single_quotes(char *word)
 {
     int len = 0;
     char *result = NULL;
@@ -27,7 +27,7 @@ static char *strip_single_quotes(char *word)
     return my_strdup(word);
 }
 
-static char *get_rc_file(tcsh_t *term)
+char *get_rc_file(tcsh_t *term)
 {
     struct stat sb;
     char *buf = NULL;
