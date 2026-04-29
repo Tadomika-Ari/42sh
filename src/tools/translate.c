@@ -25,6 +25,6 @@ char **translate(char *str)
 
     if (is_inihbitor(str) == TRUE)
         return solo_tab(str);
-    res = my_str_to_word_array(str, " ");
+    res = parser3000(str, " ");
     return res;
 }
