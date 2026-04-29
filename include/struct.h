@@ -112,6 +112,12 @@ typedef struct parse {
     int in_var;
 } parse_t;
 
+typedef struct ele {
+    int i;
+    int count;
+    int start;
+} ele_t;
+
 int init(tcsh_t *term, char **env);
 
 int fill_rc(tcsh_t *term);
@@ -293,5 +299,11 @@ void *my_puterror_ptr(char *message);
 void show_array(char **tab);
 
 int is_sep(char c, char *sep);
+
+void update_state(parse_t *parse, char c);
+
+void update_other(parse_t *parse, char c);
+
+int is_protected(parse_t *parse);
 
 #endif
