@@ -7,13 +7,22 @@
 
 #include "../../include/struct.h"
 
+static void reset_cursor(tcsh_t *term)
+{
+    term->maxposcursor = 0;
+    term->whereiscursor = 0;
+}
+
 static int take_argument(char **cmd, tcsh_t *term)
 {
     size_t len = 0;
 
     if (my_getline(cmd, &len, term) == -1) {
-        if (isatty(0) == 0)
+        if (isatty(0) == 0) {
+            free(*cmd);
+            *cmd = NULL;
             return FAILURE_EXIT;
+        }
         write(1, "exit\n", 5);
         term->life = DEAD;
         return SUCCESS_EXIT;
@@ -21,6 +30,7 @@ static int take_argument(char **cmd, tcsh_t *term)
     if (!*cmd)
         return FAILURE_EXIT;
     push_to_history(term, cmd[0]);
+    reset_cursor(term);
     return SUCCESS_EXIT;
 }
 

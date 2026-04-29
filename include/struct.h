@@ -78,11 +78,13 @@ typedef struct tcsh {
     int len_history;
     int fd_rc;
     int check_history;
+    int whereiscursor;
+    int maxposcursor;
     job_t *jobs;
     pid_t shell_pgid;
     struct termios shell_tmodes;
     pid_t fg_pgid;
-    bool is_background;  // Ajoutez cette ligne
+    bool is_background;
 } tcsh_t;
 
 typedef struct function {
@@ -192,6 +194,21 @@ int correct_tab(char **tab);
 
 int put_err(char *str);
 
+int left_key(tcsh_t *term, getline_t *st_g);
+
+int right_key(tcsh_t *term, getline_t *st_g);
+
+int all_for_len(tcsh_t *term, history_t *tmp);
+
+int insert_char_at_cursor(getline_t *st_g, tcsh_t *term);
+
+int delete_char_before_cursor(getline_t *st_g, tcsh_t *term);
+
+void move_left(size_t count);
+
+int return_reset(getline_t *st_g);
+
+int ensure_capacity(char **line, size_t *cap, size_t wanted);
 char **sweeper(char *str);
 
 int is_parenthesis(char *str);
@@ -236,6 +253,14 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 
 char *check_alias(tcsh_t *term, char *cmd);
 
+int my_alias(tcsh_t *term, char **cmd);
+
 char *search_binary(char *path, char *command);
+
+char *alias(tcsh_t *term, char *cmd);
+
+char *get_rc_file(tcsh_t *term);
+
+char *strip_single_quotes(char *word);
 
 #endif

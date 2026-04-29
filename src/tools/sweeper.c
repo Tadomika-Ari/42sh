@@ -14,6 +14,7 @@ static void replace(char **tab, nodes_t *list, nodes_t *next)
     list->next = NULL;
     for (int i = 1; tab[i] != NULL; i++) {
         push_back(&list, create_new_node(tab[i]));
+        free(tab[i]);
     }
     while (current->next)
         current = current->next;

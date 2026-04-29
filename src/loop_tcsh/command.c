@@ -120,7 +120,7 @@ int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
 
 static bool has_background_operator(char *cmd)
 {
-    char **parts = parser3000(cmd, "\n \t");
+    char **parts =sweeper(cmd);
     int len = 0;
     bool result = false;
 
