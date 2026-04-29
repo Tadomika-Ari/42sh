@@ -283,4 +283,6 @@ char *get_rc_file(tcsh_t *term);
 
 char *strip_single_quotes(char *word);
 
+void *my_puterror_ptr(char *message);
+
 #endif
