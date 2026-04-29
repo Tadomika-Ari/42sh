@@ -73,6 +73,8 @@ int filter_command(tcsh_t *term, int value)
         return 0;
     }
     expanded = alias(term, cmd);
+    if (expanded == NULL)
+        return 0;
     return loops_multi_func(term, expanded, value);
 }
 
