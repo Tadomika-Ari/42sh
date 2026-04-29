@@ -17,6 +17,8 @@
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
 
+    #define SEP "()[]\'\""
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -107,6 +109,7 @@ typedef struct parse {
     int count;
     int start;
     int i;
+    int in_var;
 } parse_t;
 
 int init(tcsh_t *term, char **env);
@@ -286,5 +289,9 @@ char *strip_single_quotes(char *word);
 char *strip_quotes(char *word);
 
 void *my_puterror_ptr(char *message);
+
+void show_array(char **tab);
+
+int is_sep(char c, char *sep);
 
 #endif
