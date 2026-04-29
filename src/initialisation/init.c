@@ -10,6 +10,16 @@
 #include <unistd.h>
 #include <termios.h>
 
+nodes_t *new_node(void *data)
+{
+    nodes_t *new = malloc(sizeof(nodes_t));
+
+    if (!new)
+        return NULL;
+    new->data = data;
+    return new;
+}
+
 nodes_t *create_new_node(char *lign_env)
 {
     nodes_t *new = malloc(sizeof(nodes_t));
@@ -55,6 +65,15 @@ static int push_function(tcsh_t *term,
     return SUCCESS_EXIT;
 }
 
+static int fill_annexe(tcsh_t *term)
+{
+    if (push_function(term, my_set, "set") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_if, "if") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    return SUCCESS_EXIT;
+}
+
 static int fill_function(tcsh_t *term)
 {
     if (push_function(term, my_cd, "cd") == FAILURE_EXIT)
@@ -75,7 +94,7 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_alias, "alias") == FAILURE_EXIT)
         return FAILURE_EXIT;
-    return SUCCESS_EXIT;
+    return fill_annexe(term);
 }
 
 void init_jobs(tcsh_t *term)
@@ -119,11 +138,13 @@ int init(tcsh_t *term, char **env)
         return FAILURE_EXIT;
     term->env = NULL;
     term->func = NULL;
+    term->locals = NULL;
     term->life = LIFE;
     term->old = NULL;
     term->history = NULL;
     term->len_history = 0;
     term->check_history = 2;
+    term->return_value = 0;
     init_jobs(term);
     init_cursor(term, env);
     if (get_env(term, env) == FAILURE_EXIT)

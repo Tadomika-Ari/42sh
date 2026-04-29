@@ -46,9 +46,19 @@ int replace_lign(tcsh_t *term, char *lign, char *categorize)
             return SUCCESS_EXIT;
         }
     }
-    tmp = create_new_node(lign);
+    tmp = create_new_node(my_strdup(lign));
     free(lign);
     push_back(&term->env, tmp);
+    return SUCCESS_EXIT;
+}
+
+int correct_name(char *name, char *cmd)
+{
+    if ((name[0] < 'a' || name[0] > 'z') &&
+        (name[0] < 'A' || name[0] > 'Z') && name[0] != '_')
+        return error_first_caracter(cmd);
+    if (my_str_name(name) != 0)
+        return error_alphanumeric(cmd);
     return SUCCESS_EXIT;
 }
 
@@ -61,11 +71,8 @@ int my_setenv(tcsh_t *term, char **argv)
         return error_too_many_argument("setenv");
     if (len == 0)
         return env(term, NULL);
-    if ((argv[0][0] < 'a' || argv[0][0] > 'z') &&
-        (argv[0][0] < 'A' || argv[0][0] > 'Z') && argv[0][0] != '_')
-        return error_first_caracter("setenv");
-    if (my_str_name(argv[0]) != 0)
-        return error_alphanumeric("setenv");
+    if (correct_name(argv[0], "setenv") == ALTERNATIVE_EXIT)
+        return ALTERNATIVE_EXIT;
     if (len == 1)
         lign = new_categorize(argv[0]);
     else
