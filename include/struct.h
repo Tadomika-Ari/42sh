@@ -68,6 +68,7 @@ typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
     nodes_t *locals;
+    int return_value;
     int life;
     char *old;
     int fd[2];
@@ -236,7 +237,11 @@ nodes_t *array_to_node(char **array);
 
 void free_node(nodes_t *head);
 
+int search_command(tcsh_t *term, char **command, char *cmd);
+
 int my_fg(tcsh_t *term, char **argv);
+
+int my_if(tcsh_t *term, char **argv);
 
 int my_bg(tcsh_t *term, char **argv);
 

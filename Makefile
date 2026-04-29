@@ -55,6 +55,7 @@ SRC = 	src/main.c							\
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
 		src/built_in/set.c					\
+		src/built_in/if.c					\
 
 OBJ = 	$(SRC:.c=.o)
 

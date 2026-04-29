@@ -69,6 +69,8 @@ static int fill_annexe(tcsh_t *term)
 {
     if (push_function(term, my_set, "set") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, my_if, "if") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
 }
 
@@ -142,6 +144,7 @@ int init(tcsh_t *term, char **env)
     term->history = NULL;
     term->len_history = 0;
     term->check_history = 2;
+    term->return_value = 0;
     init_jobs(term);
     init_cursor(term, env);
     if (get_env(term, env) == FAILURE_EXIT)

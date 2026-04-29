@@ -19,15 +19,47 @@ char **solo_tab(char *str)
     return tab;
 }
 
-char **array_null(void)
+char *simple(char c)
+{
+    char *str = malloc(sizeof(char) * 2);
+
+    if (!str)
+        return NULL;
+    str[0] = c;
+    str[1] = '\0';
+    return str;
+}
+
+char **array_null(char c)
 {
     char **array = malloc(sizeof(char *) * (2));
+    char *str = NULL;
 
     if (!array)
         return NULL;
-    array[0] = my_strdup("\0");
+    str = simple(c);
+    if (str == NULL) {
+        free(array);
+        return NULL;
+    }
+    array[0] = str;
     array[1] = NULL;
     return array;
+}
+
+void variable(tcsh_t *term, nodes_t *str)
+{
+    for (nodes_t *tmp = term->locals; tmp && str; tmp = tmp->next)
+        if (((char *)str->data)[0] == '$' && my_strcmp(str->data + 1,
+                ((locals_t *)tmp->data)->name) == 0) {
+            free(str->data);
+            str->data = ((locals_t *)tmp->data)->value != NULL ?
+                strdup(((locals_t *)tmp->data)->value) : my_strdup("\0");
+        }
+    if (str && my_strcmp(str->data, "$?") == 0){
+        free(str->data);
+        str->data = simple(term->return_value + 48);
+    }
 }
 
 char **translate(tcsh_t *term, nodes_t *str)
@@ -36,15 +68,9 @@ char **translate(tcsh_t *term, nodes_t *str)
 
     if (is_inihbitor(str->data) == TRUE)
         return solo_tab(str->data);
-    for (nodes_t *tmp = term->locals; tmp && str; tmp = tmp->next)
-        if (((char *)str->data)[0] == '$' && my_strcmp(str->data + 1,
-                ((locals_t *)tmp->data)->name) == 0) {
-            free(str->data);
-            str->data = ((locals_t *)tmp->data)->value != NULL ?
-                strdup(((locals_t *)tmp->data)->value) : my_strdup("\0");
-        }
+    variable(term, str);
     if (((char *)str->data)[0] == '\0') {
-        res = array_null();
+        res = array_null('\0');
         return res;
     }
     res = my_str_to_word_array(str->data, " ");
