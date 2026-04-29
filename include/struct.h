@@ -8,7 +8,6 @@
 #ifndef MY_TOP_STRUCT_H
     #define MY_TOP_STRUCT_H
     #include "my.h"
-    #include <sys/socket.h>
     #include <termios.h>
     #define INITIAL_CAPACITY 128
     #define MAX_LINE 1024
@@ -113,6 +112,12 @@ int init(tcsh_t *term, char **env);
 
 int fill_rc(tcsh_t *term);
 
+nodes_t *new_node(void *data);
+
+void free_locals(locals_t *locals);
+
+int my_set(tcsh_t *term, char **argv);
+
 int error_alphanumeric(char *cmd);
 
 int error_not_enough_argument(char *cmd);
@@ -139,7 +144,7 @@ void algo_exit(int *result);
 
 int error_expression_syntax(char *cmd);
 
-nodes_t *create_new_node(void *data);
+nodes_t *create_new_node(char *lign_env);
 
 int my_exit(tcsh_t *term, char **argv);
 
@@ -147,21 +152,11 @@ char *take_value(nodes_t *head, char *cat);
 
 int my_setenv(tcsh_t *term, char **argv);
 
-void free_locals(locals_t *locals);
-
 int correct_type(char **cmd);
 
 int reinit(tcsh_t *term, char *cmd, char **cmd_pipe);
 
 int my_unsetenv(tcsh_t *term, char **argv);
-
-int my_set(tcsh_t *term, char **argv);
-
-int correct_name(char *name, char *cmd);
-
-int my_if(tcsh_t *term, char **argv);
-
-int search_command(tcsh_t *term, char **command, char *cmd);
 
 int user_entry(tcsh_t *term, char **cmd);
 
@@ -207,6 +202,8 @@ int check_history_down(tcsh_t *term, getline_t *st_g);
 
 char **parser3000(char *str, char *sep);
 
+int correct_name(char *name, char *cmd);
+
 int correct_tab(char **tab);
 
 int put_err(char *str);
@@ -226,13 +223,14 @@ void move_left(size_t count);
 int return_reset(getline_t *st_g);
 
 int ensure_capacity(char **line, size_t *cap, size_t wanted);
-char **sweeper(char *str);
+
+char **sweeper(tcsh_t *term, char *str);
 
 int is_parenthesis(char *str);
 
 int is_inihbitor(char *str);
 
-char **translate(char *str);
+char **translate(tcsh_t *term, nodes_t *str);
 
 nodes_t *array_to_node(char **array);
 

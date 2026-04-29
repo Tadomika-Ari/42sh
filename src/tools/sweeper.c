@@ -30,13 +30,13 @@ static int is_translatable(char *str)
     return TRUE;
 }
 
-static void edit_list(nodes_t *list, int index)
+static void edit_list(tcsh_t *term, nodes_t *list, int index)
 {
     int i = 0;
     char **res = NULL;
 
     for (nodes_t *current = list; current; current = current->next) {
-        res = translate(current->data);
+        res = translate(term, current);
         free(current->data);
         current->data = res[0];
         replace(res, current, current->next);
@@ -68,7 +68,7 @@ static void remove_background_operator(char **tab)
     }
 }
 
-char **sweeper(char *str)
+char **sweeper(tcsh_t *term, char *str)
 {
     char **tab = parser3000(str, "\n \t");
     nodes_t *list = NULL;
@@ -81,7 +81,7 @@ char **sweeper(char *str)
         return NULL;
     }
     free_array(tab);
-    edit_list(list, 2);
+    edit_list(term, list, 2);
     tab = node_to_array(list);
     free_list(list);
     remove_background_operator(tab);

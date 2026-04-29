@@ -54,7 +54,7 @@ static int normalize(tcsh_t *term, char *cmd, char **command, int status)
 
 static int apply_command(tcsh_t *term, char *cmd)
 {
-    char **command = sweeper(cmd);
+    char **command = sweeper(term, cmd);
     int status = 0;
 
     if (!command)
@@ -118,16 +118,19 @@ int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
     return value;
 }
 
-static bool has_background_operator(char *cmd)
+static bool has_background_operator(tcsh_t *term, char *cmd)
 {
-    int i = 0;
+    char **parts = sweeper(term, cmd);
+    int len = 0;
+    bool result = false;
 
-    if (!cmd)
+    if (!parts)
         return false;
-    i = my_strlen(cmd) - 1;
-    while (i >= 0 && (cmd[i] == ' ' || cmd[i] == '\t' || cmd[i] == '\n'))
-        i--;
-    return (i >= 0 && cmd[i] == '&');
+    len = len_array(parts);
+    if (len > 0 && my_strcmp(parts[len - 1], "&") == 0)
+        result = true;
+    free_array(parts);
+    return result;
 }
 
 static void reset_pipefd(int *pipe_fd, int count
@@ -147,7 +150,7 @@ int choose_command(tcsh_t *term, char *cmd)
 
     if (correct_type(cmd_pipe) != 0 || correct_lign(cmd, cmd_pipe) != 0)
         return 1;
-    is_background = has_background_operator(cmd);
+    is_background = has_background_operator(term, cmd);
     if (reinit(term, cmd, cmd_pipe) != 0) {
         free_array(cmd_pipe);
         return ALTERNATIVE_EXIT;
