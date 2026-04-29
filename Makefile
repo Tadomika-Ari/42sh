@@ -54,6 +54,9 @@ SRC = 	src/main.c							\
 		src/alias/add_alias.c\
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
+		src/error/put_error_ptr.c \
+		src/built_in/set.c					\
+		src/built_in/if.c					\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -108,6 +111,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/alias/add_alias.c\
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
+		src/error/put_error_ptr.c \
 
 
 NAME =	42sh

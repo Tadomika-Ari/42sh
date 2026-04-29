@@ -7,7 +7,7 @@
 
 #include "../../include/struct.h"
 
-static char *strip_single_quotes(char *word)
+char *strip_single_quotes(char *word)
 {
     int len = 0;
     char *result = NULL;
@@ -66,9 +66,110 @@ char *check_alias(tcsh_t *term, char *cmd)
     }
     for (int i = 0; tab[i] != NULL && tab[i + 1] != NULL && tab[i + 2] != NULL
         ; i += 3)
-        if (my_strcmp(tab[i], "alias") == 0 && my_strcmp(tab[i + 1], cmd) == 0)
+        if (my_strcmp(tab[i], "alias") == 0 && my_strcmp(tab[i + 1], cmd) == 0){
+            free(alias);
             alias = strip_single_quotes(tab[i + 2]);
+        }
     free_array(tab);
     free(buf);
     return alias;
+}
+
+char *add_rest_to_alias(char *cmd, int i, char *alias)
+{
+    char *rest = NULL;
+    char *result = NULL;
+
+    if (cmd[i] == '\0') {
+        free(cmd);
+        return alias;
+    }
+    rest = cmd + i;
+    result = malloc(my_strlen(alias) + my_strlen(rest) + 1);
+    if (result == NULL)
+        free(cmd);
+    if (result == NULL)
+        return alias;
+    result[0] = '\0';
+    my_strcat(result, alias);
+    my_strcat(result, rest);
+    free(cmd);
+    free(alias);
+    return result;
+}
+
+static char *expand_first_word_alias(tcsh_t *term, char *cmd)
+{
+    char *first_word = NULL;
+    char *alias = NULL;
+    int i = 0;
+
+    if (cmd == NULL)
+        return NULL;
+    while (cmd[i] && cmd[i] != ' ' && cmd[i] != '\t')
+        i++;
+    first_word = malloc(i + 1);
+    if (first_word == NULL)
+        return cmd;
+    for (int j = 0; j < i; j++)
+        first_word[j] = cmd[j];
+    first_word[i] = '\0';
+    alias = check_alias(term, first_word);
+    free(first_word);
+    if (alias == NULL)
+        return cmd;
+    return add_rest_to_alias(cmd, i, alias);
+}
+
+static void free_alias_history(nodes_t *alias_histo)
+{
+    nodes_t *next = NULL;
+
+    for (nodes_t *current = alias_histo; current != NULL; current = next) {
+        next = current->next;
+        free(current->data);
+        free(current);
+    }
+}
+
+static int check_loop_alias(nodes_t **alias_histo, char *cmd)
+{
+    nodes_t *current = *alias_histo;
+    nodes_t *tmp = NULL;
+
+    for (; current != NULL; current = current->next)
+        if (my_strcmp((char *)current->data, cmd) == 0)
+            return -1;
+    tmp = malloc(sizeof(nodes_t));
+    if (tmp == NULL)
+        return -1;
+    tmp->data = my_strdup(cmd);
+    if (tmp->data == NULL) {
+        free(tmp);
+        return -1;
+    }
+    tmp->next = NULL;
+    push_front(alias_histo, tmp);
+    return 0;
+}
+
+char *alias(tcsh_t *term, char *cmd)
+{
+    char *new_expanded = NULL;
+    char *expanded = cmd;
+    nodes_t *alias_histo = NULL;
+
+    while (1) {
+        new_expanded = expand_first_word_alias(term, expanded);
+        if (new_expanded == expanded)
+            break;
+        if (check_loop_alias(&alias_histo, new_expanded) == -1) {
+            free_alias_history(alias_histo);
+            free(new_expanded);
+            return my_puterror_ptr("Alias loop.\n");
+        }
+        expanded = new_expanded;
+    }
+    free_alias_history(alias_histo);
+    return expanded;
 }

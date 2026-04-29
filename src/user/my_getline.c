@@ -118,6 +118,16 @@ static int loop_st_gart(getline_t *st_g, char **cmd, size_t *len)
     return SUCCESS_EXIT;
 }
 
+void next_step(getline_t *st_g, char **cmd, size_t *len)
+{
+    st_g->line[st_g->line_len] = '\n';
+    st_g->line[st_g->line_len + 1] = '\0';
+    free(*cmd);
+    *cmd = st_g->line;
+    if (len)
+        *len = st_g->cap;
+}
+
 int my_getline(char **cmd, size_t *len, tcsh_t *term)
 {
     getline_t st_g = init_my_getline(cmd, len);
@@ -126,18 +136,14 @@ int my_getline(char **cmd, size_t *len, tcsh_t *term)
     if (t != SUCCESS_EXIT)
         return t;
     while (st_g.statut_getline == TRUE) {
-        loop_getline(&st_g, term);
+        if (loop_getline(&st_g, term) == -1)
+            return -1;
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &st_g.old_t);
     if (ensure_capacity(&st_g.line, &st_g.cap, st_g.line_len + 1) == -1) {
         free(st_g.line);
         return -1;
     }
-    st_g.line[st_g.line_len] = '\n';
-    st_g.line[st_g.line_len + 1] = '\0';
-    free(*cmd);
-    *cmd = st_g.line;
-    if (len)
-        *len = st_g.cap;
+    next_step(&st_g, cmd, len);
     return (int)(st_g.line_len + 1);
 }

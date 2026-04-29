@@ -67,6 +67,8 @@ typedef struct job {
 typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
+    nodes_t *locals;
+    int return_value;
     int life;
     char *old;
     int fd[2];
@@ -92,6 +94,11 @@ typedef struct function {
     int (*cmd)(tcsh_t *, char **);
 } function_t;
 
+typedef struct locals {
+    char *name;
+    char *value;
+} locals_t;
+
 typedef struct parse {
     int in_quote;
     int in_tick;
@@ -105,6 +112,12 @@ typedef struct parse {
 int init(tcsh_t *term, char **env);
 
 int fill_rc(tcsh_t *term);
+
+nodes_t *new_node(void *data);
+
+void free_locals(locals_t *locals);
+
+int my_set(tcsh_t *term, char **argv);
 
 int error_alphanumeric(char *cmd);
 
@@ -190,6 +203,8 @@ int check_history_down(tcsh_t *term, getline_t *st_g);
 
 char **parser3000(char *str, char *sep);
 
+int correct_name(char *name, char *cmd);
+
 int correct_tab(char **tab);
 
 int put_err(char *str);
@@ -209,19 +224,24 @@ void move_left(size_t count);
 int return_reset(getline_t *st_g);
 
 int ensure_capacity(char **line, size_t *cap, size_t wanted);
-char **sweeper(char *str);
+
+char **sweeper(tcsh_t *term, char *str);
 
 int is_parenthesis(char *str);
 
 int is_inihbitor(char *str);
 
-char **translate(char *str);
+char **translate(tcsh_t *term, nodes_t *str);
 
 nodes_t *array_to_node(char **array);
 
 void free_node(nodes_t *head);
 
+int search_command(tcsh_t *term, char **command, char *cmd);
+
 int my_fg(tcsh_t *term, char **argv);
+
+int my_if(tcsh_t *term, char **argv);
 
 int my_bg(tcsh_t *term, char **argv);
 
@@ -256,5 +276,13 @@ char *check_alias(tcsh_t *term, char *cmd);
 int my_alias(tcsh_t *term, char **cmd);
 
 char *search_binary(char *path, char *command);
+
+char *alias(tcsh_t *term, char *cmd);
+
+char *get_rc_file(tcsh_t *term);
+
+char *strip_single_quotes(char *word);
+
+void *my_puterror_ptr(char *message);
 
 #endif
