@@ -35,14 +35,41 @@ void update_state(parse_t *parse, char c)
         update_other(parse, c);
 }
 
-int is_sep(char c, char *sep)
+static int is_sep_token(char c, char *sep)
 {
-    for (int i = 0; sep[i] != '\0'; i++) {
-        if (sep[i] == c) {
+    if (is_sep(c, sep) == TRUE)
+        return TRUE;
+    for (int i = 0; SEP[i] != '\0'; i++) {
+        if (SEP[i] == c)
             return TRUE;
-        }
     }
     return FALSE;
+}
+
+int check_char(char *str, int i, parse_t *parse, char *sep)
+{
+    if (str[i] == '$') {
+        parse->in_var = TRUE;
+        return FALSE;
+    }
+    if (parse->in_var == TRUE && is_sep_token(str[i], sep) == TRUE) {
+        parse->in_var = FALSE;
+        return TRUE;
+    }
+    if (is_sep(str[i], sep) == TRUE)
+        return TRUE;
+    return FALSE;
+}
+
+static int is_quote(char c)
+{
+    return (c == '"' || c == '\'');
+}
+
+static int should_split_on_quote(parse_t *parse, char c, int start)
+{
+    return (!parse->in_quote && !parse->in_tick && is_quote(c)
+        && parse->i > start);
 }
 
 static int nb_element(char *str, char *sep)
@@ -53,18 +80,23 @@ static int nb_element(char *str, char *sep)
     int count = 0;
 
     while (str[i]) {
+        if (should_split_on_quote(&parse, str[i], start)) {
+            count += (i > start) ? 1 : 0;
+            start = i;
+        }
         update_state(&parse, str[i]);
-        if (!is_protected(&parse) && is_sep(str[i], sep)) {
+        if (!is_protected(&parse) && check_char(str, i, &parse, sep) == TRUE) {
             count += (i > start) ? 1 : 0;
             start = i + 1;
         }
         i++;
+        parse.i = i;
     }
     count += (i > start) ? 1 : 0;
     return count;
 }
 
-static void copy_next(parse_t *parse, char *str, char **res)
+static void copy_next(parse_t *parse, char *str, char **res, int num)
 {
     char *next = NULL;
 
@@ -73,6 +105,7 @@ static void copy_next(parse_t *parse, char *str, char **res)
         res[parse->count] = next;
         parse->count++;
     }
+    parse->start = parse->i + num;
 }
 
 char **parser3000(char *str, char *sep)
@@ -84,14 +117,14 @@ char **parser3000(char *str, char *sep)
     if (!res)
         return NULL;
     while (str[parse.i]) {
+        if (should_split_on_quote(&parse, str[parse.i], parse.start))
+            copy_next(&parse, str, res, 0);
         update_state(&parse, str[parse.i]);
-        if (!is_protected(&parse) && is_sep(str[parse.i], sep)) {
-            copy_next(&parse, str, res);
-            parse.start = parse.i + 1;
-        }
+        if (!is_protected(&parse) && is_sep(str[parse.i], sep))
+            copy_next(&parse, str, res, 1);
         parse.i++;
     }
-    copy_next(&parse, str, res);
+    copy_next(&parse, str, res, 0);
     res[parse.count] = NULL;
     if (correct_tab(res) == FALSE)
         return NULL;
