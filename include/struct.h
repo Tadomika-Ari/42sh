@@ -305,5 +305,4 @@ void update_state(parse_t *parse, char c);
 void update_other(parse_t *parse, char c);
 
 int is_protected(parse_t *parse);
-
 #endif
