@@ -107,6 +107,7 @@ char **translate(tcsh_t *term, nodes_t *str)
         return res;
     }
     res = parser3000(str->data, " ");
+    variable(term, str);
     check_quote(res);
     return res;
 }
