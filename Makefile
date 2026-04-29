@@ -112,6 +112,8 @@ TEST_SRC = tests/test_42sh.c \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
 		src/error/put_error_ptr.c \
+		src/built_in/set.c					\
+		src/built_in/if.c					\
 
 
 NAME =	42sh

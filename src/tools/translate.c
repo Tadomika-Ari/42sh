@@ -73,6 +73,6 @@ char **translate(tcsh_t *term, nodes_t *str)
         res = array_null('\0');
         return res;
     }
-    res = my_str_to_word_array(str->data, " ");
+    res = parser3000(str->data, " ");
     return res;
 }
