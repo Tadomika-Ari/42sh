@@ -91,6 +91,7 @@ int running(tcsh_t *term)
         return_value = tmp;
         if (return_value == FAILURE_EXIT)
             break;
+        term->return_value = return_value;
     }
     free_all(term);
     return return_value;
