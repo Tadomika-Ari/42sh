@@ -64,6 +64,14 @@ int filter_command(tcsh_t *term, int value)
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
     len = my_strlen(cmd);
+    if (strncmp(cmd, "repeat", 5) == 0) {
+        check_repeat(cmd, term);
+        if (my_strlen(cmd) == 2)
+            return FAILURE_EXIT;
+        for (int i = 0; i < term->nb_repeat; i++) {
+            printf("okquio, debug nb repeat : %d\n", term->nb_repeat);
+        }
+    }
     while (len > 0 && (cmd[len - 1] == '\n' || cmd[len - 1] == '\r')) {
         cmd[len - 1] = '\0';
         len--;
