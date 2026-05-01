@@ -309,4 +309,6 @@ int is_protected(parse_t *parse);
 nodes_t *create_new_node(char *lign_env);
 
 nodes_t *new_node(void *data);
+
+int fill_bonus(tcsh_t *term);
 #endif
