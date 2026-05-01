@@ -23,7 +23,7 @@ static int get_env(tcsh_t *term, char **env)
     return SUCCESS_EXIT;
 }
 
-static int push_function(tcsh_t *term,
+int push_function(tcsh_t *term,
     int (*cmd)(tcsh_t *, char **), const char *name)
 {
     nodes_t *new = malloc(sizeof(nodes_t));
