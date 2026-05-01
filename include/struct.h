@@ -305,4 +305,8 @@ void update_state(parse_t *parse, char c);
 void update_other(parse_t *parse, char c);
 
 int is_protected(parse_t *parse);
+
+nodes_t *create_new_node(char *lign_env);
+
+nodes_t *new_node(void *data);
 #endif
