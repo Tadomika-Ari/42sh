@@ -15,7 +15,7 @@ int pelophylax(tcsh_t *term, char **argv)
 
 int fill_bonus(tcsh_t *term)
 {
-    if (push_function(term, pelophylax "pelophylax") == FAILURE_EXIT)
+    if (push_function(term, pelophylax, "pelophylax") == FAILURE_EXIT)
         return FAILURE_EXIT;
     return EXIT_SUCCESS;
 }
