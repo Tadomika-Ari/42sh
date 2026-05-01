@@ -19,6 +19,8 @@
 
     #define SEP "()[]\'\""
 
+    #define PELOPHYLAX "./bonus/pelophylax.txt"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
