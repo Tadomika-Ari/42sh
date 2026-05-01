@@ -58,6 +58,7 @@ SRC = 	src/main.c							\
 		src/built_in/set.c					\
 		src/built_in/if.c					\
 		src/tools/parsing_tool.c            \
+		src/initialisation/create_node.c    \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -116,6 +117,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/built_in/set.c					\
 		src/built_in/if.c					\
 		src/tools/parsing_tool.c            \
+		src/initialisation/create_node.c    \
 
 
 NAME =	42sh
