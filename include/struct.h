@@ -311,4 +311,7 @@ nodes_t *create_new_node(char *lign_env);
 nodes_t *new_node(void *data);
 
 int fill_bonus(tcsh_t *term);
+
+int push_function(tcsh_t *term,
+    int (*cmd)(tcsh_t *, char **), const char *name);
 #endif
