@@ -314,4 +314,6 @@ int fill_bonus(tcsh_t *term);
 
 int push_function(tcsh_t *term,
     int (*cmd)(tcsh_t *, char **), const char *name);
+
+int pelophylax(tcsh_t *term, char **argv);
 #endif
