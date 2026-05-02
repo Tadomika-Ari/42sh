@@ -87,6 +87,7 @@ typedef struct tcsh {
     bool is_background;
     int nb_repeat;
     int is_repeat;
+    int nb_nb_repeat;
 } tcsh_t;
 
 typedef struct function {
@@ -269,6 +270,6 @@ int check_repeat(char *av, tcsh_t *term);
 
 int my_lenbase(int nb, int base);
 
-int array_len_char(char *cmd);
+char *cut_len(char *str, int nbr);
 
 #endif
