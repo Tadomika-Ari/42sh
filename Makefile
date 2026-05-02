@@ -58,6 +58,9 @@ SRC = 	src/main.c							\
 		src/built_in/set.c					\
 		src/built_in/if.c					\
 		src/tools/parsing_tool.c            \
+		src/initialisation/create_node.c    \
+		src/initialisation/fill_bonus.c     \
+		src/bonus/pelophylax.c              \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -116,6 +119,9 @@ TEST_SRC = tests/test_42sh.c \
 		src/built_in/set.c					\
 		src/built_in/if.c					\
 		src/tools/parsing_tool.c            \
+		src/initialisation/create_node.c    \
+		src/initialisation/fill_bonus.c     \
+		src/bonus/pelophylax.c              \
 
 
 NAME =	42sh

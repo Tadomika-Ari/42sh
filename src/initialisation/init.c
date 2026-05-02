@@ -10,30 +10,6 @@
 #include <unistd.h>
 #include <termios.h>
 
-nodes_t *new_node(void *data)
-{
-    nodes_t *new = malloc(sizeof(nodes_t));
-
-    if (!new)
-        return NULL;
-    new->data = data;
-    return new;
-}
-
-nodes_t *create_new_node(char *lign_env)
-{
-    nodes_t *new = malloc(sizeof(nodes_t));
-
-    if (!new)
-        return NULL;
-    new->data = my_strdup(lign_env);
-    if (!new->data) {
-        free(new);
-        return NULL;
-    }
-    return new;
-}
-
 static int get_env(tcsh_t *term, char **env)
 {
     nodes_t *new = NULL;
@@ -47,7 +23,7 @@ static int get_env(tcsh_t *term, char **env)
     return SUCCESS_EXIT;
 }
 
-static int push_function(tcsh_t *term,
+int push_function(tcsh_t *term,
     int (*cmd)(tcsh_t *, char **), const char *name)
 {
     nodes_t *new = malloc(sizeof(nodes_t));
@@ -63,6 +39,15 @@ static int push_function(tcsh_t *term,
     ((function_t *)new->data)->cmd = *cmd;
     push_front(&term->func, new);
     return SUCCESS_EXIT;
+}
+
+static int fill_job_control(tcsh_t *term)
+{
+    if (push_function(term, my_fg, "fg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_bg, "bg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    return EXIT_SUCCESS;
 }
 
 static int fill_annexe(tcsh_t *term)
@@ -88,11 +73,11 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_history, "history") == FAILURE_EXIT)
         return FAILURE_EXIT;
-    if (push_function(term, my_fg, "fg") == FAILURE_EXIT)
-        return FAILURE_EXIT;
-    if (push_function(term, my_bg, "bg") == FAILURE_EXIT)
+    if (fill_job_control(term) == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (push_function(term, my_alias, "alias") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (fill_bonus(term) == FAILURE_EXIT)
         return FAILURE_EXIT;
     return fill_annexe(term);
 }

@@ -19,6 +19,8 @@
 
     #define SEP "()[]\'\""
 
+    #define PELOPHYLAX "./bonus/pelophylax.txt"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -305,4 +307,15 @@ void update_state(parse_t *parse, char c);
 void update_other(parse_t *parse, char c);
 
 int is_protected(parse_t *parse);
+
+nodes_t *create_new_node(char *lign_env);
+
+nodes_t *new_node(void *data);
+
+int fill_bonus(tcsh_t *term);
+
+int push_function(tcsh_t *term,
+    int (*cmd)(tcsh_t *, char **), const char *name);
+
+int pelophylax(tcsh_t *term, char **argv);
 #endif
