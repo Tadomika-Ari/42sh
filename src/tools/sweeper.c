@@ -37,6 +37,8 @@ static void edit_list(tcsh_t *term, nodes_t *list, int index)
 
     for (nodes_t *current = list; current; current = current->next) {
         res = translate(term, current);
+        if (!res || !*res)
+            continue;
         free(current->data);
         current->data = res[0];
         replace(res, current, current->next);
