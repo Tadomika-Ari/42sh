@@ -101,6 +101,8 @@ char **translate(tcsh_t *term, nodes_t *str)
 
     if (is_inihbitor(str->data) == TRUE)
         return solo_tab(str->data);
+    if (is_globing(str->data) == TRUE)
+        return globbing(str->data);
     variable(term, str);
     if (((char *)str->data)[0] == '\0') {
         res = array_null('\0');

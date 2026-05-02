@@ -61,6 +61,7 @@ SRC = 	src/main.c							\
 		src/initialisation/create_node.c    \
 		src/initialisation/fill_bonus.c     \
 		src/bonus/pelophylax.c              \
+		src/tools/glob.c
 
 OBJ = 	$(SRC:.c=.o)
 

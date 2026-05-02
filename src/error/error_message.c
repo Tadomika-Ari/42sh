@@ -35,8 +35,17 @@ int error_expression_syntax(char *cmd)
     return ALTERNATIVE_EXIT;
 }
 
+static int error_glob_match(char *cmd)
+{
+    write(1, cmd, my_strlen(cmd));
+    write(1, ": No match.\n", 12);
+    return ALTERNATIVE_EXIT;
+}
+
 int command_not_found(char *cmd)
 {
+    if (is_globing(cmd) == TRUE)
+        return error_glob_match(cmd);
     write(1, cmd, my_strlen(cmd));
     write(1, ": Command not found.\n", 21);
     return ALTERNATIVE_EXIT;
