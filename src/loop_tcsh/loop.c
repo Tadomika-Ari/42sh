@@ -55,33 +55,44 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
     return return_value;
 }
 
-int filter_command(tcsh_t *term, int value)
+int test_function(tcsh_t *term, char *cmd, int value)
 {
-    char *cmd = NULL;
-    int len = 0;
     char *expanded = NULL;
+    char *copy_cmd = NULL;
 
-    if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
-        return -1;
-    len = my_strlen(cmd);
-    if (strncmp(cmd, "repeat", 5) == 0) {
-        check_repeat(cmd, term);
-        if (my_strlen(cmd) == 2)
-            return FAILURE_EXIT;
-        for (int i = 0; i < term->nb_repeat; i++) {
-            printf("okquio, debug nb repeat : %d\n", term->nb_repeat);
-        }
-    }
-    while (len > 0 && (cmd[len - 1] == '\n' || cmd[len - 1] == '\r')) {
-        cmd[len - 1] = '\0';
-        len--;
-    }
     if (is_only_spaces(cmd)) {
         free(cmd);
         return 0;
     }
+    for (int i = 0; i < term->nb_repeat - 1 && term->is_repeat == TRUE; i++) {
+        copy_cmd = my_strdup(cmd);
+        expanded = alias(term, copy_cmd);
+        loops_multi_func(term, expanded, value);
+    }
     expanded = alias(term, cmd);
     return loops_multi_func(term, expanded, value);
+}
+
+int filter_command(tcsh_t *term, int value)
+{
+    char *cmd = NULL;
+    char *repeat_cmd = NULL;
+    int len = 0;
+
+    if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
+        return -1;
+    len = my_strlen(cmd);
+    if (strncmp(cmd, "repeat ", 7) == 0) {
+        check_repeat(cmd, term);
+        if (my_strlen(cmd) == 2)
+            return FAILURE_EXIT;
+        repeat_cmd = cut_len(cmd, 7 + term->nb_nb_repeat);
+        free(cmd);
+        cmd = repeat_cmd;
+        if (cmd == NULL)
+            return FAILURE_EXIT;
+    }
+    return test_function(term, cmd, value);
 }
 
 int running(tcsh_t *term)
@@ -92,6 +103,7 @@ int running(tcsh_t *term)
     while (term->life == LIFE) {
         reap_jobs(term);
         tmp = filter_command(term, return_value);
+        term->is_repeat = FALSE;
         if (tmp == -1)
             break;
         return_value = tmp;
