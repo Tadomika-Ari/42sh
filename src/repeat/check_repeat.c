@@ -10,14 +10,20 @@
 int check_repeat(char *av, tcsh_t *term)
 {
     char **tmp = NULL;
+    int repeat_nb = 0;
 
     if (av == NULL)
         return FAILURE_EXIT;
     tmp = my_str_to_word_array(av, " ");
-    if (strncmp("repeat", tmp[0], 5) == 0) {
-        term->nb_repeat = atoi(tmp[1]);
+    if (tmp == NULL || tmp[0] == NULL || tmp[1] == NULL) {
+        free_array(tmp);
+        return FAILURE_EXIT;
+    }
+    if (strcmp("repeat", tmp[0]) == 0) {
+        repeat_nb = atoi(tmp[1]);
+        term->nb_repeat = repeat_nb;
+        term->nb_nb_repeat = my_lenbase(repeat_nb, 10);
         term->is_repeat = TRUE;
-        printf("ITS OK : %d\n", term->nb_repeat);
     }
     free_array(tmp);
     return SUCCESS_EXIT;
@@ -39,24 +45,21 @@ int my_lenbase(int nb, int base)
     return len;
 }
 
-int array_len_char(char *cmd)
+char *cut_len(char *str, int nbr)
 {
-    int i = 0;
-    int count = 0;
-    int in_word = 0;
+    int nbmalloc = my_strlen(str) - nbr;
+    char *change = NULL;
+    int y = 0;
 
-    if (!cmd)
-        return 0;
-    while (cmd[i] != '\0') {
-        if (cmd[i] != ' ' && cmd[i] != '\t' && cmd[i] != '\n' && cmd[i] != '\r') {
-            if (in_word == 0) {
-                count++;
-                in_word = 1;
-            }
-        } else {
-            in_word = 0;
-        }
-        i++;
+    if (nbmalloc <= 0)
+        return NULL;
+    change = malloc(nbmalloc + 1);
+    if (change == NULL)
+        return NULL;
+    for (int i = nbr; str[i] != '\0'; i++) {
+        change[y] = str[i];
+        y++;
     }
-    return count;
+    change[y] = '\0';
+    return change;
 }
