@@ -61,7 +61,7 @@ SRC = 	src/main.c							\
 		src/initialisation/create_node.c    \
 		src/initialisation/fill_bonus.c     \
 		src/bonus/pelophylax.c              \
-		src/tools/glob.c
+		src/tools/glob.c                    \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -123,6 +123,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/initialisation/create_node.c    \
 		src/initialisation/fill_bonus.c     \
 		src/bonus/pelophylax.c              \
+		src/tools/glob.c                    \
 
 
 NAME =	42sh
