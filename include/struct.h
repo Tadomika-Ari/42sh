@@ -318,4 +318,10 @@ int push_function(tcsh_t *term,
     int (*cmd)(tcsh_t *, char **), const char *name);
 
 int pelophylax(tcsh_t *term, char **argv);
+
+char **globbing(char *str);
+
+int is_globing(char *str);
+
+char **array_null(char c);
 #endif
