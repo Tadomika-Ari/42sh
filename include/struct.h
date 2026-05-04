@@ -335,6 +335,6 @@ int is_globing(char *str);
 
 char **array_null(char c);
 
-int cprintf(char *str, int color);
+int cprintf(char *str, char *color);
 
 #endif
