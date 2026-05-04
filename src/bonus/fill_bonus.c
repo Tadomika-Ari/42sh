@@ -11,5 +11,7 @@ int fill_bonus(tcsh_t *term)
 {
     if (push_function(term, pelophylax, "pelophylax") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, hangman, "hangman") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return EXIT_SUCCESS;
 }
