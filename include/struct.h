@@ -71,6 +71,16 @@ typedef enum job_state {
     DONE
 } job_state_t;
 
+    #define BLACK "\e[30m"
+    #define RED "\e[31m"
+    #define GREEN "\e[32m"
+    #define YELLOW "\e[33m"
+    #define BLUE "\e[34m"
+    #define MAGENTA "\e[35m"
+    #define CYAN "\e[36m"
+    #define WHITE "\e[37m"
+    #define NORMAL "\e[m"
+
 typedef struct job {
     int id;
     pid_t pgid;
@@ -102,6 +112,10 @@ typedef struct tcsh {
     struct termios shell_tmodes;
     pid_t fg_pgid;
     bool is_background;
+    int nb_repeat;
+    int is_repeat;
+    int nb_nb_repeat;
+    int error_repeat;
 } tcsh_t;
 
 typedef struct function {
@@ -238,7 +252,7 @@ int correct_name(char *name, char *cmd);
 
 int correct_tab(char **tab);
 
-int put_err(char *str);
+int put_err(char *str, int flags);
 
 int left_key(tcsh_t *term, getline_t *st_g);
 
@@ -314,6 +328,20 @@ char *get_rc_file(tcsh_t *term);
 
 char *strip_single_quotes(char *word);
 
+int check_repeat(char *av, tcsh_t *term);
+
+int my_lenbase(int nb, int base);
+
+char *cut_len(char *str, int nbr);
+
+int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value);
+
+int is_only_spaces(const char *cmd);
+
+int check_error(tcsh_t *term, char *cmd, int value);
+
+int fail_repeat_check(tcsh_t *term, char *cmd, int value);
+
 char *strip_quotes(char *word);
 
 void *my_puterror_ptr(char *message);
@@ -350,4 +378,10 @@ int hangman(tcsh_t *term, char **argv);
 char *fill_buff_bonus(const char *filename);
 
 void print_letter_hangman(hang_t *hang);
+int cprintf(char *str, char *color);
+
+char *fill_buff(const char *filename);
+
+char *my_strip_newline(char *str);
+
 #endif

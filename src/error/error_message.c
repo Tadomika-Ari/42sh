@@ -10,36 +10,31 @@
 int path_not_found(char *path)
 {
     write(1, path, my_strlen(path));
-    write(1, ": No such file or directory.\n", 29);
-    return ALTERNATIVE_EXIT;
+    return put_err(": No such file or directory.\n", ALTERNATIVE_EXIT);
 }
 
 int error_too_many_argument(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, ": Too many arguments.\n", 22);
-    return ALTERNATIVE_EXIT;
+    return put_err(": Too many arguments.\n", ALTERNATIVE_EXIT);
 }
 
 int error_not_enough_argument(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, ": Too few arguments.\n", 21);
-    return ALTERNATIVE_EXIT;
+    return put_err(": Too few arguments.\n", ALTERNATIVE_EXIT);
 }
 
 int error_expression_syntax(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, ": Expression Syntax.\n", 21);
-    return ALTERNATIVE_EXIT;
+    return put_err(": Expression Syntax.\n", ALTERNATIVE_EXIT);
 }
 
 static int error_glob_match(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, ": No match.\n", 12);
-    return ALTERNATIVE_EXIT;
+    return put_err(": No match.\n", ALTERNATIVE_EXIT);
 }
 
 int command_not_found(char *cmd)
@@ -47,6 +42,5 @@ int command_not_found(char *cmd)
     if (is_globing(cmd) == TRUE)
         return error_glob_match(cmd);
     write(1, cmd, my_strlen(cmd));
-    write(1, ": Command not found.\n", 21);
-    return ALTERNATIVE_EXIT;
+    return put_err(": Command not found.\n", ALTERNATIVE_EXIT);
 }
