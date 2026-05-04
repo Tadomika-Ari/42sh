@@ -54,9 +54,12 @@ static int normalize(tcsh_t *term, char *cmd, char **command, int status)
 
 static int apply_command(tcsh_t *term, char *cmd)
 {
-    char **command = sweeper(term, cmd);
+    bool error = false;
+    char **command = sweeper(term, cmd, &error);
     int status = 0;
 
+    if (error == true)
+        return -1;
     if (!command)
         return SUCCESS_EXIT;
     for (nodes_t *tmp = term->func; tmp; tmp = tmp->next)
