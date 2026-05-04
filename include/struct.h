@@ -91,6 +91,10 @@ typedef struct tcsh {
     struct termios shell_tmodes;
     pid_t fg_pgid;
     bool is_background;
+    int nb_repeat;
+    int is_repeat;
+    int nb_nb_repeat;
+    int error_repeat;
 } tcsh_t;
 
 typedef struct function {
@@ -293,6 +297,20 @@ char *alias(tcsh_t *term, char *cmd);
 char *get_rc_file(tcsh_t *term);
 
 char *strip_single_quotes(char *word);
+
+int check_repeat(char *av, tcsh_t *term);
+
+int my_lenbase(int nb, int base);
+
+char *cut_len(char *str, int nbr);
+
+int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value);
+
+int is_only_spaces(const char *cmd);
+
+int check_error(tcsh_t *term, char *cmd, int value);
+
+int fail_repeat_check(tcsh_t *term, char *cmd, int value);
 
 char *strip_quotes(char *word);
 
