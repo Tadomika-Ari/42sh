@@ -1,0 +1,9 @@
+<< HANGMAN HELP >>
+
+USAGE
+    hangman [-h]
+
+word: only lower case character 
+    "abcdefgijklmnopqrstuvwxyz"
+
+<< END >>
