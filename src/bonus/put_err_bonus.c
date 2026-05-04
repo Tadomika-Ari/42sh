@@ -9,6 +9,6 @@
 
 int put_err(char *str, int flags)
 {
-    write(1, str, my_strlen(str));
+    cprintf(str, RED);
     return flags;
 }
