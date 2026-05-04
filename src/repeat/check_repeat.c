@@ -50,22 +50,3 @@ int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
         return 0;
     return loops_multi_func(term, expanded, value);
 }
-
-char *cut_len(char *str, int nbr)
-{
-    int nbmalloc = my_strlen(str) - nbr;
-    char *change = NULL;
-    int y = 0;
-
-    if (nbmalloc <= 0)
-        return NULL;
-    change = malloc(nbmalloc + 1);
-    if (change == NULL)
-        return NULL;
-    for (int i = nbr; str[i] != '\0'; i++) {
-        change[y] = str[i];
-        y++;
-    }
-    change[y] = '\0';
-    return change;
-}
