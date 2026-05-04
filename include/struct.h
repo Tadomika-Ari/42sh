@@ -246,13 +246,13 @@ int return_reset(getline_t *st_g);
 
 int ensure_capacity(char **line, size_t *cap, size_t wanted);
 
-char **sweeper(tcsh_t *term, char *str);
+char **sweeper(tcsh_t *term, char *str, bool *error);
 
 int is_parenthesis(char *str);
 
 int is_inihbitor(char *str);
 
-char **translate(tcsh_t *term, nodes_t *str);
+char **translate(tcsh_t *term, nodes_t *str, bool *error);
 
 nodes_t *array_to_node(char **array);
 

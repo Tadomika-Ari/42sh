@@ -52,14 +52,16 @@ static void check_quote(char **tab)
     }
 }
 
-char **translate(tcsh_t *term, nodes_t *str)
+char **translate(tcsh_t *term, nodes_t *str, bool *error)
 {
     char **res = NULL;
 
     if (is_inihbitor(str->data) == TRUE)
         return solo_tab(str->data);
-    if (search_variable(term, str) == 1)
+    if (search_variable(term, str) == 1) {
+        *error = true;
         return NULL;
+    }
     if (is_globing(str->data) == TRUE)
         return globbing(str->data);
     if (((char *)str->data)[0] == '\0') {
