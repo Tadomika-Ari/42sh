@@ -55,7 +55,7 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
     return return_value;
 }
 
-int test_function(tcsh_t *term, char *cmd, int value)
+int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
 {
     char *expanded = NULL;
     char *copy_cmd = NULL;
@@ -92,7 +92,7 @@ int filter_command(tcsh_t *term, int value)
         if (cmd == NULL)
             return FAILURE_EXIT;
     }
-    return test_function(term, cmd, value);
+    return repeat_or_no_repeat(term, cmd, value);
 }
 
 int running(tcsh_t *term)
