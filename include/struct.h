@@ -60,6 +60,18 @@ typedef enum job_state {
     DONE
 } job_state_t;
 
+# define DEFAULT_COLOR WHITE
+
+typedef enum color {
+    RED = 31,
+    GREEN,
+    YELLOW,
+    BLUE,
+    PURPLE,
+    CYAN,
+    WHITE
+} color_t;
+
 typedef struct job {
     int id;
     pid_t pgid;
@@ -91,6 +103,7 @@ typedef struct tcsh {
     struct termios shell_tmodes;
     pid_t fg_pgid;
     bool is_background;
+    color_t color;
 } tcsh_t;
 
 typedef struct function {
