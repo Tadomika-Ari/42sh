@@ -384,4 +384,5 @@ char *fill_buff(const char *filename);
 
 char *my_strip_newline(char *str);
 
+int flipcoin(tcsh_t *term, char **argv);
 #endif
