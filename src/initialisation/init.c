@@ -113,6 +113,7 @@ static void init_cursor(tcsh_t *term, char **env)
     term->maxposcursor = 0;
     term->nb_nb_repeat = 0;
     term->nb_repeat = 0;
+    term->error_repeat = 0;
 }
 
 int init(tcsh_t *term, char **env)
