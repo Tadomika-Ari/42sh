@@ -8,16 +8,6 @@
 #include "../../include/struct.h"
 #include <sys/wait.h>
 
-static int is_only_spaces(const char *cmd)
-{
-    if (!cmd)
-        return 1;
-    for (int i = 0; cmd[i] != '\0'; i++)
-        if (cmd[i] != ' ' && cmd[i] != '\t' && cmd[i] != '\n' && cmd[i] != '\r')
-            return 0;
-    return 1;
-}
-
 static void reap_jobs(tcsh_t *term)
 {
     int status = 0;
@@ -55,24 +45,6 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
     return return_value;
 }
 
-int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
-{
-    char *expanded = NULL;
-    char *copy_cmd = NULL;
-
-    if (is_only_spaces(cmd)) {
-        free(cmd);
-        return 0;
-    }
-    for (int i = 0; i < term->nb_repeat - 1 && term->is_repeat == TRUE; i++) {
-        copy_cmd = my_strdup(cmd);
-        expanded = alias(term, copy_cmd);
-        loops_multi_func(term, expanded, value);
-    }
-    expanded = alias(term, cmd);
-    return loops_multi_func(term, expanded, value);
-}
-
 int filter_command(tcsh_t *term, int value)
 {
     char *cmd = NULL;
@@ -82,15 +54,16 @@ int filter_command(tcsh_t *term, int value)
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
     len = my_strlen(cmd);
-    if (strncmp(cmd, "repeat ", 7) == 0) {
+    if (strncmp(cmd, "repeat ", 7) == 0 || strncmp(cmd, "repeat", 6) == 0) {
+        term->nb_nb_repeat = 0;
         check_repeat(cmd, term);
-        if (my_strlen(cmd) == 2)
-            return FAILURE_EXIT;
+        if (check_error(term, cmd, value) == FAILURE_EXIT)
+            return ALTERNATIVE_EXIT;
         repeat_cmd = cut_len(cmd, 7 + term->nb_nb_repeat);
         free(cmd);
         cmd = repeat_cmd;
         if (cmd == NULL)
-            return FAILURE_EXIT;
+            return ALTERNATIVE_EXIT;
     }
     return repeat_or_no_repeat(term, cmd, value);
 }
@@ -104,6 +77,7 @@ int running(tcsh_t *term)
         reap_jobs(term);
         tmp = filter_command(term, return_value);
         term->is_repeat = FALSE;
+        term->error_repeat = 0;
         if (tmp == -1)
             break;
         return_value = tmp;
