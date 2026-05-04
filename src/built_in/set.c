@@ -93,10 +93,12 @@ int correct_var(char *name, char *cmd)
 static int display(tcsh_t *term)
 {
     for (nodes_t *tmp = term->locals; tmp; tmp = tmp->next) {
-        write(1, ((locals_t *)tmp->data)->name, my_strlen(((locals_t *)tmp->data)->name));
+        write(1, ((locals_t *)tmp->data)->name,
+            my_strlen(((locals_t *)tmp->data)->name));
         if (((locals_t *)tmp->data)->value) {
             write(1, "\t", 1);
-            write(1, ((locals_t *)tmp->data)->value, my_strlen(((locals_t *)tmp->data)->value));
+            write(1, ((locals_t *)tmp->data)->value,
+                my_strlen(((locals_t *)tmp->data)->value));
         }
         write(1, "\n", 1);
     }
