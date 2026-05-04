@@ -23,34 +23,43 @@ static int fallback_cond(char *expr)
     return 0;
 }
 
-static char *join_expr(char **argv)
+static int join_len_until_then(char **argv)
 {
-    size_t len = 0;
-    size_t pos = 0;
-    char *expr = NULL;
+    int len = 0;
+
+    if (argv == NULL)
+        return 0;
+    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++)
+        len += strlen(argv[i]) + 1;
+    return len;
+}
+
+static char *join(char **argv)
+{
+    int pos = 0;
+    int len = join_len_until_then(argv);
+    char *res = NULL;
 
     if (argv == NULL)
         return NULL;
-    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++)
-        len += strlen(argv[i]) + 1;
-    expr = malloc(len + 1);
-    if (expr == NULL)
+    res = malloc(len + 1);
+    if (res == NULL)
         return NULL;
     for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++) {
-        memcpy(expr + pos, argv[i], strlen(argv[i]));
+        memcpy(res + pos, argv[i], strlen(argv[i]));
         pos += strlen(argv[i]);
         if (argv[i + 1] != NULL && my_strcmp(argv[i + 1], "then") != 0) {
-            expr[pos] = ' ';
+            res[pos] = ' ';
             pos++;
         }
     }
-    expr[pos] = '\0';
-    return expr;
+    res[pos] = '\0';
+    return res;
 }
 
 static int search_condition(tcsh_t *term, char **argv, bool *error)
 {
-    char *expr = join_expr(argv);
+    char *expr = join(argv);
     int cond = 0;
 
     (void)term;

@@ -258,6 +258,14 @@ nodes_t *array_to_node(char **array);
 
 void free_node(nodes_t *head);
 
+char *get_name(char *str, int max);
+
+char *without(char *str);
+
+char *my_str_rea(char *base, char *value);
+
+char **array_null(char c);
+
 int search_command(tcsh_t *term, char **command, char *cmd);
 
 int my_fg(tcsh_t *term, char **argv);

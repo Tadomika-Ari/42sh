@@ -105,25 +105,36 @@ static int display(tcsh_t *term)
     return SUCCESS_EXIT;
 }
 
+static int check_in(tcsh_t *term, char **argv, int *tmp, int *i)
+{
+    if (correct_var(argv[*i], "set") != SUCCESS_EXIT) {
+        *tmp = single_value(term, argv[*i]);
+        if (*tmp == 1) {
+            *i += *tmp;
+            return -1;
+        }
+        return ALTERNATIVE_EXIT;
+    }
+    *tmp = add_variable(&argv[*i], term);
+    if (*tmp == -1)
+        return ALTERNATIVE_EXIT;
+    *i += *tmp;
+    return SUCCESS_EXIT;
+}
+
 int my_set(tcsh_t *term, char **argv)
 {
     int tmp = 0;
+    int res = 0;
 
     if (len_array(argv) == 0)
         return display(term);
     for (int i = 0; argv[i];) {
-        if (correct_var(argv[i], "set") != SUCCESS_EXIT) {
-            tmp = single_value(term, argv[i]);
-            if (tmp == 1) {
-                i += tmp;
-                continue;
-            }
+        res = check_in(term, argv, &tmp, &i);
+        if (res == -1)
+            continue;
+        if (res != SUCCESS_EXIT)
             return ALTERNATIVE_EXIT;
-        }
-        tmp = add_variable(&argv[i], term);
-        if (tmp == -1)
-            return ALTERNATIVE_EXIT;
-        i += tmp;
     }
     return SUCCESS_EXIT;
 }
