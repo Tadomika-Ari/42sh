@@ -12,7 +12,6 @@ SRC = 	src/main.c							\
 		src/built_in/setenv.c				\
 		src/built_in/unsetenv.c				\
 		src/error/error_message.c			\
-		src/loop_tcsh/argument.c			\
 		src/loop_tcsh/loop.c				\
 		src/loop_tcsh/command.c				\
 		src/redirection/in_simple.c			\
@@ -60,6 +59,7 @@ SRC = 	src/main.c							\
 		src/initialisation/create_node.c    \
 		src/tools/glob.c                    \
 		src/tools/fill_buff.c \
+		src/tools/my_strip_newline.c \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -120,6 +120,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/initialisation/create_node.c    \
 		src/tools/glob.c                    \
 		src/tools/fill_buff.c \
+		src/tools/my_strip_newline.c\
 
 BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/cprintf.c\
@@ -128,10 +129,12 @@ BONUS_SRC = src/bonus/pelophylax.c          \
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
 SRC2 = src/initialisation/init.c          \
+		src/loop_tcsh/argument.c			\
 
 OBJ2 = 	$(SRC2:.c=.o)
 
 BONUS_SRC2 = src/bonus/init.c          \
+		src/bonus/argument_bonus.c \
 
 BONUS_OBJ2 = 	$(BONUS_SRC2:.c=.o)
 

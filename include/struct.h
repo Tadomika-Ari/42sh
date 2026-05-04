@@ -339,4 +339,6 @@ int cprintf(char *str, char *color);
 
 char *fill_buff(const char *filename);
 
+char *my_strip_newline(char *str);
+
 #endif
