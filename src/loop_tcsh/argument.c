@@ -47,7 +47,7 @@ char *take_value(nodes_t *head, char *cat)
 
 void write_argument(char **cmd, tcsh_t *term)
 {
-    char *lign = fill_buff_bonus("/etc/hostname");
+    char *lign = fill_buff("/etc/hostname");
     char *user = take_value(term->env, "USERNAME");
     int tmp = 0;
 

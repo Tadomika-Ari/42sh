@@ -337,4 +337,6 @@ char **array_null(char c);
 
 int cprintf(char *str, char *color);
 
+char *fill_buff(const char *filename);
+
 #endif
