@@ -21,13 +21,17 @@ static void replace(char **tab, nodes_t *list, nodes_t *next)
     current->next = next;
 }
 
-static void edit_list(tcsh_t *term, nodes_t *list)
+static int edit_list(tcsh_t *term, nodes_t *list, bool *error)
 {
     int i = 0;
     char **res = NULL;
 
     for (nodes_t *current = list; current; current = current->next) {
-        res = translate(term, current);
+        res = translate(term, current, error);
+        if (*error == true) {
+            free_array(res);
+            return ALTERNATIVE_EXIT;
+        }
         if (!res || !*res)
             continue;
         free(current->data);
@@ -36,6 +40,7 @@ static void edit_list(tcsh_t *term, nodes_t *list)
         free(res);
         i++;
     }
+    return SUCCESS_EXIT;
 }
 
 static void free_list(nodes_t *list)
@@ -61,7 +66,7 @@ static void remove_background_operator(char **tab)
     }
 }
 
-char **sweeper(tcsh_t *term, char *str)
+char **sweeper(tcsh_t *term, char *str, bool *error)
 {
     char **tab = parser3000(str, "\n \t");
     nodes_t *list = NULL;
@@ -74,7 +79,10 @@ char **sweeper(tcsh_t *term, char *str)
         return NULL;
     }
     free_array(tab);
-    edit_list(term, list);
+    if (edit_list(term, list, error) == 1) {
+        free_node(list);
+        return NULL;
+    }
     tab = node_to_array(list);
     free_list(list);
     remove_background_operator(tab);
