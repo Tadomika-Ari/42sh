@@ -88,6 +88,7 @@ typedef struct tcsh {
     int nb_repeat;
     int is_repeat;
     int nb_nb_repeat;
+    int error_repeat;
 } tcsh_t;
 
 typedef struct function {
@@ -271,5 +272,13 @@ int check_repeat(char *av, tcsh_t *term);
 int my_lenbase(int nb, int base);
 
 char *cut_len(char *str, int nbr);
+
+int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value);
+
+int is_only_spaces(const char *cmd);
+
+int check_error(tcsh_t *term, char *cmd, int value);
+
+int fail_repeat_check(tcsh_t *term, char *cmd, int value);
 
 #endif
