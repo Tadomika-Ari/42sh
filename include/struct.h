@@ -20,7 +20,7 @@
     #define SEP "()[]\'\""
 
     #define PELOPHYLAX "./bonus/pelophylax.txt"
-
+    #define HANGMAN "./bonus/hangman.txt"
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -324,4 +324,8 @@ char **globbing(char *str);
 int is_globing(char *str);
 
 char **array_null(char c);
+
+int hangman(tcsh_t *term, char **argv);
+
+char *fill_buff_bonus(const char *filename);
 #endif
