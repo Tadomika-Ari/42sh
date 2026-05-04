@@ -228,7 +228,7 @@ int correct_name(char *name, char *cmd);
 
 int correct_tab(char **tab);
 
-int put_err(char *str);
+int put_err(char *str, int flags);
 
 int left_key(tcsh_t *term, getline_t *st_g);
 
