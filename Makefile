@@ -61,6 +61,8 @@ SRC = 	src/main.c							\
 		src/tools/parsing_tool.c            \
 		src/initialisation/create_node.c    \
 		src/tools/glob.c                    \
+		src/repeat/len_base.c 				\
+		src/repeat/cut_len.c 				\
 
 OBJ = 	$(SRC:.c=.o)
 
