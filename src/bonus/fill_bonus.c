@@ -9,6 +9,7 @@
 
 int fill_bonus(tcsh_t *term)
 {
+    srand(time(NULL));
     if (push_function(term, pelophylax, "pelophylax") == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (push_function(term, hangman, "hangman") == FAILURE_EXIT)
