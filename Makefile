@@ -120,6 +120,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/tools/glob.c                    \
 
 BONUS_SRC = src/bonus/pelophylax.c          \
+		src/bonus/cprintf.c\
 		src/bonus/fill_bonus.c              \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
