@@ -52,7 +52,7 @@ int unmatch_single(char **str)
 int check_element(char **tab, int i)
 {
     if (unmatch_single(&tab[i]) == TRUE)
-        return put_err(UNMATCH_SINGLE);
+        return put_err(UNMATCH_SINGLE, FALSE);
     return TRUE;
 }
 

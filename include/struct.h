@@ -9,6 +9,7 @@
     #define MY_TOP_STRUCT_H
     #include "my.h"
     #include <termios.h>
+    #include <time.h>
     #define INITIAL_CAPACITY 128
     #define MAX_LINE 1024
 
@@ -20,6 +21,16 @@
     #define SEP "()[]\'\""
 
     #define PELOPHYLAX "./bonus/pelophylax.txt"
+    #define HANGMAN "./bonus/hangman.txt"
+    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
+
+    #define ASK_LETTER "Choose a letter: "
+    #define WIN_HANGMAN "You win the game!"
+    #define LOSE_HANGMAN "You lose the game!"
+
+    #define NB_STEP 11
+    #define NB_ROW 7
+extern const char *STEPS[NB_STEP][NB_ROW];
 
 typedef enum exit
 {
@@ -59,6 +70,16 @@ typedef enum job_state {
     STOPPED,
     DONE
 } job_state_t;
+
+    #define BLACK "\e[30m"
+    #define RED "\e[31m"
+    #define GREEN "\e[32m"
+    #define YELLOW "\e[33m"
+    #define BLUE "\e[34m"
+    #define MAGENTA "\e[35m"
+    #define CYAN "\e[36m"
+    #define WHITE "\e[37m"
+    #define NORMAL "\e[m"
 
 typedef struct job {
     int id;
@@ -123,6 +144,15 @@ typedef struct ele {
     int count;
     int start;
 } ele_t;
+
+typedef struct hang {
+    int hp;
+    char *to_find;
+    char *ref;
+    int state;
+    char c;
+    int letters[26];
+} hang_t;
 
 int init(tcsh_t *term, char **env);
 
@@ -228,7 +258,7 @@ int correct_name(char *name, char *cmd);
 
 int correct_tab(char **tab);
 
-int put_err(char *str);
+int put_err(char *str, int flags);
 
 int left_key(tcsh_t *term, getline_t *st_g);
 
@@ -356,4 +386,16 @@ char **globbing(char *str);
 int is_globing(char *str);
 
 char **array_null(char c);
+
+int hangman(tcsh_t *term, char **argv);
+
+char *fill_buff_bonus(const char *filename);
+
+void print_letter_hangman(hang_t *hang);
+int cprintf(char *str, char *color);
+
+char *fill_buff(const char *filename);
+
+char *my_strip_newline(char *str);
+
 #endif
