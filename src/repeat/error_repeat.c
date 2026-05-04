@@ -32,28 +32,6 @@ int check_error(tcsh_t *term, char *cmd, int value)
     return SUCCESS_EXIT;
 }
 
-int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
-{
-    char *expanded = NULL;
-    char *copy_cmd = NULL;
-
-    if (is_only_spaces(cmd)) {
-        free(cmd);
-        return 0;
-    }
-    for (int i = 0; i < term->nb_repeat - 1 && term->is_repeat == TRUE; i++) {
-        copy_cmd = my_strdup(cmd);
-        expanded = alias(term, copy_cmd);
-        if (expanded == NULL)
-            return 0;
-        loops_multi_func(term, expanded, value);
-    }
-    expanded = alias(term, cmd);
-    if (expanded == NULL)
-        return 0;
-    return loops_multi_func(term, expanded, value);
-}
-
 int fail_repeat_check(tcsh_t *term, char *cmd, int value)
 {
     char **temp = NULL;
