@@ -1,9 +1,12 @@
 << HANGMAN HELP >>
 
 USAGE
-    hangman [-h]
+    hangman [-h]   : help menu
+    hangman [--random] : random word to found
 
-word: only lower case character 
-    "abcdefgijklmnopqrstuvwxyz"
+RULES
+    -word: only lower case character 
+      "abcdefgijklmnopqrstuvwxyz"
+    -minimum 2 letters
 
 << END >>
