@@ -77,6 +77,8 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_alias, "alias") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (fill_bonus(term) == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return fill_annexe(term);
 }
 
