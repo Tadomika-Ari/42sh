@@ -137,6 +137,7 @@ typedef struct hang {
     char *ref;
     int state;
     char c;
+    int letters[26];
 } hang_t;
 
 int init(tcsh_t *term, char **env);
