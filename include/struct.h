@@ -9,6 +9,7 @@
     #define MY_TOP_STRUCT_H
     #include "my.h"
     #include <termios.h>
+    #include <time.h>
     #define INITIAL_CAPACITY 128
     #define MAX_LINE 1024
 
@@ -20,6 +21,16 @@
     #define SEP "()[]\'\""
 
     #define PELOPHYLAX "./bonus/pelophylax.txt"
+    #define HANGMAN "./bonus/hangman.txt"
+    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
+
+    #define ASK_LETTER "Choose a letter: "
+    #define WIN_HANGMAN "You win the game!"
+    #define LOSE_HANGMAN "You lose the game!"
+
+    #define NB_STEP 11
+    #define NB_ROW 7
+extern const char *STEPS[NB_STEP][NB_ROW];
 
 typedef enum exit
 {
@@ -133,6 +144,15 @@ typedef struct ele {
     int count;
     int start;
 } ele_t;
+
+typedef struct hang {
+    int hp;
+    char *to_find;
+    char *ref;
+    int state;
+    char c;
+    int letters[26];
+} hang_t;
 
 int init(tcsh_t *term, char **env);
 
@@ -353,6 +373,11 @@ int is_globing(char *str);
 
 char **array_null(char c);
 
+int hangman(tcsh_t *term, char **argv);
+
+char *fill_buff_bonus(const char *filename);
+
+void print_letter_hangman(hang_t *hang);
 int cprintf(char *str, char *color);
 
 char *fill_buff(const char *filename);
