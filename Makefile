@@ -150,7 +150,7 @@ make_debug:	$(OBJ)
 	valgrind --leak-check=full ./42sh 2> val.txt
 
 unit_tests:	all
-	@epiclang -o $(TEST_NAME) $(TEST_SRC) --coverage -lcriterion -lmy -Llib/my
+	@epiclang -o $(TEST_NAME) $(TEST_SRC) $(SRC2) --coverage -lcriterion -lmy -Llib/my
 
 tests_run: unit_tests
 	@./$(TEST_NAME)
