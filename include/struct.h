@@ -60,6 +60,16 @@ typedef enum job_state {
     DONE
 } job_state_t;
 
+    #define BLACK "\e[30m"
+    #define RED "\e[31m"
+    #define GREEN "\e[32m"
+    #define YELLOW "\e[33m"
+    #define BLUE "\e[34m"
+    #define MAGENTA "\e[35m"
+    #define CYAN "\e[36m"
+    #define WHITE "\e[37m"
+    #define NORMAL "\e[m"
+
 typedef struct job {
     int id;
     pid_t pgid;
@@ -222,7 +232,7 @@ int correct_name(char *name, char *cmd);
 
 int correct_tab(char **tab);
 
-int put_err(char *str);
+int put_err(char *str, int flags);
 
 int left_key(tcsh_t *term, getline_t *st_g);
 
@@ -342,4 +352,11 @@ char **globbing(char *str);
 int is_globing(char *str);
 
 char **array_null(char c);
+
+int cprintf(char *str, char *color);
+
+char *fill_buff(const char *filename);
+
+char *my_strip_newline(char *str);
+
 #endif

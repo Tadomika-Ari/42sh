@@ -53,15 +53,15 @@ void write_argument(char **cmd, tcsh_t *term)
 
     if (lign) {
         my_strip_newline(lign);
-        write(1, lign, strlen(lign));
+        cprintf(lign, GREEN);
     }
     write(1, ":", 1);
     lign = take_value(term->env, "PWD");
     if (lign && user) {
         tmp = my_strn(lign, user);
         if (tmp != 0)
-            write(1, "~", 1);
-        write(1, lign + tmp, strlen(lign + tmp));
+            cprintf("~", BLUE);
+        cprintf(lign + tmp, BLUE);
     }
     write(1, "> ", 2);
 }
