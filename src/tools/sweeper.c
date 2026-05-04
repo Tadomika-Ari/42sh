@@ -21,16 +21,7 @@ static void replace(char **tab, nodes_t *list, nodes_t *next)
     current->next = next;
 }
 
-static int is_translatable(char *str)
-{
-    if (is_inihbitor(str) == TRUE)
-        return FALSE;
-    if (is_parenthesis(str) == TRUE)
-        return FALSE;
-    return TRUE;
-}
-
-static void edit_list(tcsh_t *term, nodes_t *list, int index)
+static void edit_list(tcsh_t *term, nodes_t *list)
 {
     int i = 0;
     char **res = NULL;
@@ -83,7 +74,7 @@ char **sweeper(tcsh_t *term, char *str)
         return NULL;
     }
     free_array(tab);
-    edit_list(term, list, 2);
+    edit_list(term, list);
     tab = node_to_array(list);
     free_list(list);
     remove_background_operator(tab);
