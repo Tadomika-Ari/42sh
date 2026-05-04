@@ -72,7 +72,7 @@ typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
     nodes_t *locals;
-    int return_value;
+    char *return_value;
     int life;
     char *old;
     int fd[2];
@@ -148,11 +148,17 @@ int error_no_home(char *cmd);
 
 int command_not_found(char *cmd);
 
+int search_variable(tcsh_t *term, nodes_t *str);
+
 int path_not_found(char *path);
 
 int error_syntax(char *cmd);
 
 int env(tcsh_t *term, char **argv);
+
+char *simple(char c);
+
+int my_cmd_error(char *str, char *cmd);
 
 int my_cd(tcsh_t *term, char **argv);
 

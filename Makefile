@@ -49,6 +49,7 @@ SRC = 	src/main.c							\
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/built_in/var_interpreter.c			\
 		src/special_variable/sepecial_variable.c\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \

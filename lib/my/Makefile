@@ -14,6 +14,7 @@ SRC     = my_str_to_word_array.c 	\
 		  len_array.c				\
 		  my_put_nbr.c				\
 		  my_strcmp.c				\
+		  my_strwafw.c				\
 		  my_strcat.c				\
 		  push_back.c				\
 		  my_strn.c					\
