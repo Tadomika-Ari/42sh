@@ -6,7 +6,6 @@
 ##
 
 SRC = 	src/main.c							\
-		src/initialisation/init.c			\
 		src/built_in/cd.c					\
 		src/built_in/env.c					\
 		src/built_in/exit.c					\
@@ -51,18 +50,23 @@ SRC = 	src/main.c							\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
 		src/special_variable/sepecial_variable.c\
-		src/alias/add_alias.c\
+		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
+		src/repeat/check_repeat.c			\
+		src/repeat/error_repeat.c    		\
+		src/error/put_error_ptr.c           \
 		src/built_in/set.c					\
 		src/built_in/if.c					\
+		src/tools/parsing_tool.c            \
+		src/initialisation/create_node.c    \
+		src/tools/glob.c                    \
 
 OBJ = 	$(SRC:.c=.o)
 
 TEST_NAME = unit_tests
 
 TEST_SRC = tests/test_42sh.c \
-		src/initialisation/init.c			\
 		src/built_in/cd.c					\
 		src/built_in/env.c					\
 		src/built_in/exit.c					\
@@ -107,17 +111,40 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
 		src/special_variable/sepecial_variable.c \
-		src/alias/add_alias.c\
+		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
+		src/repeat/check_repeat.c			\
+		src/repeat/error_repeat.c    		\
+		src/error/put_error_ptr.c           \
+		src/built_in/set.c					\
+		src/built_in/if.c					\
+		src/tools/parsing_tool.c            \
+		src/initialisation/create_node.c    \
+		src/tools/glob.c                    \
 
+BONUS_SRC = src/bonus/pelophylax.c          \
+		src/bonus/fill_bonus.c              \
+
+BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
+
+SRC2 = src/initialisation/init.c          \
+
+OBJ2 = 	$(SRC2:.c=.o)
+
+BONUS_SRC2 = src/bonus/init.c          \
+
+BONUS_OBJ2 = 	$(BONUS_SRC2:.c=.o)
 
 NAME =	42sh
 
 all:	$(NAME)
 
-$(NAME): do_lib $(OBJ)
-	epiclang -o $(NAME) $(SRC) -lmy -Llib/my
+$(NAME): do_lib $(OBJ) $(OBJ2)
+	epiclang -o $(NAME) $(SRC) $(SRC2) -lmy -Llib/my
+
+bonus: do_lib $(OBJ) $(BONUS_OBJ) $(BONUS_OBJ2)
+	epiclang -o $(NAME) $(SRC) $(BONUS_SRC) $(BONUS_SRC2) -lmy -Llib/my
 
 do_lib:
 	make -C lib/my/
@@ -127,7 +154,7 @@ make_debug:	$(OBJ)
 	valgrind --leak-check=full ./42sh 2> val.txt
 
 unit_tests:	all
-	@epiclang -o $(TEST_NAME) $(TEST_SRC) --coverage -lcriterion -lmy -Llib/my
+	@epiclang -o $(TEST_NAME) $(TEST_SRC) $(SRC2) --coverage -lcriterion -lmy -Llib/my
 
 tests_run: unit_tests
 	@./$(TEST_NAME)
@@ -138,6 +165,9 @@ cover: tests_run
 
 clean:
 	@rm -f $(OBJ)
+	@rm -f $(OBJ2)
+	@rm -f $(BONUS_OBJ)
+	@rm -f $(BONUS_OBJ2)
 	@rm -f *.gcno
 	@rm -f *.gcda
 

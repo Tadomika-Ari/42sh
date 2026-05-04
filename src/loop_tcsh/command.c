@@ -120,17 +120,14 @@ int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
 
 static bool has_background_operator(tcsh_t *term, char *cmd)
 {
-    char **parts = sweeper(term, cmd);
-    int len = 0;
-    bool result = false;
+    int i = my_strlen(cmd) - 1;
 
-    if (!parts)
+    if (!cmd)
         return false;
-    len = len_array(parts);
-    if (len > 0 && my_strcmp(parts[len - 1], "&") == 0)
-        result = true;
-    free_array(parts);
-    return result;
+    while (i >= 0 && (cmd[i] == ' ' || cmd[i] == '\t'
+            || cmd[i] == '\n' || cmd[i] == '\r'))
+        i--;
+    return (i >= 0 && cmd[i] == '&') ? true : false;
 }
 
 static void reset_pipefd(int *pipe_fd, int count

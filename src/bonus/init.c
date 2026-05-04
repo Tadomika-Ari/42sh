@@ -77,6 +77,8 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_alias, "alias") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (fill_bonus(term) == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return fill_annexe(term);
 }
 
@@ -113,9 +115,6 @@ static void init_cursor(tcsh_t *term, char **env)
 {
     term->whereiscursor = 0;
     term->maxposcursor = 0;
-    term->nb_nb_repeat = 0;
-    term->nb_repeat = 0;
-    term->error_repeat = 0;
 }
 
 int init(tcsh_t *term, char **env)
