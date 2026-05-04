@@ -60,15 +60,15 @@ typedef enum job_state {
     DONE
 } job_state_t;
 
-    #define BLACK "\x1b[30m"
-    #define RED "\x1b[31m"
-    #define GREEN "\x1b[32m"
-    #define YELLOW "\x1b[33m"
-    #define BLUE "\x1b[34m"
-    #define MAGENTA "\x1b[35m"
-    #define CYAN "\x1b[36m"
-    #define WHITE "\x1b[37m"
-    #define NORMAL "\x1b[m"
+    #define BLACK "\e[30m"
+    #define RED "\e[31m"
+    #define GREEN "\e[32m"
+    #define YELLOW "\e[33m"
+    #define BLUE "\e[34m"
+    #define MAGENTA "\e[35m"
+    #define CYAN "\e[36m"
+    #define WHITE "\e[37m"
+    #define NORMAL "\e[m"
 
 typedef struct job {
     int id;

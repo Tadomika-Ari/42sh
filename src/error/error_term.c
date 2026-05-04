@@ -9,14 +9,14 @@
 
 int error_syntax(char *cmd)
 {
-    put_err(cmd, SUCCESS_EXIT);
+    write(1, cmd, my_strlen(cmd));
     return put_err(": Exec format error. Binary file not executable.\n",
         ALTERNATIVE_EXIT);
 }
 
 int error_first_caracter(char *cmd)
 {
-    put_err(cmd, SUCCESS_EXIT);
+    write(1, cmd, my_strlen(cmd));
     return put_err(": Variable name must begin with a letter.\n",
         ALTERNATIVE_EXIT);
 }
