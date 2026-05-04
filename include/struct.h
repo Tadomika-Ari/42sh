@@ -93,7 +93,7 @@ typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
     nodes_t *locals;
-    int return_value;
+    char *return_value;
     int life;
     char *old;
     int fd[2];
@@ -178,11 +178,17 @@ int error_no_home(char *cmd);
 
 int command_not_found(char *cmd);
 
+int search_variable(tcsh_t *term, nodes_t *str);
+
 int path_not_found(char *path);
 
 int error_syntax(char *cmd);
 
 int env(tcsh_t *term, char **argv);
+
+char *simple(char c);
+
+int my_cmd_error(char *str, char *cmd);
 
 int my_cd(tcsh_t *term, char **argv);
 
@@ -270,17 +276,25 @@ int return_reset(getline_t *st_g);
 
 int ensure_capacity(char **line, size_t *cap, size_t wanted);
 
-char **sweeper(tcsh_t *term, char *str);
+char **sweeper(tcsh_t *term, char *str, bool *error);
 
 int is_parenthesis(char *str);
 
 int is_inihbitor(char *str);
 
-char **translate(tcsh_t *term, nodes_t *str);
+char **translate(tcsh_t *term, nodes_t *str, bool *error);
 
 nodes_t *array_to_node(char **array);
 
 void free_node(nodes_t *head);
+
+char *get_name(char *str, int max);
+
+char *without(char *str);
+
+char *my_str_rea(char *base, char *value);
+
+char **array_null(char c);
 
 int search_command(tcsh_t *term, char **command, char *cmd);
 

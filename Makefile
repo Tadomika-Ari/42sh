@@ -47,6 +47,8 @@ SRC = 	src/main.c							\
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/var_interpreters/var_interpreter.c			\
+		src/var_interpreters/var_manipulator.c			\
 		src/special_variable/sepecial_variable.c\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
@@ -110,6 +112,8 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/var_interpreters/var_interpreter.c			\
+        src/var_interpreters/var_manipulator.c			\
 		src/special_variable/sepecial_variable.c \
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \

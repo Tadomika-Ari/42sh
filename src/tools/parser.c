@@ -54,8 +54,6 @@ void count_element(parse_t *parse, char *sep, char *str, ele_t *ele)
         update_ele(ele);
         parse->in_var = TRUE;
     }
-    if (should_split_on_quote(parse, str[ele->i], ele->start))
-        update_ele(ele);
     update_state(parse, str[ele->i]);
     if (!is_protected(parse) && parse->in_var == TRUE && str[ele->i] == '}') {
         ele->count += (ele->i >= ele->start) ? 1 : 0;
@@ -96,22 +94,7 @@ static void copy_next(parse_t *parse, char *str, char **res, int num)
 
 void do_parsing(parse_t *parse, char **res, char *str, char *sep)
 {
-    if (!parse->in_quote && !parse->in_tick && str[parse->i] == '$') {
-        if (parse->i > parse->start)
-            copy_next(parse, str, res, 0);
-        parse->start = parse->i;
-        parse->in_var = TRUE;
-    }
-    if (should_split_on_quote(parse, str[parse->i], parse->start))
-        copy_next(parse, str, res, 0);
     update_state(parse, str[parse->i]);
-    if (!is_protected(parse) && parse->in_var == TRUE
-        && str[parse->i] == '}') {
-        parse->in_var = FALSE;
-        parse->i++;
-        copy_next(parse, str, res, 0);
-        return;
-    }
     if (!is_protected(parse) && is_sep(str[parse->i], sep))
         copy_next(parse, str, res, 1);
     parse->i++;

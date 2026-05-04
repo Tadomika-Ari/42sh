@@ -60,6 +60,8 @@ int my_strlen(char const *str);
 
 char *my_strdup(char const *src);
 
+char **my_strtwabw(char *str, char *sep_word);
+
 int my_getnbr(char const *str);
 
 int my_strcmp(char const *s1, char const *s2);
