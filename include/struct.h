@@ -60,17 +60,15 @@ typedef enum job_state {
     DONE
 } job_state_t;
 
-# define DEFAULT_COLOR WHITE
-
-typedef enum color {
-    RED = 31,
-    GREEN,
-    YELLOW,
-    BLUE,
-    PURPLE,
-    CYAN,
-    WHITE
-} color_t;
+    #define BLACK "\x1b[30m"
+    #define RED "\x1b[31m"
+    #define GREEN "\x1b[32m"
+    #define YELLOW "\x1b[33m"
+    #define BLUE "\x1b[34m"
+    #define MAGENTA "\x1b[35m"
+    #define CYAN "\x1b[36m"
+    #define WHITE "\x1b[37m"
+    #define NORMAL "\x1b[m"
 
 typedef struct job {
     int id;
@@ -103,7 +101,6 @@ typedef struct tcsh {
     struct termios shell_tmodes;
     pid_t fg_pgid;
     bool is_background;
-    color_t color;
 } tcsh_t;
 
 typedef struct function {
@@ -337,4 +334,7 @@ char **globbing(char *str);
 int is_globing(char *str);
 
 char **array_null(char c);
+
+int cprintf(char *str, int color);
+
 #endif
