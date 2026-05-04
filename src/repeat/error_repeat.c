@@ -44,9 +44,13 @@ int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
     for (int i = 0; i < term->nb_repeat - 1 && term->is_repeat == TRUE; i++) {
         copy_cmd = my_strdup(cmd);
         expanded = alias(term, copy_cmd);
+        if (expanded == NULL)
+            return 0;
         loops_multi_func(term, expanded, value);
     }
     expanded = alias(term, cmd);
+    if (expanded == NULL)
+        return 0;
     return loops_multi_func(term, expanded, value);
 }
 
