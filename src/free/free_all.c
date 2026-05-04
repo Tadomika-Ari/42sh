@@ -80,6 +80,7 @@ void free_all(tcsh_t *term)
 {
     if (!term)
         return;
+    free(term->return_value);
     free_node(term->env);
     free_node_locals(term->locals);
     free_node(term->func);
