@@ -14,5 +14,7 @@ int fill_bonus(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, hangman, "hangman") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, flipcoin, "flipcoin") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return EXIT_SUCCESS;
 }
