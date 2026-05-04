@@ -29,20 +29,26 @@ int check_repeat(char *av, tcsh_t *term)
     return SUCCESS_EXIT;
 }
 
-int my_lenbase(int nb, int base)
+int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
 {
-    int len = 0;
+    char *expanded = NULL;
+    char *copy_cmd = NULL;
 
-    if (nb < 0) {
-        nb = nb * -1;
-        len++;
+    if (is_only_spaces(cmd)) {
+        free(cmd);
+        return 0;
     }
-    while (base <= nb) {
-        nb = nb / base;
-        len++;
+    for (int i = 0; i < term->nb_repeat - 1 && term->is_repeat == TRUE; i++) {
+        copy_cmd = my_strdup(cmd);
+        expanded = alias(term, copy_cmd);
+        if (expanded == NULL)
+            return 0;
+        loops_multi_func(term, expanded, value);
     }
-    len++;
-    return len;
+    expanded = alias(term, cmd);
+    if (expanded == NULL)
+        return 0;
+    return loops_multi_func(term, expanded, value);
 }
 
 char *cut_len(char *str, int nbr)
