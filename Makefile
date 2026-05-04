@@ -59,6 +59,7 @@ SRC = 	src/main.c							\
 		src/tools/parsing_tool.c            \
 		src/initialisation/create_node.c    \
 		src/tools/glob.c                    \
+		src/tools/fill_buff.c \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -118,6 +119,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/tools/parsing_tool.c            \
 		src/initialisation/create_node.c    \
 		src/tools/glob.c                    \
+		src/tools/fill_buff.c \
 
 BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/cprintf.c\
