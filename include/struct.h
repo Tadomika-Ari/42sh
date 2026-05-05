@@ -200,6 +200,8 @@ int not_cond(char *str);
 
 int join_len_until_then(char **argv);
 
+int fallback_cond(tcsh_t *term, char *cond, bool *error);
+
 int normalize(tcsh_t *term, char *cmd, char **command, int status);
 
 int error_expression_syntax(char *cmd);
