@@ -11,16 +11,58 @@
 #include <stdio.h>
 #include "../../include/struct.h"
 
-static int fallback_cond(char *expr)
+int child(tcsh_t *term, int fd[2], char *cond)
 {
-    int left = 0;
-    int right = 0;
+    int pid = fork();
+    char **env = node_to_array(term->env);
+    int res = 0;
 
-    if (expr && sscanf(expr, " ( %d == %d ) ", &left, &right) == 2)
-        return left == right;
-    if (expr && sscanf(expr, "(%d==%d)", &left, &right) == 2)
-        return left == right;
-    return 0;
+    if (pid == 0) {
+        close(fd[0]);
+        dup2(fd[1], STDOUT_FILENO);
+        close(fd[1]);
+        execve("/usr/bin/calc", (char *[]){"calc", cond, NULL}, env);
+        exit(-1);
+    }
+    waitpid(pid, &res, 0);
+    if (env)
+        free(env);
+    if (!WIFEXITED(res) || WEXITSTATUS(res) != 0)
+        return ALTERNATIVE_EXIT;
+    return SUCCESS_EXIT;
+}
+
+static char *read_fd(int pipefd[2])
+{
+    char buf[1024];
+    ssize_t n = read(pipefd[0], buf, sizeof(buf) - 1);
+
+    close(pipefd[1]);
+    if (n < 1)
+        return NULL;
+    close(pipefd[0]);
+    return my_strdup(buf);
+}
+
+static int fallback_cond(tcsh_t *term, char *cond, bool *error)
+{
+    int pipefd[2] = {-1, -1};
+    int result = 0;
+    char *tmp = NULL;
+
+    if (pipe(pipefd) != SUCCESS_EXIT) {
+        *error = true;
+        return ALTERNATIVE_EXIT;
+    }
+    if (child(term, pipefd, cond) != SUCCESS_EXIT) {
+        close(pipefd[0]);
+        close(pipefd[1]);
+        *error = true;
+        return ALTERNATIVE_EXIT;
+    }
+    tmp = read_fd(pipefd);
+    result = tmp != NULL ? atoi(tmp) : 0;
+    return result;
 }
 
 static int join_len_until_then(char **argv)
@@ -34,6 +76,17 @@ static int join_len_until_then(char **argv)
     return len;
 }
 
+int not_cond(char *str)
+{
+    for (int i = 0; str[i] != '\0'; i++)
+        if ((str[i] > '9' || str[i] < '0') && str[i] != '=' && str[i] != '!'
+            && str[i] != '|' && str[i] != '&' && str[i] != '>'
+            && str[i] != '<' && str[i] != ')' && str[i] != '(' &&
+            str[i] != '+' && str[i] != '-' && str[i] != '*' && str[i] != ' ')
+            return ALTERNATIVE_EXIT;
+    return SUCCESS_EXIT;
+}
+
 static char *join(char **argv)
 {
     int pos = 0;
@@ -45,7 +98,7 @@ static char *join(char **argv)
     res = malloc(len + 1);
     if (res == NULL)
         return NULL;
-    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++) {
+    for (int i = 0; argv[i] != NULL && not_cond(argv[i]) == 0; i++) {
         memcpy(res + pos, argv[i], strlen(argv[i]));
         pos += strlen(argv[i]);
         if (argv[i + 1] != NULL && my_strcmp(argv[i + 1], "then") != 0) {
@@ -62,12 +115,13 @@ static int search_condition(tcsh_t *term, char **argv, bool *error)
     char *expr = join(argv);
     int cond = 0;
 
-    (void)term;
-    if (expr == NULL) {
+    if (expr == NULL || expr[0] == '\0') {
         *error = true;
         return ALTERNATIVE_EXIT;
     }
-    cond = fallback_cond(expr);
+    cond = fallback_cond(term, expr, error);
+    if (*error == true)
+        return ALTERNATIVE_EXIT;
     if (cond == 0 && atoi(expr) != 0)
         cond = 1;
     free(expr);
@@ -168,13 +222,14 @@ int my_if(tcsh_t *term, char **argv)
     int cond = search_condition(term, argv, &error);
     int then = is_then(argv);
 
-    if (cond == 0)
-        cond = fallback_cond(argv[0]);
     if (error == true || then == -1)
         return ALTERNATIVE_EXIT;
-    if (cond != 0 && then == 0 && argv[1] != NULL)
-        return search_command(term, argv + 1, NULL);
-    if ((cond != 0 && then == 1) || (cond == 0 && then == 0))
+    if (then == 0) {
+        if (cond != 0 && argv[1] != NULL)
+            return search_command(term, argv + 1, NULL);
+        return SUCCESS_EXIT;
+    }
+    if (cond != 0 && then == 1)
         return SUCCESS_EXIT;
     return in_if(term);
 }
