@@ -16,6 +16,7 @@ int my_err(bool *error, int out)
 static int in_child(tcsh_t *term, int fd[2], int in[2])
 {
     char **env = node_to_array(term->env);
+    char *path = search_bin(term, "bc");
 
     close(in[1]);
     dup2(in[0], STDIN_FILENO);
@@ -24,7 +25,9 @@ static int in_child(tcsh_t *term, int fd[2], int in[2])
     dup2(fd[1], STDOUT_FILENO);
     dup2(fd[1], STDERR_FILENO);
     close(fd[1]);
-    execve("/usr/bin/bc", (char *[]){"bc", "-q", NULL}, env);
+    execve(path, (char *[]){"bc", "-q", NULL}, env);
+    free(env);
+    free(path);
     exit(-1);
 }
 
