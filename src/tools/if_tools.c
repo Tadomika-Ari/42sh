@@ -7,7 +7,7 @@
 
 #include "../../include/struct.h"
 
-int child(tcsh_t *term, int fd[2], char *cond)
+int child_cond(tcsh_t *term, int fd[2], char *cond)
 {
     int pid = fork();
     char **env = node_to_array(term->env);
@@ -74,7 +74,7 @@ int fallback_cond(tcsh_t *term, char *cond, bool *error)
         *error = true;
         return ALTERNATIVE_EXIT;
     }
-    if (child(term, pipefd, cond) != SUCCESS_EXIT) {
+    if (child_cond(term, pipefd, cond) != SUCCESS_EXIT) {
         close(pipefd[0]);
         close(pipefd[1]);
         *error = true;

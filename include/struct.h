@@ -192,7 +192,7 @@ int my_cmd_error(char *str, char *cmd, int out);
 
 int my_cd(tcsh_t *term, char **argv);
 
-int child(tcsh_t *term, int fd[2], char *cond);
+int child_cond(tcsh_t *term, int fd[2], char *cond);
 
 void algo_exit(int *result);
 
