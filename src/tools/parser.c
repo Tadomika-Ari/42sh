@@ -32,7 +32,7 @@ int check_char(char *str, int i, parse_t *parse, char *sep)
 
 static int is_quote(char c)
 {
-    return (c == '"' || c == '\'');
+    return (c == '"' || c == '\'' || c == '`');
 }
 
 static int should_split_on_quote(parse_t *parse, char c, int start)
