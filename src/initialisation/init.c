@@ -56,6 +56,8 @@ static int fill_annexe(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_if, "if") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, banana, "banana") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
 }
 
