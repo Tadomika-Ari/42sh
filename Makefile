@@ -140,6 +140,10 @@ BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/fill_buff_bonus.c         \
 		src/bonus/steps_hangman.c           \
 		src/bonus/print_letter_hangman.c    \
+		src/bonus/flipcoin.c                \
+		src/bonus/throwdice.c               \
+		src/bonus/guessnumber.c             \
+		src/bonus/author.c                  \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
@@ -152,6 +156,7 @@ OBJ2 = 	$(SRC2:.c=.o)
 BONUS_SRC2 = src/bonus/init.c          \
 		src/bonus/argument_bonus.c \
 		src/bonus/put_err_bonus.c			        \
+		src/bonus/tic_tac_toe.c \
 
 BONUS_OBJ2 = 	$(BONUS_SRC2:.c=.o)
 

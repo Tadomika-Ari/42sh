@@ -343,3 +343,68 @@ Test(shell, push_to_history, .init = redirect_all_std)
 
     push_to_history(term, "jungle diff");
 }
+
+Test(shell, dangerous_alias_keyword, .init = redirect_all_std)
+{
+    char *cmd[] = {"alias", "something", NULL};
+
+    int ret = my_alias(NULL, cmd);
+    cr_assert_eq(ret, ALTERNATIVE_EXIT);
+    cr_assert_stdout_eq_str("alias: Too dangerous to alias that.\n");
+}
+
+Test(shell, alias_loop_detection, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char path[] = "/tmp/42sh_alias_loopXXXXXX";
+    int fd = mkstemp(path);
+
+    cr_assert(fd >= 0);
+    term.fd_rc = fd;
+    write(fd, "alias a='bonjour'\nalias bonjour='a'\n", 36);
+    char *res = alias(&term, my_strdup("a"));
+    cr_assert_null(res);
+    cr_assert_stderr_eq_str("Alias loop.\n");
+    close(fd);
+    unlink(path);
+}
+
+Test(shell, alias_test_alias_and_check, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char path[] = "/tmp/42sh_alias_testXXXXXX";
+    char *content = NULL;
+    char *cmd[] = {"test_alias", "alias_OK", NULL};
+    int fd = mkstemp(path);
+
+    cr_assert(fd >= 0);
+    term.fd_rc = fd;
+    cr_assert_eq(my_alias(&term, cmd), SUCCESS_EXIT);
+    lseek(fd, 0, SEEK_SET);
+    content = get_rc_file(&term);
+    cr_assert_not_null(content);
+    cr_assert_str_eq(content, "alias test_alias='alias_OK'\n");
+    free(content);
+    close(fd);
+    unlink(path);
+}
+
+Test(shell, alias_test_ls_and_check, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char path[] = "/tmp/42sh_alias_testXXXXXX";
+    char *content = NULL;
+    char *cmd[] = {"test_ls", "ls", "-l", NULL};
+    int fd = mkstemp(path);
+
+    cr_assert(fd >= 0);
+    term.fd_rc = fd;
+    cr_assert_eq(my_alias(&term, cmd), SUCCESS_EXIT);
+    lseek(fd, 0, SEEK_SET);
+    content = get_rc_file(&term);
+    cr_assert_not_null(content);
+    cr_assert_str_eq(content, "alias test_ls='ls -l'\n");
+    free(content);
+    close(fd);
+    unlink(path);
+}
