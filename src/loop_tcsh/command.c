@@ -26,7 +26,7 @@ int search_command(tcsh_t *term, char **command, char *cmd)
     else
         bin = my_str_to_word_array(path->data, ":=\n");
     if (!bin)
-        return command_not_found(command[0]);
+        return my_cmd_error(": Command not found.\n", command[0], 1);
     for (int i = 0; bin[i]; i++) {
         lign = search_binary(bin[i], command[0]);
         if (lign != NULL) {
@@ -38,7 +38,7 @@ int search_command(tcsh_t *term, char **command, char *cmd)
     return -1;
 }
 
-static int normalize(tcsh_t *term, char *cmd, char **command, int status)
+int normalize(tcsh_t *term, char *cmd, char **command, int status)
 {
     if (status == -1)
         status = exec(my_strdup(command[0]), command, term, cmd);
@@ -66,8 +66,6 @@ static int apply_command(tcsh_t *term, char *cmd)
         if (my_strcmp(command[0], ((function_t *)tmp->data)->name) == 0)
             return execute(tmp, command, term);
     status = search_command(term, command, cmd);
-    if (status == -1)
-        status = sepecial_variable(term, cmd);
     return normalize(term, cmd, command, status);
 }
 
