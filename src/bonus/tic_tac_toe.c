@@ -39,9 +39,8 @@ int get_pos(char *pos, ttt_t *ttt)
     return SUCCESS_EXIT;
 }
 
-void print_gride(char **gride, int player)
+void print_gride(char **gride, int player, ttt_t *ttt)
 {
-    // printf("\033[H\033[2J");
     printf("\nPlayer 1 = X  Player 2 = O \n\n");
     printf("    1 | 2 | 3 \n");
     printf("  ----|---|---\n");
@@ -51,7 +50,8 @@ void print_gride(char **gride, int player)
     printf("  ----|---|---\n");
     printf("  C %c | %c | %c \n", gride[2][0], gride[2][1], gride[2][2]);
     printf("  ----|---|---\n");
-    printf("\nPlayer %d Turn : ", player);
+    if (ttt->player_win == -1 && ttt->turn != 0)
+        printf("\nturn : %d \nPlayer %d Turn : ", ttt->turn, player);
 }
 
 int set_in_gride(ttt_t *ttt) 
@@ -60,11 +60,36 @@ int set_in_gride(ttt_t *ttt)
 
     if (ttt->player == 2)
         c = 'O';
-    ttt->gride[ttt->posy][ttt->posx] = c;
-    ttt->gride_int[ttt->posx + (3 * ttt->posy)] = ttt->player;
+    if (ttt->gride_int[ttt->posx + (3 * ttt->posy)] == 0) { 
+        ttt->gride_int[ttt->posx + (3 * ttt->posy)] = ttt->player;
+        ttt->gride[ttt->posy][ttt->posx] = c;
+    }
+    else
+        return put_err("This space is occupied. Start over.\n", ttt->player);
     if (ttt->player == PLAYER1)
         return PLAYER2;
     return PLAYER1;
+}
+
+int algo_end(ttt_t *ttt)
+{
+    int turn = 0;
+
+    for (int i = 0; i < 9; i++)
+        if (ttt->gride_int[i] == 0)
+            turn++;
+    ttt->turn = turn;
+    if (ttt->gride_int[4] != 0 && (ttt->gride_int[4] == ttt->gride_int[0] && ttt->gride_int[4] == ttt->gride_int[8]))
+        return ttt->gride_int[4];
+    if (ttt->gride_int[4] != 0 && (ttt->gride_int[4] == ttt->gride_int[2] && ttt->gride_int[4] == ttt->gride_int[6]))
+        return ttt->gride_int[4];
+    for (int i = 0; i < 3; i++)
+        if (ttt->gride_int[i] != 0 && (ttt->gride_int[i + 0] == ttt->gride_int[i + 3] && ttt->gride_int[i + 3] == ttt->gride_int[i + 6]))
+            return ttt->gride_int[4];
+    for (int i = 0; i < 9; i += 3)
+        if (ttt->gride_int[i] != 0 && (ttt->gride_int[i] == ttt->gride_int[i + 1] && ttt->gride_int[i + 1] == ttt->gride_int[i + 2]))
+            return ttt->gride_int[4];
+    return -1;
 }
 
 int run_game(void)
@@ -72,23 +97,30 @@ int run_game(void)
     size_t input_len = 0;
     ssize_t read;
     char *input = NULL;
-    ttt_t ttt = {RUNNING, NULL, PLAYER1, -1, -1};
+    ttt_t ttt = {RUNNING, NULL, PLAYER1, -1, -1, 9, -1};
 
     ttt.gride = init_gride();
     for (int i = 0; i < 9; i++)
         ttt.gride_int[i] = 0;
-
+    print_gride(ttt.gride, ttt.player, &ttt);
     while (1) {
         if (ttt.state != RUNNING)
             break;
-        print_gride(ttt.gride, ttt.player);
         read = getline(&input, &input_len, stdin);
         if (read == -1)
             break;
         input[strcspn(input, "\n")] = '\0';
         if (get_pos(input, &ttt) != -1)
             ttt.player = set_in_gride(&ttt);
+        ttt.player_win = algo_end(&ttt);
+        print_gride(ttt.gride, ttt.player, &ttt);
+        if (ttt.player_win != -1 || ttt.turn == 0)
+            break;
     }
+    if (ttt.player_win != -1)
+        printf("Player %d WIN!!!!\n", ttt.player_win);
+    if (ttt.turn == 0)
+        printf("Draw\n");
     return SUCCESS_EXIT;
 }
 
