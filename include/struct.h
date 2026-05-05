@@ -21,6 +21,22 @@
 
     #define PELOPHYLAX "./bonus/pelophylax.txt"
 
+    #define BLACK "\e[30m"
+    #define RED "\e[31m"
+    #define GREEN "\e[32m"
+    #define YELLOW "\e[33m"
+    #define BLUE "\e[34m"
+    #define MAGENTA "\e[35m"
+    #define CYAN "\e[36m"
+    #define WHITE "\e[37m"
+    #define NORMAL "\e[m"
+
+    #define PLAYER1 1
+    #define PLAYER2 2
+
+    #define COLS "123"
+    #define ROWS "ABC"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -59,16 +75,6 @@ typedef enum job_state {
     STOPPED,
     DONE
 } job_state_t;
-
-    #define BLACK "\e[30m"
-    #define RED "\e[31m"
-    #define GREEN "\e[32m"
-    #define YELLOW "\e[33m"
-    #define BLUE "\e[34m"
-    #define MAGENTA "\e[35m"
-    #define CYAN "\e[36m"
-    #define WHITE "\e[37m"
-    #define NORMAL "\e[m"
 
 typedef struct job {
     int id;
@@ -133,6 +139,15 @@ typedef struct ele {
     int count;
     int start;
 } ele_t;
+
+typedef struct tic_tac_toe {
+    int state;
+    char **gride;
+    int gride_int[9];
+    int player;
+    int posx;
+    int posy;
+} ttt_t;
 
 int init(tcsh_t *term, char **env);
 
