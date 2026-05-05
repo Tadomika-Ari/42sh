@@ -5,11 +5,20 @@
 ** if
 */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include "../../include/struct.h"
+
+static int apply(tcsh_t *term, char **cmd)
+{
+    int status = 0;
+
+    if (!cmd || cmd[0] == NULL)
+        return ALTERNATIVE_EXIT;
+    for (nodes_t *tmp = term->func; tmp; tmp = tmp->next)
+        if (my_strcmp(cmd[0], ((function_t *)tmp->data)->name) == 0)
+            return execute(tmp, cmd, term);
+    status = search_command(term, cmd, NULL);
+    return normalize(term, NULL, cmd, status);
+}
 
 int child(tcsh_t *term, int fd[2], char *cond)
 {
@@ -20,6 +29,7 @@ int child(tcsh_t *term, int fd[2], char *cond)
     if (pid == 0) {
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
+        close(STDERR_FILENO);
         close(fd[1]);
         execve("/usr/bin/calc", (char *[]){"calc", cond, NULL}, env);
         exit(-1);
@@ -28,7 +38,7 @@ int child(tcsh_t *term, int fd[2], char *cond)
     if (env)
         free(env);
     if (!WIFEXITED(res) || WEXITSTATUS(res) != 0)
-        return ALTERNATIVE_EXIT;
+        return my_cmd_error(": Expression Syntax.\n", "if", ALTERNATIVE_EXIT);
     return SUCCESS_EXIT;
 }
 
@@ -41,6 +51,7 @@ static char *read_fd(int pipefd[2])
     if (n < 1)
         return NULL;
     close(pipefd[0]);
+    buf[n] = '\0';
     return my_strdup(buf);
 }
 
@@ -62,6 +73,7 @@ static int fallback_cond(tcsh_t *term, char *cond, bool *error)
     }
     tmp = read_fd(pipefd);
     result = tmp != NULL ? atoi(tmp) : 0;
+    free(tmp);
     return result;
 }
 
@@ -117,11 +129,15 @@ static int search_condition(tcsh_t *term, char **argv, bool *error)
 
     if (expr == NULL || expr[0] == '\0') {
         *error = true;
+        if (expr)
+            free(expr);
         return ALTERNATIVE_EXIT;
     }
     cond = fallback_cond(term, expr, error);
-    if (*error == true)
+    if (*error == true) {
+        free(expr);
         return ALTERNATIVE_EXIT;
+    }
     if (cond == 0 && atoi(expr) != 0)
         cond = 1;
     free(expr);
@@ -161,6 +177,22 @@ static int stop(char **argv)
     return ALTERNATIVE_EXIT;
 }
 
+char **dupl_array(char **argv)
+{
+    int len = len_array(argv);
+    char **array = malloc(sizeof(char *) * (len + 1));
+
+    if (!array)
+        return NULL;
+    for (int i = 0; argv[i]; i++) {
+        array[i] = my_strdup(argv[i]);
+        if (array[i] == NULL)
+            return array;
+    }
+    array[len] = NULL;
+    return array;
+}
+
 int else_if(tcsh_t *term, char **argv)
 {
     bool error = false;
@@ -171,20 +203,19 @@ int else_if(tcsh_t *term, char **argv)
         return ALTERNATIVE_EXIT;
     if ((cond != 0 && then == 1))
         return SUCCESS_EXIT;
-    if (cond != 0 && then == 0) {
-        search_command(term, argv + 1, NULL);
-        return SUCCESS_EXIT;
-    }
+    if (cond != 0 && then == 0)
+        return apply(term, dupl_array(argv + 1));
     return ALTERNATIVE_EXIT;
 }
 
-static char **get_info(void)
+static char **get_info(bool *stop)
 {
     size_t len = 0;
     char *lign = NULL;
     char **tmp = NULL;
 
     if (getline(&lign, &len, stdin) == -1) {
+        *stop = true;
         free(lign);
         return NULL;
     }
@@ -201,16 +232,22 @@ static char **get_info(void)
 int in_if(tcsh_t *term)
 {
     char **tmp = NULL;
+    int res = -1;
+    bool cond = false;
 
     while (1) {
-        tmp = get_info();
+        tmp = get_info(&cond);
+        if (cond == true)
+            return my_cmd_error(": then/endif not found.\n",
+                "then", ALTERNATIVE_EXIT);
         if (stop(tmp) == 0) {
             free_array(tmp);
             return SUCCESS_EXIT;
         }
-        if (strcmp(tmp[0], "else") == 0 && else_if(term, tmp + 2) == 0) {
+        res = strcmp(tmp[0], "else") == 0 ? else_if(term, tmp + 2) : res;
+        if (res != ALTERNATIVE_EXIT) {
             free_array(tmp);
-            return SUCCESS_EXIT;
+            return res;
         }
         free_array(tmp);
     }
@@ -223,10 +260,12 @@ int my_if(tcsh_t *term, char **argv)
     int then = is_then(argv);
 
     if (error == true || then == -1)
-        return ALTERNATIVE_EXIT;
+        return my_cmd_error(": Too few arguments.\n", "if", ALTERNATIVE_EXIT);
     if (then == 0) {
         if (cond != 0 && argv[1] != NULL)
-            return search_command(term, argv + 1, NULL);
+            return apply(term, dupl_array(argv + 1));
+        if (argv[1] == NULL)
+            return my_cmd_error(": Empty if.\n", "if", ALTERNATIVE_EXIT);
         return SUCCESS_EXIT;
     }
     if (cond != 0 && then == 1)
