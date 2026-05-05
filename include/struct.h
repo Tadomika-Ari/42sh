@@ -18,7 +18,7 @@
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
 
-    #define SEP "()[]\'\""
+    #define SEP "()[]'\"`"
 
     #define PELOPHYLAX "./bonus/pelophylax.txt"
     #define HANGMAN "./bonus/hangman.txt"
@@ -159,6 +159,7 @@ typedef struct locals {
 typedef struct parse {
     int in_quote;
     int in_tick;
+    int in_btick;
     int parent;
     int brack;
     int count;
