@@ -1,0 +1,18 @@
+<< Tic_tac_toe HELP >>
+
+USAGE
+    ic_tac_toe [-h]   : help menu
+    ic_tac_toe [--help]   : help menu
+
+RULES
+    Game on a 3x3 grid
+    Two players compete. They must each take turns filling a square of the grid
+    with their assigned symbol: O or X. The winner is the one who manages to
+    align three identical symbols, horizontally, vertically, or diagonally.
+    It is customary to let the player with the X symbol make the first move.
+
+    Played by two people on a 9x9 grid. One player uses X symbols, the other uses Os.
+    In turn, each player places their symbol in an empty square. The first player to align 3 symbols
+    horizontally, vertically, or diagonally wins. If all 9 squares are filled without being aligned,
+
+    it's a draw. This page follows the classic 3×3 tic-tac-toe format.

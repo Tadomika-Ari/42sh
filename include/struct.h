@@ -58,6 +58,26 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define ASK_NUMBER "Enter a number between 0 and %d: "
     #define WRONG_NUMBER "Wrong number, try again\n"
 
+    #define INCORECT_POS ERROR SOL
+    #define SOL "ROWS [A,B,C] and COLS [1,2,3]\n"
+    #define ERROR "Incorect Pos \"RowCol\" ex \"A1\" or \"1A\" "
+
+    #define BLACK "\e[30m"
+    #define RED "\e[31m"
+    #define GREEN "\e[32m"
+    #define YELLOW "\e[33m"
+    #define BLUE "\e[34m"
+    #define MAGENTA "\e[35m"
+    #define CYAN "\e[36m"
+    #define WHITE "\e[37m"
+    #define NORMAL "\e[m"
+
+    #define PLAYER1 1
+    #define PLAYER2 2
+
+    #define COLS "123"
+    #define ROWS "ABC"
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -98,16 +118,6 @@ typedef enum job_state {
     STOPPED,
     DONE
 } job_state_t;
-
-    #define BLACK "\e[30m"
-    #define RED "\e[31m"
-    #define GREEN "\e[32m"
-    #define YELLOW "\e[33m"
-    #define BLUE "\e[34m"
-    #define MAGENTA "\e[35m"
-    #define CYAN "\e[36m"
-    #define WHITE "\e[37m"
-    #define NORMAL "\e[m"
 
 typedef struct job {
     int id;
@@ -173,6 +183,17 @@ typedef struct ele {
     int count;
     int start;
 } ele_t;
+
+typedef struct tic_tac_toe {
+    int state;
+    char **gride;
+    int player;
+    int posx;
+    int posy;
+    int turn;
+    int player_win;
+    int gride_int[9];
+} ttt_t;
 
 typedef struct hang {
     int hp;
@@ -421,11 +442,14 @@ int hangman(tcsh_t *term, char **argv);
 char *fill_buff_bonus(const char *filename);
 
 void print_letter_hangman(hang_t *hang);
+
 int cprintf(char *str, char *color);
 
 char *fill_buff(const char *filename);
 
 char *my_strip_newline(char *str);
+
+int tic_tac_toe(tcsh_t *term, char **argv);
 
 int flipcoin(tcsh_t *term, char **argv);
 
