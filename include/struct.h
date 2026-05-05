@@ -43,6 +43,8 @@
     #define NB_ROW 7
 extern const char *STEPS[NB_STEP][NB_ROW];
 
+    #define DEFAULT_DICE 6
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
