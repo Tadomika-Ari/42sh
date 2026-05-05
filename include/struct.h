@@ -26,6 +26,7 @@
     #define FLIPCOIN "./bonus/flipcoin.txt"
     #define THROWDICE "./bonus/throwdice.txt"
     #define GUESSNUMBER "./bonus/guessnumber.txt"
+    #define AUTHOR "./bonus/author.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
