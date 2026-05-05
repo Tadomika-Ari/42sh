@@ -26,6 +26,7 @@
     #define FLIPCOIN "./bonus/flipcoin.txt"
     #define THROWDICE "./bonus/throwdice.txt"
     #define GUESSNUMBER "./bonus/guessnumber.txt"
+    #define AUTHOR "./bonus/author.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -456,4 +457,6 @@ int flipcoin(tcsh_t *term, char **argv);
 int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
+
+int author(tcsh_t *term, char **argv);
 #endif
