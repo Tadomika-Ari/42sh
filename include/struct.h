@@ -58,6 +58,10 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define ASK_NUMBER "Enter a number between 0 and %d: "
     #define WRONG_NUMBER "Wrong number, try again\n"
 
+    #define INCORECT_POS ERROR SOL
+    #define SOL "ROWS [A,B,C] and COLS [1,2,3]\n"
+    #define ERROR "Incorect Pos \"RowCol\" ex \"A1\" or \"1A\" "
+
     #define BLACK "\e[30m"
     #define RED "\e[31m"
     #define GREEN "\e[32m"
