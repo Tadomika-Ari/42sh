@@ -431,4 +431,7 @@ int flipcoin(tcsh_t *term, char **argv);
 int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
+
+int banana(tcsh_t *term, char **tmp);
+
 #endif
