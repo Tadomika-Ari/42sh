@@ -359,4 +359,6 @@ char *fill_buff(const char *filename);
 
 char *my_strip_newline(char *str);
 
+int tic_tac_toe(tcsh_t *term, char **argv);
+
 #endif
