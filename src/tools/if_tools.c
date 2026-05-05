@@ -28,3 +28,25 @@ int child(tcsh_t *term, int fd[2], char *cond)
         return my_cmd_error(": Expression Syntax.\n", "if", ALTERNATIVE_EXIT);
     return SUCCESS_EXIT;
 }
+
+int join_len_until_then(char **argv)
+{
+    int len = 0;
+
+    if (argv == NULL)
+        return 0;
+    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++)
+        len += strlen(argv[i]) + 1;
+    return len;
+}
+
+int not_cond(char *str)
+{
+    for (int i = 0; str[i] != '\0'; i++)
+        if ((str[i] > '9' || str[i] < '0') && str[i] != '=' && str[i] != '!'
+            && str[i] != '|' && str[i] != '&' && str[i] != '>'
+            && str[i] != '<' && str[i] != ')' && str[i] != '(' &&
+            str[i] != '+' && str[i] != '-' && str[i] != '*' && str[i] != ' ')
+            return ALTERNATIVE_EXIT;
+    return SUCCESS_EXIT;
+}
