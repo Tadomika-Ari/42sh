@@ -253,6 +253,8 @@ int join_len_until_then(char **argv);
 
 int fallback_cond(tcsh_t *term, char *cond, bool *error);
 
+char *search_bin(tcsh_t *term, char *command);
+
 int normalize(tcsh_t *term, char *cmd, char **command, int status);
 
 int error_expression_syntax(char *cmd);
