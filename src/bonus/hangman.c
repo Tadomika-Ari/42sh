@@ -77,7 +77,7 @@ static void print_end_hangman(hang_t *hang, char *input)
     free(input);
 }
 
-static int tmp(char *input, hang_t *hang)
+static int error_hangman(char *input, hang_t *hang)
 {
     input[strcspn(input, "\n")] = '\0';
     if (my_strlen(input) != 1 || !('a' <= input[0] && input[0] <= 'z')) {
@@ -111,7 +111,7 @@ void loop_hangman(char *word)
         read = getline(&input, &input_len, stdin);
         if (read == -1)
             break;
-        tmp(input, &hang);
+        error_hangman(input, &hang);
     }
     print_end_hangman(&hang, input);
     free(to_find);
@@ -149,11 +149,13 @@ int hangman(tcsh_t *term, char **argv)
     char *word = NULL;
     int len = len_array(argv);
 
-    if (len == 1 && my_strcmp("-h", argv[0]) == 0)
+    if (len == 1 && (my_strcmp("-h", argv[0]) == 0
+            || my_strcmp("--help", argv[0]) == 0))
         return help_hangman();
     if (len == 0)
         word = is_valid_word();
-    if (len == 1 && my_strcmp("--random", argv[0]) == 0)
+    if (len == 1 && (my_strcmp("--random", argv[0]) == 0)
+        || my_strcmp("-r", argv[0]) == 0)
         word = random_word_hangman();
     if (!word)
         return FAILURE_EXIT;

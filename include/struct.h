@@ -23,10 +23,21 @@
     #define PELOPHYLAX "./bonus/pelophylax.txt"
     #define HANGMAN "./bonus/hangman.txt"
     #define HANGMAN_WORDS "./bonus/hangman_words.txt"
+    #define FLIPCOIN "./bonus/flipcoin.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
     #define LOSE_HANGMAN "You lose the game!"
+
+    #define HEAD HEAD_TOP HEAD_CENTER HEAD_BOT
+    #define HEAD_TOP "  ______  \n /      \\ \n"
+    #define HEAD_CENTER "|  HEAD |\n|       |\n"
+    #define HEAD_BOT " \\______/ \n"
+
+    #define TAIL TAIL_TOP TAIL_CENTER TAIL_BOT
+    #define TAIL_TOP "  ______  \n /      \\ \n"
+    #define TAIL_CENTER "|  TAIL |\n|       |\n"
+    #define TAIL_BOT " \\______/ \n"
 
     #define NB_STEP 11
     #define NB_ROW 7
@@ -398,4 +409,5 @@ char *fill_buff(const char *filename);
 
 char *my_strip_newline(char *str);
 
+int flipcoin(tcsh_t *term, char **argv);
 #endif
