@@ -1,0 +1,7 @@
+<< FLIPCOIN HELP >>
+
+USAGE
+    flipcoin [-h]   : help menu
+    flipcoin [--visualisation] : visualisation of the coin
+
+<< END >>
