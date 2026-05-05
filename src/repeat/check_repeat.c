@@ -34,6 +34,7 @@ int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
     char *expanded = NULL;
     char *copy_cmd = NULL;
 
+    cmd[strcspn(cmd, "\n")] = '\0';
     if (is_only_spaces(cmd)) {
         free(cmd);
         return 0;
