@@ -2,6 +2,8 @@
 
 USAGE
     hangman [-h]   : help menu
+    hangman [--help]   : help menu
+    hangman [-r] : random word to found
     hangman [--random] : random word to found
 
 RULES
