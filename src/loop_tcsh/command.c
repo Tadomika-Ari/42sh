@@ -17,33 +17,17 @@ static void close_if_valid(int *fd)
 
 int search_command(tcsh_t *term, char **command, char *cmd)
 {
-    nodes_t *path = search_node(term->env, "PATH");
-    char **bin = NULL;
-    char *lign = NULL;
+    char *lign = search_bin(term, command[0]);
 
-    if (!path)
-        bin = my_str_to_word_array("/usr/bin:/bin:/usr/local/bin", ":=\n");
-    else
-        bin = my_str_to_word_array(path->data, ":=\n");
-    if (!bin)
+    if (!lign)
         return my_cmd_error(": Command not found.\n", command[0], 1);
-    for (int i = 0; bin[i]; i++) {
-        lign = search_binary(bin[i], command[0]);
-        if (lign != NULL) {
-            free_array(bin);
-            return exec(lign, command, term, cmd);
-        }
-    }
-    free_array(bin);
-    return -1;
+    return exec(lign, command, term, cmd);
 }
 
 int normalize(tcsh_t *term, char *cmd, char **command, int status)
 {
     if (status == -1)
         status = exec(my_strdup(command[0]), command, term, cmd);
-    if (status == -1)
-        command_not_found(command[0]);
     if (status == 1) {
         free_array(command);
         return -1;
