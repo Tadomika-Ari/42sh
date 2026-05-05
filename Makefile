@@ -139,6 +139,7 @@ BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/steps_hangman.c           \
 		src/bonus/print_letter_hangman.c    \
 		src/bonus/flipcoin.c                \
+		src/bonus/throwdice.c               \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 

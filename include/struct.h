@@ -24,6 +24,7 @@
     #define HANGMAN "./bonus/hangman.txt"
     #define HANGMAN_WORDS "./bonus/hangman_words.txt"
     #define FLIPCOIN "./bonus/flipcoin.txt"
+    #define THROWDICE "./bonus/throwdice.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -42,6 +43,10 @@
     #define NB_STEP 11
     #define NB_ROW 7
 extern const char *STEPS[NB_STEP][NB_ROW];
+
+    #define DEFAULT_DICE 6
+    #define NUMBER_FACE_DICE_ERR "throwdice: wrong number value, [7; 20]\n"
+    #define DICE_OFFSET 1
 
 typedef enum exit
 {
@@ -410,4 +415,6 @@ char *fill_buff(const char *filename);
 char *my_strip_newline(char *str);
 
 int flipcoin(tcsh_t *term, char **argv);
+
+int throwdice(tcsh_t *term, char **argv);
 #endif
