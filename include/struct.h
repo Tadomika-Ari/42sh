@@ -143,10 +143,10 @@ typedef struct ele {
 typedef struct tic_tac_toe {
     int state;
     char **gride;
-    int gride_int[9];
     int player;
     int posx;
     int posy;
+    int gride_int[9];
 } ttt_t;
 
 int init(tcsh_t *term, char **env);

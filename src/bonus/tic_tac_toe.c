@@ -22,8 +22,27 @@ char **init_gride(void)
     return tmp;
 }
 
-void print_gride(char **gride)
+int get_pos(char *pos, ttt_t *ttt)
 {
+    if (my_strlen(pos) != 2)
+        return put_err("Incorect Pos \"RowCol\" ex \"A1\" or \"1A\" ROWS [A,B,C] and COLS [1,2,3]\n", -1);
+    ttt->posx = -1;
+    ttt->posy = -1;
+    for (int i = 0; i < 3; i++)
+        if (pos[0] == COLS[i] || pos[1] == COLS[i])
+            ttt->posx = i;
+    for (int i = 0; i < 3; i++)
+        if (pos[0] == ROWS[i] || pos[1] == ROWS[i])
+            ttt->posy = i;
+    if (ttt->posy == -1 || ttt->posx == -1)
+        return put_err("Incorect Pos \"RowCol\" ex \"A1\" or \"1A\" ROWS [A,B,C] and COLS [1,2,3]\n", -1);
+    return SUCCESS_EXIT;
+}
+
+void print_gride(char **gride, int player)
+{
+    // printf("\033[H\033[2J");
+    printf("\nPlayer 1 = X  Player 2 = O \n\n");
     printf("    1 | 2 | 3 \n");
     printf("  ----|---|---\n");
     printf("  A %c | %c | %c \n", gride[0][0], gride[0][1], gride[0][2]);
@@ -32,6 +51,20 @@ void print_gride(char **gride)
     printf("  ----|---|---\n");
     printf("  C %c | %c | %c \n", gride[2][0], gride[2][1], gride[2][2]);
     printf("  ----|---|---\n");
+    printf("\nPlayer %d Turn : ", player);
+}
+
+int set_in_gride(ttt_t *ttt) 
+{
+    char c = 'X';
+
+    if (ttt->player == 2)
+        c = 'O';
+    ttt->gride[ttt->posy][ttt->posx] = c;
+    ttt->gride_int[ttt->posx + (3 * ttt->posy)] = ttt->player;
+    if (ttt->player == PLAYER1)
+        return PLAYER2;
+    return PLAYER1;
 }
 
 int run_game(void)
@@ -39,23 +72,22 @@ int run_game(void)
     size_t input_len = 0;
     ssize_t read;
     char *input = NULL;
-    ttt_t ttt = {RUNNING, NULL};
+    ttt_t ttt = {RUNNING, NULL, PLAYER1, -1, -1};
 
     ttt.gride = init_gride();
-    ttt.player = PLAYER1;
     for (int i = 0; i < 9; i++)
         ttt.gride_int[i] = 0;
 
     while (1) {
         if (ttt.state != RUNNING)
             break;
-        printf("\033[H\033[2J");
-        print_gride(ttt.gride);
-        printf("Player %d Turn : ", ttt.player);
+        print_gride(ttt.gride, ttt.player);
         read = getline(&input, &input_len, stdin);
         if (read == -1)
             break;
-        
+        input[strcspn(input, "\n")] = '\0';
+        if (get_pos(input, &ttt) != -1)
+            ttt.player = set_in_gride(&ttt);
     }
     return SUCCESS_EXIT;
 }
