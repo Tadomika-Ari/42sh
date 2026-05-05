@@ -7,25 +7,43 @@
 
 #include "../../include/struct.h"
 
+int my_err(bool *error, int out)
+{
+    *error = true;
+    return out;
+}
+
+static int in_child(tcsh_t *term, int fd[2], int in[2])
+{
+    char **env = node_to_array(term->env);
+
+    close(in[1]);
+    dup2(in[0], STDIN_FILENO);
+    close(in[0]);
+    close(fd[0]);
+    dup2(fd[1], STDOUT_FILENO);
+    dup2(fd[1], STDERR_FILENO);
+    close(fd[1]);
+    execve("/usr/bin/bc", (char *[]){"bc", "-q", NULL}, env);
+    exit(-1);
+}
+
 int child_cond(tcsh_t *term, int fd[2], char *cond)
 {
-    int pid = fork();
-    char **env = node_to_array(term->env);
+    int pid = 0;
+    int in[2] = {-1, -1};
     int res = 0;
 
-    if (pid == 0) {
-        close(fd[0]);
-        dup2(fd[1], STDOUT_FILENO);
-        close(STDERR_FILENO);
-        close(fd[1]);
-        execve("/usr/bin/calc", (char *[]){"calc", cond, NULL}, env);
-        exit(-1);
-    }
+    if (pipe(in) != SUCCESS_EXIT)
+        return ALTERNATIVE_EXIT;
+    pid = fork();
+    if (pid == 0)
+        in_child(term, fd, in);
+    close(in[0]);
+    write(in[1], cond, strlen(cond));
+    write(in[1], "\n", 1);
+    close(in[1]);
     waitpid(pid, &res, 0);
-    if (env)
-        free(env);
-    if (!WIFEXITED(res) || WEXITSTATUS(res) != 0)
-        return my_cmd_error(": Expression Syntax.\n", "if", ALTERNATIVE_EXIT);
     return SUCCESS_EXIT;
 }
 
@@ -64,23 +82,37 @@ static char *read_fd(int pipefd[2])
     return my_strdup(buf);
 }
 
+static int is_numeric_output(const char *str)
+{
+    if (str == NULL || str[0] == '\0')
+        return ALTERNATIVE_EXIT;
+    for (int i = 0; str[i] != '\0'; i++) {
+        if ((str[i] >= '0' && str[i] <= '9') || str[i] == ' ' ||
+            str[i] == '\n' || str[i] == '\t' || str[i] == '-')
+            continue;
+        return ALTERNATIVE_EXIT;
+    }
+    return SUCCESS_EXIT;
+}
+
 int fallback_cond(tcsh_t *term, char *cond, bool *error)
 {
     int pipefd[2] = {-1, -1};
     int result = 0;
     char *tmp = NULL;
 
-    if (pipe(pipefd) != SUCCESS_EXIT) {
-        *error = true;
-        return ALTERNATIVE_EXIT;
-    }
+    if (pipe(pipefd) != SUCCESS_EXIT)
+        return my_err(error, ALTERNATIVE_EXIT);
     if (child_cond(term, pipefd, cond) != SUCCESS_EXIT) {
         close(pipefd[0]);
         close(pipefd[1]);
-        *error = true;
-        return ALTERNATIVE_EXIT;
+        return my_err(error, ALTERNATIVE_EXIT);
     }
     tmp = read_fd(pipefd);
+    if (is_numeric_output(tmp) != SUCCESS_EXIT) {
+        free(tmp);
+        return my_err(error, my_cmd_error(": Expression Syntax.\n", "if", -1));
+    }
     result = tmp != NULL ? atoi(tmp) : 0;
     free(tmp);
     return result;

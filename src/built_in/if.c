@@ -178,8 +178,11 @@ int my_if(tcsh_t *term, char **argv)
 {
     bool error = false;
     int cond = search_condition(term, argv, &error);
-    int then = is_then(argv);
+    int then = 0;
 
+    if (error == true && len_array(argv) > 0)
+        return ALTERNATIVE_EXIT;
+    then = is_then(argv);
     if (error == true || then == -1)
         return my_cmd_error(": Too few arguments.\n", "if", ALTERNATIVE_EXIT);
     if (then == 0) {
