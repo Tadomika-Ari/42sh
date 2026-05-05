@@ -196,6 +196,10 @@ int child(tcsh_t *term, int fd[2], char *cond);
 
 void algo_exit(int *result);
 
+int not_cond(char *str);
+
+int join_len_until_then(char **argv);
+
 int normalize(tcsh_t *term, char *cmd, char **command, int status);
 
 int error_expression_syntax(char *cmd);
