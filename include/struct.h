@@ -146,6 +146,8 @@ typedef struct tic_tac_toe {
     int player;
     int posx;
     int posy;
+    int turn;
+    int player_win;
     int gride_int[9];
 } ttt_t;
 
