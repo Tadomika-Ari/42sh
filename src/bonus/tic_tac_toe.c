@@ -134,12 +134,8 @@ int help(void)
 
 int tic_tac_toe(tcsh_t *term, char **argv)
 {
-    if (my_strcmp(argv[0], "-h") == 0)
+    if ((my_strcmp("-h", argv[0]) == 0
+            || my_strcmp("--help", argv[0]) == 0))
         return help();
     return run_game();
-}
-
-int main(int ac, char **av)
-{
-    return tic_tac_toe(NULL, av);
 }
