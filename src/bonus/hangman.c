@@ -149,11 +149,13 @@ int hangman(tcsh_t *term, char **argv)
     char *word = NULL;
     int len = len_array(argv);
 
-    if (len == 1 && my_strcmp("-h", argv[0]) == 0)
+    if (len == 1 && (my_strcmp("-h", argv[0]) == 0
+            || my_strcmp("--help", argv[0]) == 0))
         return help_hangman();
     if (len == 0)
         word = is_valid_word();
-    if (len == 1 && my_strcmp("--random", argv[0]) == 0)
+    if (len == 1 && (my_strcmp("--random", argv[0]) == 0)
+        || my_strcmp("-r", argv[0]) == 0)
         word = random_word_hangman();
     if (!word)
         return FAILURE_EXIT;
