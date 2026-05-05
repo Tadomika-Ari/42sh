@@ -128,7 +128,7 @@ int help(void)
 {
     char *buf = fill_buff("bonus/tic_tac_toe.txt");
 
-    cprintf(buf, BLUE);
+    cprintf(buf, YELLOW);
     return SUCCESS_EXIT;
 }
 
