@@ -25,6 +25,7 @@
     #define HANGMAN_WORDS "./bonus/hangman_words.txt"
     #define FLIPCOIN "./bonus/flipcoin.txt"
     #define THROWDICE "./bonus/throwdice.txt"
+    #define GUESSNUMBER "./bonus/guessnumber.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -47,6 +48,15 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define DEFAULT_DICE 6
     #define NUMBER_FACE_DICE_ERR "throwdice: wrong number value, [7; 20]\n"
     #define DICE_OFFSET 1
+
+    #define DEFAULT_LEVEL 0
+    #define LEVEL_ERR "numberguesser: wrong number value, [1; 5]\n"
+    #define LEVELS (int[]){10, 100, 1000, 10000, 100000, 1000000}
+    #define WINNER_GUESSNUMBER "You guessed the right number in %d tries\n"
+    #define LOWER "Try lower\n"
+    #define HIGHER "Try higher\n"
+    #define ASK_NUMBER "Enter a number between 0 and %d: "
+    #define WRONG_NUMBER "Wrong number, try again\n"
 
 typedef enum exit
 {
@@ -419,4 +429,6 @@ char *my_strip_newline(char *str);
 int flipcoin(tcsh_t *term, char **argv);
 
 int throwdice(tcsh_t *term, char **argv);
+
+int guessnumber(tcsh_t *term, char **argv);
 #endif
