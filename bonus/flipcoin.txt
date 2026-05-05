@@ -2,6 +2,8 @@
 
 USAGE
     flipcoin [-h]   : help menu
+    flipcoin [--help]   : help menu
     flipcoin [--visualisation] : visualisation of the coin
+    flipcoin [-v] : visualisation of the coin
 
 << END >>
