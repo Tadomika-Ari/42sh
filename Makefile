@@ -49,7 +49,6 @@ SRC = 	src/main.c							\
 		src/jobs/printing.c                 \
 		src/var_interpreters/var_interpreter.c			\
 		src/var_interpreters/var_manipulator.c			\
-		src/special_variable/sepecial_variable.c\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
@@ -116,7 +115,6 @@ TEST_SRC = tests/test_42sh.c \
 		src/var_interpreters/var_interpreter.c			\
         src/var_interpreters/var_manipulator.c			\
         src/tools/if_tools.c							\
-		src/special_variable/sepecial_variable.c \
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
