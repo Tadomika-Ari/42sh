@@ -45,6 +45,8 @@
 extern const char *STEPS[NB_STEP][NB_ROW];
 
     #define DEFAULT_DICE 6
+    #define NUMBER_FACE_DICE_ERR "throwdice: wrong number value, [7; 20]\n"
+    #define DICE_OFFSET 1
 
 typedef enum exit
 {
