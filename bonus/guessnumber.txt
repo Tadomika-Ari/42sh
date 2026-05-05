@@ -1,0 +1,19 @@
+<< GUESSNUMBER HELP >>
+
+USAGE
+    guessnumber [-h]   : help menu
+    guessnumber [--help]   : help menu
+    guessnumber [--level] [number]: change the level of the game
+    guessnumber [-l] [number]: change the level of the game
+
+number: must be between 1 and 5
+
+levels:
+    - default : 0 - 10
+    - 1       : 0 - 100
+    - 2       : 0 - 1000
+    - 3       : 0 - 10000
+    - 4       : 0 - 100000
+    - 5       : 0 - 1000000
+
+<< END >>

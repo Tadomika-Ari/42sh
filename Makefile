@@ -47,6 +47,8 @@ SRC = 	src/main.c							\
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/var_interpreters/var_interpreter.c			\
+		src/var_interpreters/var_manipulator.c			\
 		src/special_variable/sepecial_variable.c\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
@@ -59,6 +61,8 @@ SRC = 	src/main.c							\
 		src/tools/parsing_tool.c            \
 		src/initialisation/create_node.c    \
 		src/tools/glob.c                    \
+		src/repeat/len_base.c 				\
+		src/repeat/cut_len.c 				\
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c \
 
@@ -108,6 +112,8 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/var_interpreters/var_interpreter.c			\
+        src/var_interpreters/var_manipulator.c			\
 		src/special_variable/sepecial_variable.c \
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
@@ -122,10 +128,19 @@ TEST_SRC = tests/test_42sh.c \
 		src/tools/glob.c                    \
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c\
+		src/repeat/len_base.c 				\
+		src/repeat/cut_len.c 				\
 
 BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/cprintf.c\
 		src/bonus/fill_bonus.c              \
+		src/bonus/hangman.c                 \
+		src/bonus/fill_buff_bonus.c         \
+		src/bonus/steps_hangman.c           \
+		src/bonus/print_letter_hangman.c    \
+		src/bonus/flipcoin.c                \
+		src/bonus/throwdice.c               \
+		src/bonus/guessnumber.c             \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 

@@ -68,6 +68,17 @@ int filter_command(tcsh_t *term, int value)
     return repeat_or_no_repeat(term, cmd, value);
 }
 
+char *int_to_str(int n)
+{
+    int len = snprintf(NULL, 0, "%d", n);
+    char *s = malloc(len + 1);
+
+    if (!s)
+        return NULL;
+    snprintf(s, len + 1, "%d", n);
+    return s;
+}
+
 int running(tcsh_t *term)
 {
     int return_value = FAILURE_EXIT;
@@ -83,7 +94,9 @@ int running(tcsh_t *term)
         return_value = tmp;
         if (return_value == FAILURE_EXIT)
             break;
-        term->return_value = return_value;
+        if (term->return_value)
+            free(term->return_value);
+        term->return_value = int_to_str(return_value);
     }
     free_all(term);
     return return_value;

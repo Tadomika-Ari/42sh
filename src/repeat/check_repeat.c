@@ -29,37 +29,25 @@ int check_repeat(char *av, tcsh_t *term)
     return SUCCESS_EXIT;
 }
 
-int my_lenbase(int nb, int base)
+int repeat_or_no_repeat(tcsh_t *term, char *cmd, int value)
 {
-    int len = 0;
+    char *expanded = NULL;
+    char *copy_cmd = NULL;
 
-    if (nb < 0) {
-        nb = nb * -1;
-        len++;
+    cmd[strcspn(cmd, "\n")] = '\0';
+    if (is_only_spaces(cmd)) {
+        free(cmd);
+        return 0;
     }
-    while (base <= nb) {
-        nb = nb / base;
-        len++;
+    for (int i = 0; i < term->nb_repeat - 1 && term->is_repeat == TRUE; i++) {
+        copy_cmd = my_strdup(cmd);
+        expanded = alias(term, copy_cmd);
+        if (expanded == NULL)
+            return 0;
+        loops_multi_func(term, expanded, value);
     }
-    len++;
-    return len;
-}
-
-char *cut_len(char *str, int nbr)
-{
-    int nbmalloc = my_strlen(str) - nbr;
-    char *change = NULL;
-    int y = 0;
-
-    if (nbmalloc <= 0)
-        return NULL;
-    change = malloc(nbmalloc + 1);
-    if (change == NULL)
-        return NULL;
-    for (int i = nbr; str[i] != '\0'; i++) {
-        change[y] = str[i];
-        y++;
-    }
-    change[y] = '\0';
-    return change;
+    expanded = alias(term, cmd);
+    if (expanded == NULL)
+        return 0;
+    return loops_multi_func(term, expanded, value);
 }

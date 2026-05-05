@@ -6,6 +6,9 @@
 */
 
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "../../include/struct.h"
 
 static int fallback_cond(char *expr)
@@ -20,75 +23,55 @@ static int fallback_cond(char *expr)
     return 0;
 }
 
-static char *search_buff(int fd, char *buff, char *tmp)
+static int join_len_until_then(char **argv)
 {
-    char *new_buff = NULL;
+    int len = 0;
 
-    for (int i = 0; read(fd, tmp, 1) > 0; i++) {
-        new_buff = realloc(buff, i + 2);
-        if (new_buff == NULL) {
-            free(buff);
-            free(tmp);
-            return NULL;
-        }
-        buff = new_buff;
-        buff[i] = tmp[0];
-        buff[i + 1] = '\0';
-    }
-    free(tmp);
-    return buff;
+    if (argv == NULL)
+        return 0;
+    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++)
+        len += strlen(argv[i]) + 1;
+    return len;
 }
 
-static char *get_fd(int fd)
+static char *join(char **argv)
 {
-    char *buff = malloc(sizeof(char) * 1);
-    char *tmp = malloc(sizeof(char) * 1);
+    int pos = 0;
+    int len = join_len_until_then(argv);
+    char *res = NULL;
 
-    if (buff == NULL || tmp == NULL) {
-        free(buff);
-        free(tmp);
+    if (argv == NULL)
         return NULL;
+    res = malloc(len + 1);
+    if (res == NULL)
+        return NULL;
+    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++) {
+        memcpy(res + pos, argv[i], strlen(argv[i]));
+        pos += strlen(argv[i]);
+        if (argv[i + 1] != NULL && my_strcmp(argv[i + 1], "then") != 0) {
+            res[pos] = ' ';
+            pos++;
+        }
     }
-    buff[0] = '\0';
-    return search_buff(fd, buff, tmp);
-}
-
-static int true_cond(int fd, bool *error)
-{
-    char *cond = get_fd(fd);
-    int res = 0;
-
-    if (cond == NULL) {
-        *error = true;
-        return ALTERNATIVE_EXIT;
-    }
-    res = atoi(cond);
-    free(cond);
+    res[pos] = '\0';
     return res;
 }
 
 static int search_condition(tcsh_t *term, char **argv, bool *error)
 {
-    int pid = fork();
-    int status = 0;
-    int fd[2] = {-1, -1};
+    char *expr = join(argv);
+    int cond = 0;
 
-    pipe(fd);
-    if (pid == 0) {
-        dup2(fd[1], STDOUT_FILENO);
-        dup2(fd[1], STDERR_FILENO);
-        close(fd[0]);
-        close(fd[1]);
-        execve("/bin/calc", (char *[]){"calc", argv[0], NULL},
-            node_to_array(term->env));
-        _exit(1);
-    }
-    close(fd[1]);
-    if (waitpid(pid, &status, 0) < 0) {
+    (void)term;
+    if (expr == NULL) {
         *error = true;
         return ALTERNATIVE_EXIT;
     }
-    return true_cond(fd[0], error);
+    cond = fallback_cond(expr);
+    if (cond == 0 && atoi(expr) != 0)
+        cond = 1;
+    free(expr);
+    return cond;
 }
 
 static int is_then(char **argv)
@@ -112,6 +95,8 @@ static int is_then(char **argv)
 
 static int stop(char **argv)
 {
+    if (argv == NULL || argv[0] == NULL)
+        return ALTERNATIVE_EXIT;
     if (my_strcmp("else", argv[0]) == 0) {
         if (argv[1] == NULL)
             return SUCCESS_EXIT;
@@ -130,30 +115,46 @@ int else_if(tcsh_t *term, char **argv)
 
     if (error == true || then == -1)
         return ALTERNATIVE_EXIT;
-    if ((cond != 0 && then == 1) || (cond == 0 && then == 0))
+    if ((cond != 0 && then == 1))
         return SUCCESS_EXIT;
-    if (cond != 0 && then == 0)
-        return search_command(term, argv + 1, NULL);
+    if (cond != 0 && then == 0) {
+        search_command(term, argv + 1, NULL);
+        return SUCCESS_EXIT;
+    }
     return ALTERNATIVE_EXIT;
 }
 
-int in_if(tcsh_t *term)
+static char **get_info(void)
 {
     size_t len = 0;
     char *lign = NULL;
     char **tmp = NULL;
 
+    if (getline(&lign, &len, stdin) == -1) {
+        free(lign);
+        return NULL;
+    }
+    tmp = parser3000(lign, " \t\n");
+    if (tmp == NULL || tmp[0] == NULL) {
+        free_array(tmp);
+        free(lign);
+        return NULL;
+    }
+    free(lign);
+    return tmp;
+}
+
+int in_if(tcsh_t *term)
+{
+    char **tmp = NULL;
+
     while (1) {
-        if (getline(&lign, &len, stdin) == -1) {
-            free(lign);
-            return ALTERNATIVE_EXIT;
-        }
-        tmp = my_str_to_word_array(lign, " ");
+        tmp = get_info();
         if (stop(tmp) == 0) {
             free_array(tmp);
             return SUCCESS_EXIT;
         }
-        if (else_if(term, tmp) != 0) {
+        if (strcmp(tmp[0], "else") == 0 && else_if(term, tmp + 2) == 0) {
             free_array(tmp);
             return SUCCESS_EXIT;
         }

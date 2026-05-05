@@ -9,6 +9,7 @@
     #define MY_TOP_STRUCT_H
     #include "my.h"
     #include <termios.h>
+    #include <time.h>
     #define INITIAL_CAPACITY 128
     #define MAX_LINE 1024
 
@@ -17,9 +18,45 @@
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
 
-    #define SEP "()[]\'\""
+    #define SEP "()[]'\"`"
 
     #define PELOPHYLAX "./bonus/pelophylax.txt"
+    #define HANGMAN "./bonus/hangman.txt"
+    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
+    #define FLIPCOIN "./bonus/flipcoin.txt"
+    #define THROWDICE "./bonus/throwdice.txt"
+    #define GUESSNUMBER "./bonus/guessnumber.txt"
+
+    #define ASK_LETTER "Choose a letter: "
+    #define WIN_HANGMAN "You win the game!"
+    #define LOSE_HANGMAN "You lose the game!"
+
+    #define HEAD HEAD_TOP HEAD_CENTER HEAD_BOT
+    #define HEAD_TOP "  ______  \n /      \\ \n"
+    #define HEAD_CENTER "|  HEAD |\n|       |\n"
+    #define HEAD_BOT " \\______/ \n"
+
+    #define TAIL TAIL_TOP TAIL_CENTER TAIL_BOT
+    #define TAIL_TOP "  ______  \n /      \\ \n"
+    #define TAIL_CENTER "|  TAIL |\n|       |\n"
+    #define TAIL_BOT " \\______/ \n"
+
+    #define NB_STEP 11
+    #define NB_ROW 7
+extern const char *STEPS[NB_STEP][NB_ROW];
+
+    #define DEFAULT_DICE 6
+    #define NUMBER_FACE_DICE_ERR "throwdice: wrong number value, [7; 20]\n"
+    #define DICE_OFFSET 1
+
+    #define DEFAULT_LEVEL 0
+    #define LEVEL_ERR "numberguesser: wrong number value, [1; 5]\n"
+    #define LEVELS (int[]){10, 100, 1000, 10000, 100000, 1000000}
+    #define WINNER_GUESSNUMBER "You guessed the right number in %d tries\n"
+    #define LOWER "Try lower\n"
+    #define HIGHER "Try higher\n"
+    #define ASK_NUMBER "Enter a number between 0 and %d: "
+    #define WRONG_NUMBER "Wrong number, try again\n"
 
     #define BLACK "\e[30m"
     #define RED "\e[31m"
@@ -68,6 +105,8 @@ typedef struct getline
     int statut_exit_getline;
     int statut_echo;
     int statut_history;
+    int len_u;
+    int len_d;
 }getline_t;
 
 typedef enum job_state {
@@ -88,7 +127,7 @@ typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
     nodes_t *locals;
-    int return_value;
+    char *return_value;
     int life;
     char *old;
     int fd[2];
@@ -126,6 +165,7 @@ typedef struct locals {
 typedef struct parse {
     int in_quote;
     int in_tick;
+    int in_btick;
     int parent;
     int brack;
     int count;
@@ -151,6 +191,15 @@ typedef struct tic_tac_toe {
     int gride_int[9];
 } ttt_t;
 
+typedef struct hang {
+    int hp;
+    char *to_find;
+    char *ref;
+    int state;
+    char c;
+    int letters[26];
+} hang_t;
+
 int init(tcsh_t *term, char **env);
 
 int fill_rc(tcsh_t *term);
@@ -175,11 +224,17 @@ int error_no_home(char *cmd);
 
 int command_not_found(char *cmd);
 
+int search_variable(tcsh_t *term, nodes_t *str);
+
 int path_not_found(char *path);
 
 int error_syntax(char *cmd);
 
 int env(tcsh_t *term, char **argv);
+
+char *simple(char c);
+
+int my_cmd_error(char *str, char *cmd);
 
 int my_cd(tcsh_t *term, char **argv);
 
@@ -267,17 +322,25 @@ int return_reset(getline_t *st_g);
 
 int ensure_capacity(char **line, size_t *cap, size_t wanted);
 
-char **sweeper(tcsh_t *term, char *str);
+char **sweeper(tcsh_t *term, char *str, bool *error);
 
 int is_parenthesis(char *str);
 
 int is_inihbitor(char *str);
 
-char **translate(tcsh_t *term, nodes_t *str);
+char **translate(tcsh_t *term, nodes_t *str, bool *error);
 
 nodes_t *array_to_node(char **array);
 
 void free_node(nodes_t *head);
+
+char *get_name(char *str, int max);
+
+char *without(char *str);
+
+char *my_str_rea(char *base, char *value);
+
+char **array_null(char c);
 
 int search_command(tcsh_t *term, char **command, char *cmd);
 
@@ -370,6 +433,12 @@ int is_globing(char *str);
 
 char **array_null(char c);
 
+int hangman(tcsh_t *term, char **argv);
+
+char *fill_buff_bonus(const char *filename);
+
+void print_letter_hangman(hang_t *hang);
+
 int cprintf(char *str, char *color);
 
 char *fill_buff(const char *filename);
@@ -378,4 +447,9 @@ char *my_strip_newline(char *str);
 
 int tic_tac_toe(tcsh_t *term, char **argv);
 
+int flipcoin(tcsh_t *term, char **argv);
+
+int throwdice(tcsh_t *term, char **argv);
+
+int guessnumber(tcsh_t *term, char **argv);
 #endif
