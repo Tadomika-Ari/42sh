@@ -74,6 +74,8 @@ typedef struct getline
     int statut_exit_getline;
     int statut_echo;
     int statut_history;
+    int len_u;
+    int len_d;
 }getline_t;
 
 typedef enum job_state {
