@@ -20,5 +20,7 @@ int fill_bonus(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, guessnumber, "guessnumber") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, author, "author") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return EXIT_SUCCESS;
 }
