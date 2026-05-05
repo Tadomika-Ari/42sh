@@ -24,6 +24,7 @@
     #define HANGMAN "./bonus/hangman.txt"
     #define HANGMAN_WORDS "./bonus/hangman_words.txt"
     #define FLIPCOIN "./bonus/flipcoin.txt"
+    #define THROWDICE "./bonus/throwdice.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
