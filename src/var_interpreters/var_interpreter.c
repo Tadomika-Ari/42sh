@@ -84,7 +84,7 @@ static int search_var(tcsh_t *term, nodes_t *str, char *var, char *name)
         return replace(str, value, var, name);
     if (var[1] == '?' && var[2] == '\0')
         return replace(str, term->return_value, var, name);
-    my_cmd_error(": Undefined variable.\n", name + 1);
+    my_cmd_error(": Undefined variable.\n", name + 1, ALTERNATIVE_EXIT);
     free(var);
     return ALTERNATIVE_EXIT;
 }
