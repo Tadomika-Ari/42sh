@@ -77,7 +77,7 @@ static void print_end_hangman(hang_t *hang, char *input)
     free(input);
 }
 
-static int tmp(char *input, hang_t *hang)
+static int error_hangman(char *input, hang_t *hang)
 {
     input[strcspn(input, "\n")] = '\0';
     if (my_strlen(input) != 1 || !('a' <= input[0] && input[0] <= 'z')) {
@@ -111,7 +111,7 @@ void loop_hangman(char *word)
         read = getline(&input, &input_len, stdin);
         if (read == -1)
             break;
-        tmp(input, &hang);
+        error_hangman(input, &hang);
     }
     print_end_hangman(&hang, input);
     free(to_find);
