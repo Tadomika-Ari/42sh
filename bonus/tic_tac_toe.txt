@@ -1,0 +1,15 @@
+Le tic-tac-toe, aussi appelé « morpion » (par analogie avec le jeu de morpion) et 
+oxo en Belgique, est un jeu de réflexion se pratiquant à deux joueurs, tour par tour, 
+dont le but est de créer le premier un alignement. Le jeu se joue généralement 
+en dessinant sur papier au crayon.
+
+Jeu sur grille de 3 × 3
+Deux joueurs s'affrontent. Ils doivent remplir chacun à leur tour une case de la grille 
+avec le symbole qui leur est attribué : O ou X. Le gagnant est celui qui arrive à 
+aligner trois symboles identiques, horizontalement, verticalement ou en diagonale. 
+Il est coutume de laisser le joueur jouant X effectuer le premier coup de la partie.
+
+On joue à deux sur une grille de 9 cases. L’un joue avec des X, l’autre avec des O. 
+À tour de rôle, chacun inscrit son symbole dans une case vide. Le premier qui aligne 3 symboles 
+horizontalement, verticalement ou en diagonale gagne. Si les 9 cases sont remplies sans alignement, 
+c’est un match nul. Cette page suit le tic-tac-toe classique 3 × 3.
