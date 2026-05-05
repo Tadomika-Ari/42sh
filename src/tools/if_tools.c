@@ -50,3 +50,38 @@ int not_cond(char *str)
             return ALTERNATIVE_EXIT;
     return SUCCESS_EXIT;
 }
+
+static char *read_fd(int pipefd[2])
+{
+    char buf[1024];
+    ssize_t n = read(pipefd[0], buf, sizeof(buf) - 1);
+
+    close(pipefd[1]);
+    if (n < 1)
+        return NULL;
+    close(pipefd[0]);
+    buf[n] = '\0';
+    return my_strdup(buf);
+}
+
+int fallback_cond(tcsh_t *term, char *cond, bool *error)
+{
+    int pipefd[2] = {-1, -1};
+    int result = 0;
+    char *tmp = NULL;
+
+    if (pipe(pipefd) != SUCCESS_EXIT) {
+        *error = true;
+        return ALTERNATIVE_EXIT;
+    }
+    if (child(term, pipefd, cond) != SUCCESS_EXIT) {
+        close(pipefd[0]);
+        close(pipefd[1]);
+        *error = true;
+        return ALTERNATIVE_EXIT;
+    }
+    tmp = read_fd(pipefd);
+    result = tmp != NULL ? atoi(tmp) : 0;
+    free(tmp);
+    return result;
+}
