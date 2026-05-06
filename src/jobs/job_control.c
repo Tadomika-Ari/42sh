@@ -17,7 +17,7 @@ char *is_job_control(parse_t *parse, char *cmd, int i)
     return NULL;
 }
 
-int len_job_cmd(char *cmd)
+static int len_job_cmd(char *cmd)
 {
     parse_t parse = {0};
     int nb = 0;
@@ -67,7 +67,7 @@ int job_execution(tcsh_t *term, char **commands, char **jobs)
             || jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0 && value == 0)
             ignore = TRUE;
         if (jobs[i] != NULL && my_strcmp(jobs[i], "&&") == 0 && value == 0
-            || jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0  && value != 0)
+            || jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0 && value != 0)
             ignore = FALSE;
     }
     return value;
