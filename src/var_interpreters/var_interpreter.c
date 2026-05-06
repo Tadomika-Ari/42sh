@@ -61,11 +61,16 @@ static int replace(nodes_t *str, char *value, char *name, char *named)
         free(named);
     if (my_strcmp(str->data, name) == 0) {
         free(str->data);
-        str->data = my_strdup(value);
+        if (!value)
+            str->data = my_strdup("");
+        else
+            str->data = my_strdup(value);
         free(name);
         return SUCCESS_EXIT;
     }
     tmp = my_strtwabw(str->data, name);
+    if (!value)
+        return replace_in_str(str, "", name, tmp);
     return replace_in_str(str, value, name, tmp);
 }
 
