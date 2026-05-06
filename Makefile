@@ -49,7 +49,9 @@ SRC = 	src/main.c							\
 		src/jobs/printing.c                 \
 		src/var_interpreters/var_interpreter.c			\
 		src/var_interpreters/var_manipulator.c			\
-		src/special_variable/sepecial_variable.c\
+		src/built_in/which.c							\
+		src/built_in/where.c							\
+		src/built_in/foreach.c							\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
@@ -57,6 +59,7 @@ SRC = 	src/main.c							\
 		src/repeat/error_repeat.c    		\
 		src/error/put_error_ptr.c           \
 		src/built_in/set.c					\
+	    src/tools/if_tools.c							\
 		src/built_in/if.c					\
 		src/tools/parsing_tool.c            \
 		src/initialisation/create_node.c    \
@@ -114,8 +117,11 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
 		src/var_interpreters/var_interpreter.c			\
+		src/built_in/foreach.c							\
         src/var_interpreters/var_manipulator.c			\
-		src/special_variable/sepecial_variable.c \
+        src/tools/if_tools.c							\
+        src/built_in/which.c							\
+        src/built_in/where.c							\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
@@ -143,6 +149,7 @@ BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/flipcoin.c                \
 		src/bonus/throwdice.c               \
 		src/bonus/guessnumber.c             \
+		src/bonus/author.c                  \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
@@ -155,6 +162,7 @@ OBJ2 = 	$(SRC2:.c=.o)
 BONUS_SRC2 = src/bonus/init.c          \
 		src/bonus/argument_bonus.c \
 		src/bonus/put_err_bonus.c			        \
+		src/bonus/tic_tac_toe.c \
 
 BONUS_OBJ2 = 	$(BONUS_SRC2:.c=.o)
 
