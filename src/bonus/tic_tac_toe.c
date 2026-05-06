@@ -86,12 +86,12 @@ static int is_ligne(ttt_t *ttt)
         if (ttt->gride_int[i] != 0
             && (ttt->gride_int[i + 0] == ttt->gride_int[i + 3]
                 && ttt->gride_int[i + 3] == ttt->gride_int[i + 6]))
-            return ttt->gride_int[4];
+            return ttt->gride_int[i];
     for (int i = 0; i < 9; i += 3)
         if (ttt->gride_int[i] != 0
             && (ttt->gride_int[i] == ttt->gride_int[i + 1]
                 && ttt->gride_int[i + 1] == ttt->gride_int[i + 2]))
-            return ttt->gride_int[4];
+            return ttt->gride_int[i];
     return -1;
 }
 
