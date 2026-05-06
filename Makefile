@@ -49,6 +49,7 @@ SRC = 	src/main.c							\
 		src/jobs/printing.c                 \
 		src/var_interpreters/var_interpreter.c			\
 		src/var_interpreters/var_manipulator.c			\
+		src/built_in/which.c							\
 		src/built_in/foreach.c							\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
@@ -117,6 +118,8 @@ TEST_SRC = tests/test_42sh.c \
 		src/built_in/foreach.c							\
         src/var_interpreters/var_manipulator.c			\
         src/tools/if_tools.c							\
+        src/built_in/which.c							\
+        src/built_in/where.c							\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
