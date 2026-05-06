@@ -67,6 +67,7 @@ SRC = 	src/main.c							\
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c \
 		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -134,6 +135,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/repeat/len_base.c 				\
 		src/repeat/cut_len.c 				\
 		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
 
 BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/cprintf.c\
