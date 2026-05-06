@@ -17,6 +17,7 @@
     #define RC_FILE ".42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
+    #define UNMATCH_QUOTE "Unmatched '\"'.\n"
     #define MANY_CLOSE "Too many )'s.\n"
     #define MANY_OPEN "Too many ('s.\n"
     #define NULL_CMD "Invalid null command.\n"
