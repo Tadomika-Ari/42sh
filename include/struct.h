@@ -512,4 +512,6 @@ int check_parenthesis(char *str);
 int check_quotes(char *str);
 
 int check_back(char *str);
+
+int job_control(tcsh_t *term, char *cmd);
 #endif
