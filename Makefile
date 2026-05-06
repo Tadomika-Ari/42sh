@@ -73,7 +73,6 @@ SRC = 	src/main.c							\
 		src/tools/my_strip_newline.c \
 		src/alias/tools_alias.c\
 		src/tools/check_parenthesis.c       \
-		src/tools/check_quote.c             \
 		src/tools/check_back.c              \
 		src/autocompletation/autocompletation.c	\
 		src/command_utilities/backsticks.c \
@@ -151,7 +150,6 @@ TEST_SRC = tests/test_42sh.c \
 		src/repeat/cut_len.c 				\
 		src/alias/tools_alias.c\
 		src/tools/check_parenthesis.c       \
-		src/tools/check_quote.c             \
 		src/tools/check_back.c              \
 		src/autocompletation/autocompletation.c \
 

@@ -55,8 +55,6 @@ int check_element(char **tab, int i)
         return put_err(UNMATCH_SINGLE, FALSE);
     if (check_parenthesis(tab[i]) == TRUE)
         return FALSE;
-    if (check_quotes(tab[i]) == TRUE)
-        return put_err(UNMATCH_QUOTE, FALSE);
     if (check_back(tab[i]) == TRUE)
         return put_err(UNMATCH_BACK, FALSE);
     return TRUE;
