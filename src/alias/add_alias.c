@@ -21,44 +21,70 @@ static int check_tab(char **tab, char *buf_rc)
 
 int print_alias(tcsh_t *term)
 {
-    char *buf_rc = get_rc_file(term);
-    char **tab = NULL;
-    char *tmp = NULL;
-    int value = 0;
+    nodes_t *current = term->alias;
+    alias_t *info = NULL;
 
-    if (buf_rc == NULL)
+    if (current == NULL)
         return SUCCESS_EXIT;
-    tab = parser3000(buf_rc, " \n=");
-    value = check_tab(tab, buf_rc);
-    if (value != 42)
-        return value;
-    for (int i = 0; i <= len_array(tab) - 3; i += 3) {
-        tmp = strip_single_quotes(tab[i + 2]);
-        printf("%s (%s)\n", tab[i + 1], tmp);
-        free(tmp);
+    for (; current != NULL; current = current->next) {
+        info = current->data;
+        if (info != NULL)
+            printf("%s  %s\n", info->name_alias, info->cmd_alias);
     }
-    free_array(tab);
-    free(buf_rc);
     return SUCCESS_EXIT;
+}
+
+alias_t *init_alias(char *name, char *cmd)
+{
+    alias_t *tmp = malloc(sizeof(alias_t));
+
+    if (tmp == NULL)
+        return my_puterror_ptr("ERROR Malloc alias");
+    tmp->name_alias = my_strdup(name);
+    tmp->cmd_alias = my_strdup(cmd);
+    return tmp;
+}
+
+static nodes_t *init_node_alias(char **cmd, nodes_t *new)
+{
+    char *cmd_alias = NULL;
+    alias_t *new_alias = NULL;
+    int len = 0;
+
+    for (int i = 1; cmd[i] != NULL; i++)
+        len += (my_strlen(cmd[i]) + 1);
+    cmd_alias = malloc(sizeof(char) * (len + 1));
+    if (cmd_alias == NULL)
+        return NULL;
+    cmd_alias[0] = '\0';
+    for (int i = 1; cmd[i] != NULL; i++)
+        my_strcat(cmd_alias, cmd[i]);
+    new_alias = init_alias(cmd[0], cmd_alias);
+    if (new_alias == NULL) {
+        free(cmd_alias);
+        return NULL;
+    }
+    free(cmd_alias);
+    new->data = new_alias;
+    return new;
 }
 
 int my_alias(tcsh_t *term, char **cmd)
 {
+    nodes_t *node = NULL;
+
     if (cmd[0] == NULL)
         return print_alias(term);
-    if (cmd[1] == NULL)
+    if (cmd[1] == NULL) {
+        check_alias(term, cmd[0]);
         return SUCCESS_EXIT;
+    }
     if (my_strcmp("alias", cmd[0]) == 0)
         return put_err("alias: Too dangerous to alias that.\n",
             ALTERNATIVE_EXIT);
-    write(term->fd_rc, "alias ", 6);
-    for (int i = 0; cmd[i] != NULL; i++) {
-        write(term->fd_rc, cmd[i], my_strlen(cmd[i]));
-        if (i > 0 && cmd[i + 1] != NULL)
-            write(term->fd_rc, " ", 1);
-        if (i < 1)
-            write(term->fd_rc, "=\'", 2);
-    }
-    write(term->fd_rc, "\'\n", 2);
+    node = malloc(sizeof(nodes_t));
+    if (node == NULL)
+        return put_err("ERROR malloc node_alias\n", FAILURE_EXIT);
+    push_front(&term->alias, init_node_alias(cmd, node));
     return SUCCESS_EXIT;
 }
