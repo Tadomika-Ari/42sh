@@ -84,6 +84,8 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define COLS "123"
     #define ROWS "ABC"
 
+    #define SOUND_STRUCT "ffmpeg -loglevel quiet -i %s" SOUND_STRUCT_END
+    #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
     #define MAMBO "./bonus/songs/mambo.mp3"
 
 typedef struct alias {
