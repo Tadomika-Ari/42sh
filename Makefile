@@ -47,6 +47,9 @@ SRC = 	src/main.c							\
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/jobs/job_control.c				\
+		src/jobs/job_control_exec.c			\
+		src/jobs/job_control_empty_case.c	\
 		src/var_interpreters/var_interpreter.c			\
 		src/var_interpreters/var_manipulator.c			\
 		src/built_in/which.c							\
@@ -68,6 +71,11 @@ SRC = 	src/main.c							\
 		src/repeat/cut_len.c 				\
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c \
+		src/alias/tools_alias.c\
+		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
+		src/tools/check_back.c              \
+		src/autocompletation/autocompletation.c	\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -136,6 +144,11 @@ TEST_SRC = tests/test_42sh.c \
 		src/tools/my_strip_newline.c\
 		src/repeat/len_base.c 				\
 		src/repeat/cut_len.c 				\
+		src/alias/tools_alias.c\
+		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
+		src/tools/check_back.c              \
+		src/autocompletation/autocompletation.c \
 
 BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/cprintf.c\
@@ -148,6 +161,9 @@ BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/throwdice.c               \
 		src/bonus/guessnumber.c             \
 		src/bonus/author.c                  \
+		src/bonus/play_sound.c              \
+		src/bonus/mambo.c                   \
+		src/bonus/yippee.c                   \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 

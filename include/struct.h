@@ -14,9 +14,14 @@
     #define MAX_LINE 1024
 
 
-    #define RC_FILE ".42rc"
+    #define RC_FILE "./bonus/.42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
+    #define UNMATCH_QUOTE "Unmatched '\"'.\n"
+    #define UNMATCH_BACK "Unmatched '`'.\n"
+    #define MANY_CLOSE "Too many )'s.\n"
+    #define MANY_OPEN "Too many ('s.\n"
+    #define NULL_CMD "Invalid null command.\n"
 
     #define SEP "()[]'\"`"
 
@@ -78,6 +83,19 @@ extern const char *STEPS[NB_STEP][NB_ROW];
 
     #define COLS "123"
     #define ROWS "ABC"
+
+    #define SOUND_STRUCT "ffmpeg -loglevel quiet -i %s" SOUND_STRUCT_END
+    #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
+    #define MAMBO "./bonus/songs/mambo.mp3"
+    #define YIPPEE "./bonus/songs/yippee.mp3"
+
+typedef struct alias {
+    char *new_expanded;
+    char *expanded;
+    char *prev_first_word;
+    char *curr_first_word;
+    nodes_t *alias_histo;
+} alias_t;
 
 typedef enum exit
 {
@@ -204,6 +222,19 @@ typedef struct hang {
     char c;
     int letters[26];
 } hang_t;
+
+typedef struct job_control_count {
+    int i;
+    int position;
+    int nb_cmd;
+    char *separators;
+} jobs_cont_t;
+
+typedef struct job_control_exec {
+    int ignore;
+    int or_done;
+    int value;
+} jobs_exec_t;
 
 int init(tcsh_t *term, char **env);
 
@@ -480,5 +511,38 @@ int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
 
+int autocompletation(tcsh_t *term, getline_t *st_g);
+
 int author(tcsh_t *term, char **argv);
+
+void *ret_error_alias(alias_t *tmp);
+
+alias_t init_alias(char *cmd);
+
+void free_prev_cur(char *prev, char *cur);
+
+void free_alias_history(nodes_t *alias_histo);
+
+int occ_in_str(char c, char *str);
+
+int check_parenthesis(char *str);
+
+int check_quotes(char *str);
+
+int check_back(char *str);
+
+int play_sound(char *filename);
+
+int mambo(tcsh_t *term, char **argv);
+
+int yippee(tcsh_t *term, char **argv);
+
+int job_control(tcsh_t *term, char *cmd);
+
+int job_execution(tcsh_t *term, jobs_exec_t *sta,
+    char **cmds, char **jobs);
+
+int empty_error_case(char **commands, char **jobs);
+
+int empty_cmd_detect(char *cmd);
 #endif

@@ -121,15 +121,22 @@ static char *expand_first_word_alias(tcsh_t *term, char *cmd)
     return add_rest_to_alias(cmd, i, alias);
 }
 
-static void free_alias_history(nodes_t *alias_histo)
+static char *extract_first_word(char *cmd)
 {
-    nodes_t *next = NULL;
+    char *first_word = NULL;
+    int i = 0;
 
-    for (nodes_t *current = alias_histo; current != NULL; current = next) {
-        next = current->next;
-        free(current->data);
-        free(current);
-    }
+    if (cmd == NULL)
+        return NULL;
+    while (cmd[i] && cmd[i] != ' ' && cmd[i] != '\t')
+        i++;
+    first_word = malloc(i + 1);
+    if (first_word == NULL)
+        return NULL;
+    for (int j = 0; j < i; j++)
+        first_word[j] = cmd[j];
+    first_word[i] = '\0';
+    return first_word;
 }
 
 static int check_loop_alias(nodes_t **alias_histo, char *cmd)
@@ -153,23 +160,35 @@ static int check_loop_alias(nodes_t **alias_histo, char *cmd)
     return 0;
 }
 
+static int get_prev_new(alias_t *tmp, tcsh_t *term)
+{
+    tmp->prev_first_word = extract_first_word(tmp->expanded);
+    tmp->new_expanded = expand_first_word_alias(term, tmp->expanded);
+    if (tmp->new_expanded == tmp->expanded) {
+        free(tmp->prev_first_word);
+        return -1;
+    }
+    return 0;
+}
+
 char *alias(tcsh_t *term, char *cmd)
 {
-    char *new_expanded = NULL;
-    char *expanded = cmd;
-    nodes_t *alias_histo = NULL;
+    alias_t tmp = init_alias(cmd);
 
     while (1) {
-        new_expanded = expand_first_word_alias(term, expanded);
-        if (new_expanded == expanded)
+        if (get_prev_new(&tmp, term) == -1)
             break;
-        if (check_loop_alias(&alias_histo, new_expanded) == -1) {
-            free_alias_history(alias_histo);
-            free(new_expanded);
-            return my_puterror_ptr("Alias loop.\n");
+        tmp.curr_first_word = extract_first_word(tmp.new_expanded);
+        if (my_strcmp(tmp.prev_first_word, tmp.curr_first_word) == 0) {
+            free_prev_cur(tmp.prev_first_word, tmp.curr_first_word);
+            tmp.expanded = tmp.new_expanded;
+            break;
         }
-        expanded = new_expanded;
+        if (check_loop_alias(&tmp.alias_histo, tmp.new_expanded) == -1)
+            return ret_error_alias(&tmp);
+        tmp.expanded = tmp.new_expanded;
+        free_prev_cur(tmp.prev_first_word, tmp.curr_first_word);
     }
-    free_alias_history(alias_histo);
-    return expanded;
+    free_alias_history(tmp.alias_histo);
+    return tmp.expanded;
 }
