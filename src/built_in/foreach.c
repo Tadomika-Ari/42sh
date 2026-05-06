@@ -12,6 +12,8 @@ static char *get_user(char *tmp, bool *error, char **res)
     size_t len_w = 0;
 
     if (getline(&tmp, &len_w, stdin) == -1) {
+        if (tmp)
+            free(tmp);
         *error = true;
         free_array(res);
         return NULL;
@@ -99,7 +101,7 @@ int in_for(tcsh_t *term, char **argv, bool *error)
     int res = 0;
 
     if (*error == true)
-        return ALTERNATIVE_EXIT;
+        return my_cmd_error(": end not found.\n", "foreach", ALTERNATIVE_EXIT);
     value = my_str_to_word_array(argv[1], " ()\n\t");
     for (int i = 0; value[i] != NULL; i++) {
         if (my_set(term, (char *[]){argv[0], "=",
