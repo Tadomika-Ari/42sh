@@ -57,6 +57,8 @@ int check_element(char **tab, int i)
         return FALSE;
     if (check_quotes(tab[i]) == TRUE)
         return put_err(UNMATCH_QUOTE, FALSE);
+    if (check_back(tab[i]) == TRUE)
+        return put_err(UNMATCH_BACK, FALSE);
     return TRUE;
 }
 
