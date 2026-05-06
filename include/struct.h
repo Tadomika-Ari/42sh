@@ -241,6 +241,8 @@ char *simple(char c);
 
 int my_cmd_error(char *str, char *cmd, int out);
 
+int my_which(tcsh_t *term, char **argv);
+
 int my_cd(tcsh_t *term, char **argv);
 
 int child_cond(tcsh_t *term, int fd[2], char *cond);
@@ -403,11 +405,19 @@ char *search_binary(char *path, char *command);
 
 char *alias(tcsh_t *term, char *cmd);
 
+int display_alias(char *cmd, char *value);
+
+int display_built(char *cmd);
+
+int my_where(tcsh_t *term, char **argv);
+
 char *get_rc_file(tcsh_t *term);
 
 char *strip_single_quotes(char *word);
 
 int check_repeat(char *av, tcsh_t *term);
+
+int my_foreach(tcsh_t *term, char **argv);
 
 int my_lenbase(int nb, int base);
 
