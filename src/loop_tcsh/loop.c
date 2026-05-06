@@ -36,7 +36,7 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 
     tmp = my_str_to_word_array(cmd, ";");
     for (int i = 0; tmp[i] != NULL; i++) {
-        return_value = choose_command(term, tmp[i]);
+        return_value = job_control(term, tmp[i]);
         if (return_value == FAILURE_EXIT)
             return FAILURE_EXIT;
     }
