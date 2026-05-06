@@ -110,7 +110,7 @@ int print_end(ttt_t *ttt)
 {
     free_array(ttt->gride);
     if (ttt->player_win != -1)
-        printf("Player %d WIN!!!!\n", ttt->player_win);
+        printf("\e[33mPlayer %d WIN!!!!\e[m\n", ttt->player_win);
     if (ttt->turn == 0)
         printf("Draw\n");
     return SUCCESS_EXIT;
