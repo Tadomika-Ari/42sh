@@ -7,7 +7,7 @@
 
 #include "../../include/struct.h"
 
-int check_quote(char *str)
+int check_quotes(char *str)
 {
     int len = my_strlen(str);
 
