@@ -31,7 +31,7 @@ static int in_child(tcsh_t *term, int fd[2], int in[2])
     exit(-1);
 }
 
-int child_cond(tcsh_t *term, int fd[2], char *cond)
+static int child_cond(tcsh_t *term, int fd[2], char *cond)
 {
     int pid = 0;
     int in[2] = {-1, -1};
@@ -72,7 +72,7 @@ int not_cond(char *str)
     return SUCCESS_EXIT;
 }
 
-static char *read_fd(int pipefd[2])
+char *read_fd(int pipefd[2])
 {
     char buf[1024];
     ssize_t n = read(pipefd[0], buf, sizeof(buf) - 1);

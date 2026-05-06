@@ -76,6 +76,7 @@ SRC = 	src/main.c							\
 		src/tools/check_quote.c             \
 		src/tools/check_back.c              \
 		src/autocompletation/autocompletation.c	\
+		src/command_utilities/backsticks.c \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -123,6 +124,9 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/jobs/job_control.c				\
+		src/jobs/job_control_exec.c			\
+		src/jobs/job_control_empty_case.c	\
 		src/var_interpreters/var_interpreter.c			\
 		src/built_in/foreach.c							\
         src/var_interpreters/var_manipulator.c			\
@@ -132,6 +136,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
+		src/command_utilities/backsticks.c  \
 		src/repeat/check_repeat.c			\
 		src/repeat/error_repeat.c    		\
 		src/error/put_error_ptr.c           \

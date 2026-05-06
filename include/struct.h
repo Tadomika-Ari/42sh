@@ -276,8 +276,6 @@ int my_which(tcsh_t *term, char **argv);
 
 int my_cd(tcsh_t *term, char **argv);
 
-int child_cond(tcsh_t *term, int fd[2], char *cond);
-
 void algo_exit(int *result);
 
 int not_cond(char *str);
@@ -429,6 +427,14 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 char *check_alias(tcsh_t *term, char *cmd);
 
 int my_alias(tcsh_t *term, char **cmd);
+
+int from_one_line(tcsh_t *term, char *cmd);
+
+char *read_fd(int pipefd[2]);
+
+char *backsticks(tcsh_t *term, char *command);
+
+int search_backsticks(tcsh_t *term, nodes_t *str);
 
 char *search_binary(char *path, char *command);
 
