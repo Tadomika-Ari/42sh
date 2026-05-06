@@ -246,6 +246,8 @@ char *simple(char c);
 
 int my_cmd_error(char *str, char *cmd, int out);
 
+int my_which(tcsh_t *term, char **argv);
+
 int my_cd(tcsh_t *term, char **argv);
 
 int child_cond(tcsh_t *term, int fd[2], char *cond);
@@ -396,8 +398,6 @@ int no_such_job(job_t *job, const char *str);
 
 int execute(nodes_t *func, char **command, tcsh_t *term);
 
-int sepecial_variable(tcsh_t *term, char *cmd);
-
 int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 
 char *check_alias(tcsh_t *term, char *cmd);
@@ -408,11 +408,19 @@ char *search_binary(char *path, char *command);
 
 char *alias(tcsh_t *term, char *cmd);
 
+int display_alias(char *cmd, char *value);
+
+int display_built(char *cmd);
+
+int my_where(tcsh_t *term, char **argv);
+
 char *get_rc_file(tcsh_t *term);
 
 char *strip_single_quotes(char *word);
 
 int check_repeat(char *av, tcsh_t *term);
+
+int my_foreach(tcsh_t *term, char **argv);
 
 int my_lenbase(int nb, int base);
 
@@ -476,6 +484,8 @@ int flipcoin(tcsh_t *term, char **argv);
 int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
+
+int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
 

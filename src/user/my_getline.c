@@ -69,6 +69,9 @@ static int loop_getline(getline_t *st_g, tcsh_t *term)
     st_g->rd = read(STDIN_FILENO, &st_g->c, 1);
     if (st_g->rd <= 0)
         return return_reset(st_g);
+    if (st_g->c == '\t') {
+        return autocompletation(term, st_g);
+    }
     if (st_g->c == '\n' || st_g->c == '\r') {
         write(STDOUT_FILENO, "\n", 1);
         st_g->statut_getline = FALSE;
@@ -76,12 +79,10 @@ static int loop_getline(getline_t *st_g, tcsh_t *term)
     if (st_g->c == 4 && st_g->line_len == 0)
         return return_reset(st_g);
     if ((st_g->c == 127 || st_g->c == 8) && st_g->line_len > 0) {
-        delete_char_before_cursor(st_g, term);
-        return 0;
+        return delete_char_before_cursor(st_g, term);
     }
     if (st_g->c == 27) {
-        handle_escape_sequence(term, st_g);
-        return 0;
+        return handle_escape_sequence(term, st_g);
     }
     return loop_getline_final(st_g, term);
 }
