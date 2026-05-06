@@ -17,6 +17,9 @@
     #define RC_FILE ".42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
+    #define MANY_CLOSE "Too many )'s.\n"
+    #define MANY_OPEN "Too many ('s.\n"
+    #define NULL_CMD "Invalid null command.\n"
 
     #define SEP "()[]'\"`"
 
@@ -473,4 +476,8 @@ int throwdice(tcsh_t *term, char **argv);
 int guessnumber(tcsh_t *term, char **argv);
 
 int author(tcsh_t *term, char **argv);
+
+int occ_in_str(char c, char *str);
+
+int check_parenthesis(char *str);
 #endif
