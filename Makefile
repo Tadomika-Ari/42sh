@@ -57,6 +57,7 @@ SRC = 	src/main.c							\
 		src/repeat/error_repeat.c    		\
 		src/error/put_error_ptr.c           \
 		src/built_in/set.c					\
+	    src/tools/if_tools.c							\
 		src/built_in/if.c					\
 		src/tools/parsing_tool.c            \
 		src/initialisation/create_node.c    \
@@ -114,6 +115,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/jobs/printing.c                 \
 		src/var_interpreters/var_interpreter.c			\
         src/var_interpreters/var_manipulator.c			\
+        src/tools/if_tools.c							\
 		src/special_variable/sepecial_variable.c \
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
@@ -141,6 +143,7 @@ BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/flipcoin.c                \
 		src/bonus/throwdice.c               \
 		src/bonus/guessnumber.c             \
+		src/bonus/author.c                  \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 

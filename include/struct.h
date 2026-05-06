@@ -26,6 +26,7 @@
     #define FLIPCOIN "./bonus/flipcoin.txt"
     #define THROWDICE "./bonus/throwdice.txt"
     #define GUESSNUMBER "./bonus/guessnumber.txt"
+    #define AUTHOR "./bonus/author.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -81,7 +82,7 @@ extern const char *STEPS[NB_STEP][NB_ROW];
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
-    ALTERNATIVE_EXIT = 1,
+    ALTERNATIVE_EXIT = -1,
     TRUE = 1,
     FALSE = 0,
     LIFE = 42,
@@ -238,11 +239,23 @@ int env(tcsh_t *term, char **argv);
 
 char *simple(char c);
 
-int my_cmd_error(char *str, char *cmd);
+int my_cmd_error(char *str, char *cmd, int out);
 
 int my_cd(tcsh_t *term, char **argv);
 
+int child_cond(tcsh_t *term, int fd[2], char *cond);
+
 void algo_exit(int *result);
+
+int not_cond(char *str);
+
+int join_len_until_then(char **argv);
+
+int fallback_cond(tcsh_t *term, char *cond, bool *error);
+
+char *search_bin(tcsh_t *term, char *command);
+
+int normalize(tcsh_t *term, char *cmd, char **command, int status);
 
 int error_expression_syntax(char *cmd);
 
@@ -253,6 +266,8 @@ int my_exit(tcsh_t *term, char **argv);
 char *take_value(nodes_t *head, char *cat);
 
 int my_setenv(tcsh_t *term, char **argv);
+
+void my_free_exist(void *pointer);
 
 int correct_type(char **cmd);
 
@@ -456,4 +471,6 @@ int flipcoin(tcsh_t *term, char **argv);
 int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
+
+int author(tcsh_t *term, char **argv);
 #endif

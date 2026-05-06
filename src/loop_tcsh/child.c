@@ -106,7 +106,7 @@ int exec(char *bin, char **command, tcsh_t *term, char *cmd)
     pid = fork();
     if (pid == 0) {
         setpgid(0, 0);
-        free(cmd);
+        my_free_exist(cmd);
         _exit(child(bin, command, term, env));
     }
     if (pid < 0)
