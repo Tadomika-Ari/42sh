@@ -40,7 +40,7 @@ static int len_job_cmd(char *cmd)
     return nb;
 }
 
-int fill_commands_jobs(jobs_cont_t *counts, char *cmd,
+static int fill_commands_jobs(jobs_cont_t *counts, char *cmd,
     char **commands, char **jobs)
 {
     commands[counts->nb_cmd] = strndup(cmd + counts->position,
@@ -64,7 +64,7 @@ static int handle_separators(jobs_cont_t *counts, char *cmd,
     return SUCCESS_EXIT;
 }
 
-int job_cmd_splitting(jobs_cont_t *counts, char *cmd,
+static int job_cmd_splitting(jobs_cont_t *counts, char *cmd,
     char **commands, char **jobs)
 {
     parse_t parse = {0};
@@ -117,7 +117,7 @@ static int empty_cmd_or(char *job)
     return TRUE;
 }
 
-int empty_error_case(char **commands, char **jobs)
+static int empty_error_case(char **commands, char **jobs)
 {
     int cmd_count = 0;
 
