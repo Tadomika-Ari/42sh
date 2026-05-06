@@ -21,6 +21,7 @@ int len_job_cmd(char *cmd)
 {
     parse_t parse = {0};
     int nb = 0;
+
     for (int i = 0; cmd[i] != '\0'; i++) {
         update_state(&parse, cmd[i]);
         if (is_job_control(&parse, cmd, i) != NULL) {
@@ -51,7 +52,7 @@ void job_cmd_splitting(char *cmd, char **commands, char **jobs)
     }
     commands[nb_cmd] = strndup(cmd + position, my_strlen(cmd) - position);
     commands[nb_cmd + 1] = NULL;
-    jobs[nb_cmd ] = NULL;
+    jobs[nb_cmd] = NULL;
 }
 
 int job_detection(char *cmd)
