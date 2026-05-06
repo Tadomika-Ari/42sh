@@ -22,6 +22,8 @@ static int len_job_cmd(char *cmd)
     parse_t parse = {0};
     int nb = 0;
 
+    if (cmd == NULL)
+        return 0;
     for (int i = 0; cmd[i] != '\0'; i++) {
         update_state(&parse, cmd[i]);
         if (is_job_control(&parse, cmd, i) != NULL) {
