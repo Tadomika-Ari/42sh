@@ -241,6 +241,8 @@ char *simple(char c);
 
 int my_cmd_error(char *str, char *cmd, int out);
 
+int my_which(tcsh_t *term, char **argv);
+
 int my_cd(tcsh_t *term, char **argv);
 
 int child_cond(tcsh_t *term, int fd[2], char *cond);
