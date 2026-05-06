@@ -68,7 +68,13 @@ int job_detection(char *cmd)
 
 int job_control(tcsh_t *term, char *cmd)
 {
-    if (job_detection(cmd) == TRUE)
-        return and_job(term, cmd);
+    char **commands = malloc(sizeof(char *) * (len_job_cmd(cmd) + 2));
+    char **jobs = malloc(sizeof(char *) * (len_job_cmd(cmd) + 1));
+
+    if (job_detection(cmd) == TRUE) {
+        job_cmd_splitting(cmd, commands, jobs);
+    }
+    free_array(commands);
+    free_array(jobs);
     return choose_command(term, cmd);
 }
