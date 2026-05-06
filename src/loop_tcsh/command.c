@@ -20,7 +20,7 @@ int search_command(tcsh_t *term, char **command, char *cmd)
     char *lign = search_bin(term, command[0]);
 
     if (!lign)
-        return my_cmd_error(": Command not found.\n", command[0], 1);
+        return ALTERNATIVE_EXIT;
     return exec(lign, command, term, cmd);
 }
 

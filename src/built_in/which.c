@@ -20,7 +20,7 @@ int display_alias(char *cmd, char *value)
 int display_built(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, ": shell built-in command.\n", 26);
+    write(1, "is a shell built in\n", 20);
     return SUCCESS_EXIT;
 }
 
@@ -50,7 +50,7 @@ int search_cmd(char *cmd, tcsh_t *term)
             return display_built(cmd);
     value = search_bin(term, cmd);
     if (value == NULL)
-        return my_cmd_error(": Command not found\n",
+        return my_cmd_error(": Command not found.\n",
             cmd, ALTERNATIVE_EXIT);
     return display_bin(cmd, value);
 }
