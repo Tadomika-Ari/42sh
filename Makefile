@@ -50,6 +50,7 @@ SRC = 	src/main.c							\
 		src/var_interpreters/var_interpreter.c			\
 		src/var_interpreters/var_manipulator.c			\
 		src/built_in/which.c							\
+		src/built_in/where.c							\
 		src/built_in/foreach.c							\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
