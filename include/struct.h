@@ -218,11 +218,18 @@ typedef struct hang {
     int letters[26];
 } hang_t;
 
-typedef struct job_control {
+typedef struct job_control_count {
     int i;
     int position;
     int nb_cmd;
+    char *separators;
 } jobs_cont_t;
+
+typedef struct job_control_exec {
+    int ignore;
+    int or_done;
+    int value;
+} jobs_exec_t;
 
 int init(tcsh_t *term, char **env);
 
