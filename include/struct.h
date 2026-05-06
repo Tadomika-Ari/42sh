@@ -89,13 +89,13 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define MAMBO "./bonus/songs/mambo.mp3"
     #define YIPPEE "./bonus/songs/yippee.mp3"
 
-typedef struct alias {
+typedef struct alias_tool {
     char *new_expanded;
     char *expanded;
     char *prev_first_word;
     char *curr_first_word;
     nodes_t *alias_histo;
-} alias_t;
+} alias_tool_t;
 
 typedef enum exit
 {

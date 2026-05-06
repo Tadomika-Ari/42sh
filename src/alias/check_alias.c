@@ -160,7 +160,7 @@ static int check_loop_alias(nodes_t **alias_histo, char *cmd)
     return 0;
 }
 
-static int get_prev_new(alias_t *tmp, tcsh_t *term)
+static int get_prev_new(alias_tool_t *tmp, tcsh_t *term)
 {
     tmp->prev_first_word = extract_first_word(tmp->expanded);
     tmp->new_expanded = expand_first_word_alias(term, tmp->expanded);
@@ -173,7 +173,7 @@ static int get_prev_new(alias_t *tmp, tcsh_t *term)
 
 char *alias(tcsh_t *term, char *cmd)
 {
-    alias_t tmp = init_alias(cmd);
+    alias_tool_t tmp = init_alias(cmd);
 
     while (1) {
         if (get_prev_new(&tmp, term) == -1)
