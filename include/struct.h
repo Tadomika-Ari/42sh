@@ -481,4 +481,6 @@ int author(tcsh_t *term, char **argv);
 int occ_in_str(char c, char *str);
 
 int check_parenthesis(char *str);
+
+int check_quote(char *str);
 #endif
