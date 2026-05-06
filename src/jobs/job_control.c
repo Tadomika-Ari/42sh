@@ -6,6 +6,23 @@
 */
 
 #include "../../include/struct.h"
+#include "../../lib/my/my.h"
+
+int or_job(tcsh_t *term, char *cmd)
+{
+    char **array_cmd = my_strtwabw(cmd, "||");
+    int value = 0;
+
+    for (int i = 0; array_cmd[i] != NULL; i++){
+        value = choose_command(term, array_cmd[i]);
+        if (value == SUCCESS_EXIT){
+            free_array(array_cmd);
+            return SUCCESS_EXIT;
+        }
+    }
+    free_array(array_cmd);
+    return value;
+}
 
 char *is_job_control(parse_t *parse,char *cmd, int i)
 {
@@ -31,7 +48,6 @@ int job_detection(char *cmd)
 int job_control(tcsh_t *term, char *cmd)
 {
     if (job_detection(cmd) == TRUE)
-
-        else
-            choose_command(term, cmd);
+        return and_job(term, cmd);
+    return choose_command(term, cmd);
 }
