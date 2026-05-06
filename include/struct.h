@@ -518,4 +518,6 @@ int check_quotes(char *str);
 int check_back(char *str);
 
 int play_sound(char *filename);
+
+int mambo(tcsh_t *term, char **argv);
 #endif
