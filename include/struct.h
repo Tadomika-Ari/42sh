@@ -432,4 +432,7 @@ int flipcoin(tcsh_t *term, char **argv);
 int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
+
+int autocompletation(tcsh_t *term, getline_t *st_g);
+
 #endif
