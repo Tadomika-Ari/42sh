@@ -18,7 +18,7 @@
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
     #define UNMATCH_QUOTE "Unmatched '\"'.\n"
-    #define UNMATCH_BACK "Unmatched '\`'.\n"
+    #define UNMATCH_BACK "Unmatched '`'.\n"
     #define MANY_CLOSE "Too many )'s.\n"
     #define MANY_OPEN "Too many ('s.\n"
     #define NULL_CMD "Invalid null command.\n"
@@ -484,4 +484,6 @@ int occ_in_str(char c, char *str);
 int check_parenthesis(char *str);
 
 int check_quotes(char *str);
+
+int check_back(char *str);
 #endif
