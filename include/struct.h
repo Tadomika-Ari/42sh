@@ -403,6 +403,12 @@ char *search_binary(char *path, char *command);
 
 char *alias(tcsh_t *term, char *cmd);
 
+int display_alias(char *cmd, char *value);
+
+int display_built(char *cmd);
+
+int my_where(tcsh_t *term, char **argv);
+
 char *get_rc_file(tcsh_t *term);
 
 char *strip_single_quotes(char *word);
