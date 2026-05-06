@@ -84,6 +84,8 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define COLS "123"
     #define ROWS "ABC"
 
+    #define MAMBO "./bonus/songs/mambo.mp3"
+
 typedef struct alias {
     char *new_expanded;
     char *expanded;
