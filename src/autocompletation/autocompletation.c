@@ -107,6 +107,26 @@ char **autocomplete_command(char *partial_cmd, tcsh_t *term, getline_t *st_g)
     return tab;
 }
 
+int update_line(getline_t *st_g, tcsh_t *term, char **result)
+{
+    int count = 0;
+    int new_len = 0;
+
+    count = len_array(result);
+    if (count == 1 && result[0] != NULL) {
+        new_len = my_strlen(result[0]);
+        if (ensure_capacity(&st_g->line, &st_g->cap, new_len) == -1) {
+            free_array(result);
+            return FAILURE_EXIT;
+        }
+        memcpy(st_g->line, result[0], new_len + 1);
+        st_g->line_len = new_len;
+        term->whereiscursor = st_g->line_len;
+        term->maxposcursor = st_g->line_len;
+    }
+    return SUCCESS_EXIT;
+}
+
 int autocompletation(tcsh_t *term, getline_t *st_g)
 {
     char *cmd = st_g->line;
@@ -116,6 +136,7 @@ int autocompletation(tcsh_t *term, getline_t *st_g)
     result = autocomplete_command(cmd, term, st_g);
     if (result == NULL)
         return FAILURE_EXIT;
+    update_line(st_g, term, result);
     for (int i = 0; result[i] != NULL; i++) {
         printf("%s\n", result[i]);
     }
