@@ -51,8 +51,6 @@ int my_alias(tcsh_t *term, char **cmd)
     if (my_strcmp("alias", cmd[0]) == 0)
         return put_err("alias: Too dangerous to alias that.\n",
             ALTERNATIVE_EXIT);
-    if (my_strcmp(cmd[0], cmd[1]) == 0)
-        return SUCCESS_EXIT;
     write(term->fd_rc, "alias ", 6);
     for (int i = 0; cmd[i] != NULL; i++) {
         write(term->fd_rc, cmd[i], my_strlen(cmd[i]));
