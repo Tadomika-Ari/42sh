@@ -76,6 +76,12 @@ static void free_node_history(nodes_t *head)
     }
 }
 
+void my_free_exist(void *pointer)
+{
+    if (pointer)
+        free(pointer);
+}
+
 void free_all(tcsh_t *term)
 {
     if (!term)

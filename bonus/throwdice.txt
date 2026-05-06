@@ -1,0 +1,11 @@
+<< THROWDICE HELP >>
+
+USAGE
+    throwdice [-h]   : help menu
+    throwdice [--help]   : help menu
+    throwdice [--face] [number]: change the number of face of the dice number
+    throwdice [-f] [number]: change the number of face of the dice to number
+
+number: must be between 7 and 20, highter or lower number will be count as an error
+
+<< END >>

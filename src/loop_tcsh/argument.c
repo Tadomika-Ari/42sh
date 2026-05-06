@@ -54,6 +54,7 @@ void write_argument(char **cmd, tcsh_t *term)
     if (lign) {
         my_strip_newline(lign);
         write(1, lign, strlen(lign));
+        free(lign);
     }
     write(1, ":", 1);
     lign = take_value(term->env, "PWD");

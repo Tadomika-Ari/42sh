@@ -79,7 +79,7 @@ char **sweeper(tcsh_t *term, char *str, bool *error)
         return NULL;
     }
     free_array(tab);
-    if (edit_list(term, list, error) == 1) {
+    if (edit_list(term, list, error) == ALTERNATIVE_EXIT) {
         free_node(list);
         return NULL;
     }

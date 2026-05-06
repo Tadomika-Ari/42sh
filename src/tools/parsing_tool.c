@@ -9,7 +9,7 @@
 
 int is_protected(parse_t *parse)
 {
-    return (parse->in_quote || parse->in_tick
+    return (parse->in_quote || parse->in_tick || parse->in_btick
         || parse->parent > 0 || parse->brack > 0);
 }
 
@@ -31,6 +31,8 @@ void update_state(parse_t *parse, char c)
         parse->in_quote = !parse->in_quote;
     if (c == '\'' && !parse->in_quote)
         parse->in_tick = !parse->in_tick;
-    if (!parse->in_quote && !parse->in_tick)
+    if (c == '`' && !parse->in_tick)
+        parse->in_btick = !parse->in_btick;
+    if (!parse->in_quote && !parse->in_tick && !parse->in_btick)
         update_other(parse, c);
 }

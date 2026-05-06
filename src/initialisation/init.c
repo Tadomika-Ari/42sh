@@ -56,6 +56,12 @@ static int fill_annexe(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_if, "if") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, my_foreach, "foreach") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_which, "which") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_where, "where") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return SUCCESS_EXIT;
 }
 
