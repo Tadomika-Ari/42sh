@@ -482,5 +482,5 @@ int occ_in_str(char c, char *str);
 
 int check_parenthesis(char *str);
 
-int check_quote(char *str);
+int check_quotes(char *str);
 #endif
