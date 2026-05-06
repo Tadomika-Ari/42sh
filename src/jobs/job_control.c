@@ -58,17 +58,23 @@ static void job_cmd_splitting(char *cmd, char **commands, char **jobs)
 int job_execution(tcsh_t *term, char **commands, char **jobs)
 {
     int ignore = 0;
+    int or_done = 0;
     int value = 0;
 
     for (int i = 0; commands[i] != NULL; i++){
-        if (ignore == FALSE)
+        if (ignore == FALSE && or_done == FALSE)
             value = choose_command(term, commands[i]);
         if (jobs[i] != NULL && my_strcmp(jobs[i], "&&") == 0 && value != 0
-            || jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0 && value == 0)
+            || jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0 && value == 0){
             ignore = TRUE;
-        if (jobs[i] != NULL && my_strcmp(jobs[i], "&&") == 0 && value == 0
-            || jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0 && value != 0)
+            or_done = TRUE;
+        }
+        if (jobs[i] != NULL && my_strcmp(jobs[i], "&&") == 0 && value == 0)
             ignore = FALSE;
+        if (jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0 && value != 0) {
+            ignore = FALSE;
+            or_done = FALSE;
+        }
     }
     return value;
 }
