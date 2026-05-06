@@ -34,13 +34,15 @@ static int len_job_cmd(char *cmd)
     return nb;
 }
 
-static void job_cmd_splitting(char *cmd, char **commands, char **jobs)
+void job_cmd_splitting(char *cmd, char **commands, char **jobs)
 {
     parse_t parse = {0};
     int position = 0;
     int nb_cmd = 0;
     char *separators = NULL;
 
+    if (cmd == NULL || commands == NULL || jobs == NULL)
+        return;
     for (int i = 0; cmd[i] != '\0'; i++){
         update_state(&parse, cmd[i]);
         separators = is_job_control(&parse, cmd, i);
@@ -63,6 +65,8 @@ int job_execution(tcsh_t *term, char **commands, char **jobs)
     int or_done = 0;
     int value = 0;
 
+    if (commands == NULL || jobs == NULL)
+        return FAILURE_EXIT;
     for (int i = 0; commands[i] != NULL; i++){
         if (ignore == FALSE && or_done == FALSE)
             value = choose_command(term, commands[i]);
