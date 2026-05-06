@@ -132,8 +132,6 @@ int my_set(tcsh_t *term, char **argv)
     for (int i = 0; argv[i];) {
         res = check_in(term, argv, &tmp, &i);
         if (res == -1)
-            continue;
-        if (res != SUCCESS_EXIT)
             return ALTERNATIVE_EXIT;
     }
     return SUCCESS_EXIT;

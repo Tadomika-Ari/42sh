@@ -68,6 +68,7 @@ SRC = 	src/main.c							\
 		src/repeat/cut_len.c 				\
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c \
+		src/command_utilities/backsticks.c \
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -124,6 +125,7 @@ TEST_SRC = tests/test_42sh.c \
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
+		src/command_utilities/backsticks.c  \
 		src/repeat/check_repeat.c			\
 		src/repeat/error_repeat.c    		\
 		src/error/put_error_ptr.c           \
