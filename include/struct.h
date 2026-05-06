@@ -520,4 +520,6 @@ int check_back(char *str);
 int play_sound(char *filename);
 
 int mambo(tcsh_t *term, char **argv);
+
+int yippee(tcsh_t *term, char **argv);
 #endif
