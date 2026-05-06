@@ -112,6 +112,7 @@ int autocompletation(tcsh_t *term, getline_t *st_g)
     char *cmd = st_g->line;
     char **result = NULL;
 
+    write(1, "\n", 1);
     result = autocomplete_command(cmd, term, st_g);
     if (result == NULL)
         return FAILURE_EXIT;
