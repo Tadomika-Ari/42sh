@@ -25,6 +25,13 @@ void update_other(parse_t *parse, char c)
         parse->brack--;
 }
 
+void update_ele(ele_t *ele)
+{
+    if (ele->i > ele->start)
+        ele->count++;
+    ele->start = ele->i;
+}
+
 void update_state(parse_t *parse, char c)
 {
     if (c == '"' && !parse->in_tick)
