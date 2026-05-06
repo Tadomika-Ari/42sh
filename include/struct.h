@@ -14,7 +14,7 @@
     #define MAX_LINE 1024
 
 
-    #define RC_FILE ".42rc"
+    #define RC_FILE "./bonus/.42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
     #define UNMATCH_QUOTE "Unmatched '\"'.\n"
@@ -83,6 +83,11 @@ extern const char *STEPS[NB_STEP][NB_ROW];
 
     #define COLS "123"
     #define ROWS "ABC"
+
+    #define SOUND_STRUCT "ffmpeg -loglevel quiet -i %s" SOUND_STRUCT_END
+    #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
+    #define MAMBO "./bonus/songs/mambo.mp3"
+    #define YIPPEE "./bonus/songs/yippee.mp3"
 
 typedef struct alias {
     char *new_expanded;
@@ -525,6 +530,12 @@ int check_parenthesis(char *str);
 int check_quotes(char *str);
 
 int check_back(char *str);
+
+int play_sound(char *filename);
+
+int mambo(tcsh_t *term, char **argv);
+
+int yippee(tcsh_t *term, char **argv);
 
 int job_control(tcsh_t *term, char *cmd);
 
