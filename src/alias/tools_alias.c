@@ -18,7 +18,7 @@ void free_alias_history(nodes_t *alias_histo)
     }
 }
 
-alias_tool_t init_alias(char *cmd)
+alias_tool_t init_alias_tool(char *cmd)
 {
     alias_tool_t tmp;
 

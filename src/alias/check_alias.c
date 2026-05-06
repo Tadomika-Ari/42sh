@@ -173,7 +173,7 @@ static int get_prev_new(alias_tool_t *tmp, tcsh_t *term)
 
 char *alias(tcsh_t *term, char *cmd)
 {
-    alias_tool_t tmp = init_alias(cmd);
+    alias_tool_t tmp = init_alias_tool(cmd);
 
     while (1) {
         if (get_prev_new(&tmp, term) == -1)
