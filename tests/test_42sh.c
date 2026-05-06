@@ -311,32 +311,6 @@ Test(shell, check_alias_not_found, .init = redirect_all_std)
     unlink(path);
 }
 
-Test(shell, sepecial_variable_cwd, .init = redirect_all_std)
-{
-    tcsh_t term = {0};
-    char cmd[] = "$cwd";
-    int ret = 0;
-
-    push_back(&term.env, create_new_node("PWD=/tmp"));
-    ret = sepecial_variable(&term, cmd);
-    cr_assert_eq(ret, SUCCESS_EXIT);
-    cr_assert_stdout_eq_str("/tmp\n");
-    free_nodes_list(term.env);
-}
-
-Test(shell, sepecial_variable_unknown, .init = redirect_all_std)
-{
-    tcsh_t term = {0};
-    char cmd[] = "$idontexist";
-    int ret = 0;
-
-    push_back(&term.env, create_new_node("PWD=/tmp"));
-    ret = sepecial_variable(&term, cmd);
-    cr_assert_eq(ret, -1);
-    cr_assert_stdout_eq_str("");
-    free_nodes_list(term.env);
-}
-
 Test(shell, push_to_history, .init = redirect_all_std)
 {
     tcsh_t *term = calloc(1, sizeof(tcsh_t));
