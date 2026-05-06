@@ -17,6 +17,11 @@
     #define RC_FILE ".42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
+    #define UNMATCH_QUOTE "Unmatched '\"'.\n"
+    #define UNMATCH_BACK "Unmatched '`'.\n"
+    #define MANY_CLOSE "Too many )'s.\n"
+    #define MANY_OPEN "Too many ('s.\n"
+    #define NULL_CMD "Invalid null command.\n"
 
     #define SEP "()[]'\"`"
 
@@ -484,4 +489,11 @@ int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
 
+int occ_in_str(char c, char *str);
+
+int check_parenthesis(char *str);
+
+int check_quotes(char *str);
+
+int check_back(char *str);
 #endif

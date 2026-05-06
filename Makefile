@@ -68,6 +68,9 @@ SRC = 	src/main.c							\
 		src/repeat/cut_len.c 				\
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c \
+		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
+		src/tools/check_back.c              \
 		src/autocompletation/autocompletation.c	\
 
 OBJ = 	$(SRC:.c=.o)
@@ -137,6 +140,9 @@ TEST_SRC = tests/test_42sh.c \
 		src/tools/my_strip_newline.c\
 		src/repeat/len_base.c 				\
 		src/repeat/cut_len.c 				\
+		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
+		src/tools/check_back.c              \
 		src/autocompletation/autocompletation.c \
 
 BONUS_SRC = src/bonus/pelophylax.c          \
