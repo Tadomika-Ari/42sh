@@ -14,7 +14,7 @@
     #define MAX_LINE 1024
 
 
-    #define RC_FILE ".42rc"
+    #define RC_FILE "./bonus/.42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
     #define UNMATCH_QUOTE "Unmatched '\"'.\n"
