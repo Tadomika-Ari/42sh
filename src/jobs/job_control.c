@@ -87,10 +87,20 @@ int job_execution(tcsh_t *term, char **commands, char **jobs)
 
 int job_control(tcsh_t *term, char *cmd)
 {
-    char **commands = malloc(sizeof(char *) * (len_job_cmd(cmd) + 2));
-    char **jobs = malloc(sizeof(char *) * (len_job_cmd(cmd) + 1));
+    char **commands = NULL;
+    char **jobs = NULL;
     int value = 0;
 
+    if (cmd == NULL)
+        return FAILURE_EXIT;
+    commands = malloc(sizeof(char *) * (len_job_cmd(cmd) + 2));
+    jobs = malloc(sizeof(char *) * (len_job_cmd(cmd) + 1));
+    if (commands == NULL)
+        return FAILURE_EXIT;
+    if (jobs == NULL){
+        free(commands);
+        return FAILURE_EXIT;
+    }
     job_cmd_splitting(cmd, commands, jobs);
     value = job_execution(term, commands, jobs);
     free_array(commands);
