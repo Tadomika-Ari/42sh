@@ -26,5 +26,7 @@ int fill_bonus(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, mambo, "mambo") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, yippee, "yippee") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     return EXIT_SUCCESS;
 }
