@@ -8,7 +8,7 @@
 #include "../../include/struct.h"
 #include "../../lib/my/my.h"
 
-char *is_job_control(parse_t *parse, char *cmd, int i)
+static char *is_job_control(parse_t *parse, char *cmd, int i)
 {
     if (!is_protected(parse) && (cmd[i] == '&' && cmd[i + 1] == '&'))
         return "&&";
@@ -32,7 +32,7 @@ static int len_job_cmd(char *cmd)
     return nb;
 }
 
-void job_cmd_splitting(char *cmd, char **commands, char **jobs)
+static void job_cmd_splitting(char *cmd, char **commands, char **jobs)
 {
     parse_t parse = {0};
     int position = 0;
