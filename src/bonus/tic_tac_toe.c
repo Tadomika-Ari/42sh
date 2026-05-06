@@ -53,7 +53,7 @@ static void print_gride(char **gride, int player, ttt_t *ttt)
     printf("  C %c | %c | %c \n", gride[2][0], gride[2][1], gride[2][2]);
     printf("  ----|---|---\n");
     if (ttt->player_win == -1 && ttt->turn != 0)
-        printf("\nturn : %d \nPlayer %d Turn : ", ttt->turn, player);
+        printf("\nTurn : %d \nPlayer %d Turn : ", ttt->turn, player);
 }
 
 static int set_in_gride(ttt_t *ttt)
@@ -108,6 +108,7 @@ static int algo_end(ttt_t *ttt)
 
 int print_end(ttt_t *ttt)
 {
+    free_array(ttt->gride);
     if (ttt->player_win != -1)
         printf("Player %d WIN!!!!\n", ttt->player_win);
     if (ttt->turn == 0)
