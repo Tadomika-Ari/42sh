@@ -124,7 +124,7 @@ int my_foreach(tcsh_t *term, char **argv)
     bool error = false;
 
     if (len < 2)
-        return my_cmd_error(":Too few arguments.\n",
+        return my_cmd_error(": Too few arguments.\n",
             "foreach", ALTERNATIVE_EXIT);
     if (len > 2)
         return my_cmd_error(": Words not parenthesized.\n",
