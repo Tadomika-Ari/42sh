@@ -527,4 +527,8 @@ int check_quotes(char *str);
 int check_back(char *str);
 
 int job_control(tcsh_t *term, char *cmd);
+
+int empty_error_case(char **commands, char **jobs);
+
+int empty_cmd_detect(char *cmd);
 #endif
