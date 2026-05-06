@@ -53,7 +53,7 @@ static void print_gride(char **gride, int player, ttt_t *ttt)
     printf("  C %c | %c | %c \n", gride[2][0], gride[2][1], gride[2][2]);
     printf("  ----|---|---\n");
     if (ttt->player_win == -1 && ttt->turn != 0)
-        printf("\nturn : %d \nPlayer %d Turn : ", ttt->turn, player);
+        printf("\nTurn : %d \nPlayer %d Turn : ", ttt->turn, player);
 }
 
 static int set_in_gride(ttt_t *ttt)
@@ -86,12 +86,12 @@ static int is_ligne(ttt_t *ttt)
         if (ttt->gride_int[i] != 0
             && (ttt->gride_int[i + 0] == ttt->gride_int[i + 3]
                 && ttt->gride_int[i + 3] == ttt->gride_int[i + 6]))
-            return ttt->gride_int[4];
+            return ttt->gride_int[i];
     for (int i = 0; i < 9; i += 3)
         if (ttt->gride_int[i] != 0
             && (ttt->gride_int[i] == ttt->gride_int[i + 1]
                 && ttt->gride_int[i + 1] == ttt->gride_int[i + 2]))
-            return ttt->gride_int[4];
+            return ttt->gride_int[i];
     return -1;
 }
 
@@ -108,8 +108,9 @@ static int algo_end(ttt_t *ttt)
 
 int print_end(ttt_t *ttt)
 {
+    free_array(ttt->gride);
     if (ttt->player_win != -1)
-        printf("Player %d WIN!!!!\n", ttt->player_win);
+        printf("\e[33mPlayer %d WIN!!!!\e[m\n", ttt->player_win);
     if (ttt->turn == 0)
         printf("Draw\n");
     return SUCCESS_EXIT;

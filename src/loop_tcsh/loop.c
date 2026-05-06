@@ -102,7 +102,7 @@ int running(tcsh_t *term)
 
 int my_sh(char **env)
 {
-    tcsh_t *term = malloc(sizeof(tcsh_t));
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
 
     if (!term)
         return FAILURE_EXIT;
