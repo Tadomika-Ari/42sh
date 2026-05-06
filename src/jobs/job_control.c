@@ -98,13 +98,53 @@ static void status_false(jobs_exec_t *status)
     status->or_done = FALSE;
 }
 
+static int empty_cmd_detect(char *cmd)
+{
+    if (cmd == NULL)
+        return TRUE;
+    for (int i = 0; cmd[i] != '\0'; i++){
+        if (cmd[i] != ' ' && cmd[i] != '\t')
+            return FALSE;
+    }
+    return TRUE;
+}
+
+static int empty_cmd_or(char *job)
+{
+    if (job != NULL && my_strcmp(job, "&&") == 0)
+        return FALSE;
+    error_null();
+    return TRUE;
+}
+
+int empty_error_case(char **commands, char **jobs)
+{
+    int cmd_count = 0;
+
+    for (int i = 0; commands[i] != NULL; i++){
+        if (empty_cmd_detect(commands[i]) == FALSE)
+            cmd_count = 1;
+        if (empty_cmd_detect(commands[i]) == TRUE && cmd_count == TRUE){
+            error_null();
+            return TRUE;
+        }
+        if (empty_cmd_detect(commands[i]) == TRUE && cmd_count == FALSE
+            && empty_cmd_or(jobs[i]) == TRUE)
+            return TRUE;
+    }
+    return FALSE;
+}
+
 int job_execution(tcsh_t *term, jobs_exec_t *sta,
     char **cmds, char **jobs)
 {
     if (cmds == NULL || jobs == NULL)
         return FALSE;
+    if (empty_error_case(cmds, jobs) == TRUE)
+        return SUCCESS_EXIT;
     for (int i = 0; cmds[i] != NULL; i++){
-        if (sta->ignore == FALSE && sta->or_done == FALSE)
+        if (sta->ignore == FALSE && sta->or_done == FALSE
+            && empty_cmd_detect(cmds[i]) == FALSE)
             sta->value = choose_command(term, cmds[i]);
         if (jobs[i] != NULL && my_strcmp(jobs[i], "&&") == 0 && sta->value != 0
             || jobs[i] != NULL && my_strcmp(jobs[i], "||") == 0
