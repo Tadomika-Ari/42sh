@@ -79,6 +79,14 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define COLS "123"
     #define ROWS "ABC"
 
+typedef struct alias {
+    char *new_expanded;
+    char *expanded;
+    char *prev_first_word;
+    char *curr_first_word;
+    nodes_t *alias_histo;
+} alias_t;
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
@@ -473,4 +481,13 @@ int throwdice(tcsh_t *term, char **argv);
 int guessnumber(tcsh_t *term, char **argv);
 
 int author(tcsh_t *term, char **argv);
+
+void *ret_error_alias(alias_t *tmp);
+
+alias_t init_alias(char *cmd);
+
+void free_prev_cur(char *prev, char *cur);
+
+void free_alias_history(nodes_t *alias_histo);
+
 #endif
