@@ -551,4 +551,6 @@ int job_execution(tcsh_t *term, jobs_exec_t *sta,
 int empty_error_case(char **commands, char **jobs);
 
 int empty_cmd_detect(char *cmd);
+
+void update_ele(ele_t *ele);
 #endif
