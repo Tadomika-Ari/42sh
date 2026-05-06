@@ -17,6 +17,11 @@
     #define RC_FILE ".42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
+    #define UNMATCH_QUOTE "Unmatched '\"'.\n"
+    #define UNMATCH_BACK "Unmatched '`'.\n"
+    #define MANY_CLOSE "Too many )'s.\n"
+    #define MANY_OPEN "Too many ('s.\n"
+    #define NULL_CMD "Invalid null command.\n"
 
     #define SEP "()[]'\"`"
 
@@ -249,6 +254,8 @@ char *simple(char c);
 
 int my_cmd_error(char *str, char *cmd, int out);
 
+int my_which(tcsh_t *term, char **argv);
+
 int my_cd(tcsh_t *term, char **argv);
 
 int child_cond(tcsh_t *term, int fd[2], char *cond);
@@ -399,8 +406,6 @@ int no_such_job(job_t *job, const char *str);
 
 int execute(nodes_t *func, char **command, tcsh_t *term);
 
-int sepecial_variable(tcsh_t *term, char *cmd);
-
 int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 
 char *check_alias(tcsh_t *term, char *cmd);
@@ -411,11 +416,19 @@ char *search_binary(char *path, char *command);
 
 char *alias(tcsh_t *term, char *cmd);
 
+int display_alias(char *cmd, char *value);
+
+int display_built(char *cmd);
+
+int my_where(tcsh_t *term, char **argv);
+
 char *get_rc_file(tcsh_t *term);
 
 char *strip_single_quotes(char *word);
 
 int check_repeat(char *av, tcsh_t *term);
+
+int my_foreach(tcsh_t *term, char **argv);
 
 int my_lenbase(int nb, int base);
 
@@ -480,6 +493,8 @@ int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
 
+int autocompletation(tcsh_t *term, getline_t *st_g);
+
 int author(tcsh_t *term, char **argv);
 
 void *ret_error_alias(alias_t *tmp);
@@ -490,4 +505,11 @@ void free_prev_cur(char *prev, char *cur);
 
 void free_alias_history(nodes_t *alias_histo);
 
+int occ_in_str(char c, char *str);
+
+int check_parenthesis(char *str);
+
+int check_quotes(char *str);
+
+int check_back(char *str);
 #endif

@@ -49,11 +49,9 @@ int filter_command(tcsh_t *term, int value)
 {
     char *cmd = NULL;
     char *repeat_cmd = NULL;
-    int len = 0;
 
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
-    len = my_strlen(cmd);
     if (strncmp(cmd, "repeat ", 7) == 0 || strncmp(cmd, "repeat", 6) == 0) {
         term->nb_nb_repeat = 0;
         check_repeat(cmd, term);

@@ -11,7 +11,7 @@
 char **dup_array(char **arr, glob_t *globstruct)
 {
     int len = len_array(arr);
-    char **new = malloc(sizeof(char *) * (len + 1));
+    char **new = NULL;
 
     if (len > 0)
         new = malloc(sizeof(char *) * (len + 1));

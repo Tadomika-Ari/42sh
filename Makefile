@@ -49,7 +49,9 @@ SRC = 	src/main.c							\
 		src/jobs/printing.c                 \
 		src/var_interpreters/var_interpreter.c			\
 		src/var_interpreters/var_manipulator.c			\
-		src/special_variable/sepecial_variable.c\
+		src/built_in/which.c							\
+		src/built_in/where.c							\
+		src/built_in/foreach.c							\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
@@ -67,6 +69,10 @@ SRC = 	src/main.c							\
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c \
 		src/alias/tools_alias.c\
+		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
+		src/tools/check_back.c              \
+		src/autocompletation/autocompletation.c	\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -115,9 +121,11 @@ TEST_SRC = tests/test_42sh.c \
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
 		src/var_interpreters/var_interpreter.c			\
+		src/built_in/foreach.c							\
         src/var_interpreters/var_manipulator.c			\
         src/tools/if_tools.c							\
-		src/special_variable/sepecial_variable.c \
+        src/built_in/which.c							\
+        src/built_in/where.c							\
 		src/alias/add_alias.c               \
 		src/alias/check_alias.c             \
 		src/loop_tcsh/search_binary.c       \
@@ -134,6 +142,10 @@ TEST_SRC = tests/test_42sh.c \
 		src/repeat/len_base.c 				\
 		src/repeat/cut_len.c 				\
 		src/alias/tools_alias.c\
+		src/tools/check_parenthesis.c       \
+		src/tools/check_quote.c             \
+		src/tools/check_back.c              \
+		src/autocompletation/autocompletation.c \
 
 BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/cprintf.c\
