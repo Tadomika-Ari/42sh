@@ -85,6 +85,17 @@ int job_execution(tcsh_t *term, char **commands, char **jobs)
     return value;
 }
 
+int handle_splitting_error(char *cmd, char **commands, char **jobs)
+{
+    jobs_cont_t counts = {0};
+
+    if (job_cmd_splitting(&counts, cmd, commands, jobs) == FAILURE_EXIT){
+        free_cmd_jobs(commands, jobs);
+        return ALTERNATIVE_EXIT;
+    }
+    return SUCCESS_EXIT;
+}
+
 int job_control(tcsh_t *term, char *cmd)
 {
     char **commands = NULL;
