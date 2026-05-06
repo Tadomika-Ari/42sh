@@ -40,7 +40,7 @@ int and_job(tcsh_t *term, char *cmd)
     return SUCCESS_EXIT;
 }
 
-char *is_job_control(parse_t *parse,char *cmd, int i)
+char *is_job_control(parse_t *parse, char *cmd, int i)
 {
     if (!is_protected(parse) && (cmd[i] == '&' && cmd[i + 1] == '&'))
         return "&&";
