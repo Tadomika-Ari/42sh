@@ -68,7 +68,8 @@ static char **add(char *partial_cmd, char **tmp_char, int i, char **tab)
     return tab;
 }
 
-char **other_commande(char **tab, tcsh_t *term, getline_t *st_g, char *partial_cmd)
+char **other_commande(char **tab, tcsh_t *term, getline_t *st_g,
+    char *partial_cmd)
 {
     nodes_t *tmp = NULL;
     char **tmp_char = NULL;
