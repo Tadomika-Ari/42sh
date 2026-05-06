@@ -223,6 +223,19 @@ typedef struct hang {
     int letters[26];
 } hang_t;
 
+typedef struct job_control_count {
+    int i;
+    int position;
+    int nb_cmd;
+    char *separators;
+} jobs_cont_t;
+
+typedef struct job_control_exec {
+    int ignore;
+    int or_done;
+    int value;
+} jobs_exec_t;
+
 int init(tcsh_t *term, char **env);
 
 int fill_rc(tcsh_t *term);
@@ -523,4 +536,13 @@ int play_sound(char *filename);
 int mambo(tcsh_t *term, char **argv);
 
 int yippee(tcsh_t *term, char **argv);
+
+int job_control(tcsh_t *term, char *cmd);
+
+int job_execution(tcsh_t *term, jobs_exec_t *sta,
+    char **cmds, char **jobs);
+
+int empty_error_case(char **commands, char **jobs);
+
+int empty_cmd_detect(char *cmd);
 #endif

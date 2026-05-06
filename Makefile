@@ -47,6 +47,9 @@ SRC = 	src/main.c							\
         src/jobs/free_job.c					\
         src/jobs/continue_job.c             \
 		src/jobs/printing.c                 \
+		src/jobs/job_control.c				\
+		src/jobs/job_control_exec.c			\
+		src/jobs/job_control_empty_case.c	\
 		src/var_interpreters/var_interpreter.c			\
 		src/var_interpreters/var_manipulator.c			\
 		src/built_in/which.c							\
