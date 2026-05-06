@@ -409,6 +409,8 @@ char *strip_single_quotes(char *word);
 
 int check_repeat(char *av, tcsh_t *term);
 
+int my_foreach(tcsh_t *term, char **argv);
+
 int my_lenbase(int nb, int base);
 
 char *cut_len(char *str, int nbr);
