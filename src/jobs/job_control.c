@@ -73,18 +73,6 @@ int job_execution(tcsh_t *term, char **commands, char **jobs)
     return value;
 }
 
-int job_detection(char *cmd)
-{
-    parse_t parse = {0};
-
-    for (int i = 0; cmd[i] != '\0'; i++) {
-        update_state(&parse, cmd[i]);
-        if (is_job_control(&parse, cmd, i) != NULL)
-            return TRUE;
-    }
-    return FALSE;
-}
-
 int job_control(tcsh_t *term, char *cmd)
 {
     char **commands = malloc(sizeof(char *) * (len_job_cmd(cmd) + 2));
