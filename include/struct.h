@@ -218,6 +218,12 @@ typedef struct hang {
     int letters[26];
 } hang_t;
 
+typedef struct job_control {
+    int i;
+    int position;
+    int nb_cmd;
+} jobs_cont_t;
+
 int init(tcsh_t *term, char **env);
 
 int fill_rc(tcsh_t *term);
