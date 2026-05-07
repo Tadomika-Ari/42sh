@@ -28,5 +28,5 @@ int error_ambigious(void)
 
 int error_null(void)
 {
-    return put_err("Invalid null command.\n", ALTERNATIVE_EXIT);
+    return put_err(NULL_CMD, ALTERNATIVE_EXIT);
 }
