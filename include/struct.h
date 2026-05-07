@@ -23,6 +23,8 @@
     #define MANY_OPEN "Too many ('s.\n"
     #define NULL_CMD "Invalid null command.\n"
 
+    #define CMD_NOT_FOUNT ": Command not found.\n"
+
     #define SEP "()[]'\"`"
 
     #define PELOPHYLAX_HELP "./bonus/pelophylax_help.txt"
