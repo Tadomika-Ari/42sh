@@ -10,7 +10,7 @@
 int error_alphanumeric(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Variable name must contain alphanumeric characters.\n",
+    return put_err(VAR_NAME_MUST,
         ALTERNATIVE_EXIT);
 }
 
