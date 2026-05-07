@@ -28,6 +28,7 @@
     #define EXPRESSION_SYNTAX ": Expression Syntax.\n"
     #define TOO_FEW ": Too few arguments.\n"
     #define TOO_MANY ": Too many arguments.\n"
+    #define NO_SUCH ": No such file or directory.\n"
 
     #define SEP "()[]'\"`"
 
