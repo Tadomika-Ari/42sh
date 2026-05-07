@@ -13,12 +13,12 @@ int rickroll(void)
     char *buff = NULL;
 
     if (odd <= RICKROLL_ODDS) {
-        buff = fill_buff_bonus(RICKROLL_TXT);
+        buff = fill_buff_bonus(RICKROLL);
         if (!buff)
             return FAILURE_EXIT;
         printf("\033[32m%s\033[0m\n", buff);
         free(buff);
-        play_sound(RICKROLL);
+        play_sound(RICKROLL_SONG);
         return SUCCESS_EXIT;
     }
     return SUCCESS_EXIT;

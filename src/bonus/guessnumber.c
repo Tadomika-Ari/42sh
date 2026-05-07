@@ -9,7 +9,7 @@
 
 int help_guessnumber(void)
 {
-    char *buff = fill_buff_bonus(GUESSNUMBER);
+    char *buff = fill_buff_bonus(GUESSNUMBER_HELP);
 
     if (!buff)
         return FAILURE_EXIT;

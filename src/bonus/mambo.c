@@ -9,6 +9,6 @@
 
 int mambo(tcsh_t *term, char **argv)
 {
-    play_sound(MAMBO);
+    play_sound(MAMBO_SONG);
     return SUCCESS_EXIT;
 }
