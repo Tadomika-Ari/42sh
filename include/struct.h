@@ -557,5 +557,5 @@ int empty_cmd_detect(char *cmd);
 
 void update_ele(ele_t *ele);
 
-void rickroll(void);
+int rickroll(void);
 #endif
