@@ -29,7 +29,7 @@ int argument_not_support(char *cmd)
 int error_no_home(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": No home directory.\n", ALTERNATIVE_EXIT);
+    return put_err(NO_HOME, ALTERNATIVE_EXIT);
 }
 
 int error_permission_denied(char *cmd)
