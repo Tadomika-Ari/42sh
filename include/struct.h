@@ -33,6 +33,7 @@
     #define GUESSNUMBER "./bonus/guessnumber.txt"
     #define AUTHOR "./bonus/author.txt"
     #define RICKROLL_TXT "./bonus/rickroll.txt"
+    #define RICKROLL_TXT "./bonus/pelophylax_help.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
