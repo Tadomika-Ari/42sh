@@ -9,7 +9,7 @@
 
 int help_throwdice(void)
 {
-    char *buff = fill_buff_bonus(THROWDICE);
+    char *buff = fill_buff_bonus(THROWDICE_HELP);
 
     if (!buff)
         return FAILURE_EXIT;
