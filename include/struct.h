@@ -30,7 +30,7 @@
     #define FLIPCOIN_HELP "./bonus/flipcoin.txt"
     #define THROWDICE_HELP "./bonus/throwdice.txt"
     #define GUESSNUMBER_HELP "./bonus/guessnumber.txt"
-    
+
     #define AUTHOR "./bonus/author.txt"
     #define PELOPHYLAX "./bonus/pelophylax.txt"
     #define RICKROLL "./bonus/rickroll.txt"
