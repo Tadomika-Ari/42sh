@@ -82,6 +82,27 @@ void my_free_exist(void *pointer)
         free(pointer);
 }
 
+static void my_free_alias_node(nodes_t *alias)
+{
+    nodes_t *forward = NULL;
+    alias_t *info = NULL;
+
+    if (!alias)
+        return;
+    forward = alias;
+    while (alias != NULL) {
+        forward = alias->next;
+        if (alias->data) {
+            info = alias->data;
+            my_free_exist(info->cmd_alias);
+            my_free_exist(info->name_alias);
+            my_free_exist(info);
+        }
+        free(alias);
+        alias = forward;
+    }
+}
+
 void free_all(tcsh_t *term)
 {
     if (!term)
@@ -90,6 +111,7 @@ void free_all(tcsh_t *term)
     free_node(term->env);
     free_node_locals(term->locals);
     free_node(term->func);
+    my_free_alias_node(term->alias);
     free_node_history(term->history);
     close(term->fd_rc);
     if (term->old)

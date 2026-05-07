@@ -23,15 +23,34 @@
     #define MANY_OPEN "Too many ('s.\n"
     #define NULL_CMD "Invalid null command.\n"
 
+    #define CMD_NOT_FOUND ": Command not found.\n"
+    #define NO_MATCH ": No match.\n"
+    #define EXPRESSION_SYNTAX ": Expression Syntax.\n"
+    #define TOO_FEW ": Too few arguments.\n"
+    #define TOO_MANY ": Too many arguments.\n"
+    #define NO_SUCH ": No such file or directory.\n"
+    #define EXEC_FORMAT ": Exec format error. Binary file not executable.\n"
+    #define VAR_NAME ": Variable name must begin with a letter.\n"
+    #define AMBIGOUS_OUTPUT "Ambiguous output redirect.\n"
+    #define VAR_MUST ": Variable name must contain alphanumeric characters.\n"
+    #define NOT_DIR ": Not a directory.\n"
+    #define ARG_NOT_SUP ": Argument not supported.\n"
+    #define NO_HOME ": No home directory.\n"
+    #define PERMISSION_DENIED ": Permission denied.\n"
+
     #define SEP "()[]'\"`"
 
-    #define PELOPHYLAX "./bonus/pelophylax.txt"
-    #define HANGMAN "./bonus/hangman.txt"
-    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
-    #define FLIPCOIN "./bonus/flipcoin.txt"
-    #define THROWDICE "./bonus/throwdice.txt"
-    #define GUESSNUMBER "./bonus/guessnumber.txt"
+    #define PELOPHYLAX_HELP "./bonus/pelophylax_help.txt"
+    #define HANGMAN_HELP "./bonus/hangman.txt"
+    #define FLIPCOIN_HELP "./bonus/flipcoin.txt"
+    #define THROWDICE_HELP "./bonus/throwdice.txt"
+    #define GUESSNUMBER_HELP "./bonus/guessnumber.txt"
+
     #define AUTHOR "./bonus/author.txt"
+    #define PELOPHYLAX "./bonus/pelophylax.txt"
+    #define RICKROLL "./bonus/rickroll.txt"
+
+    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -86,16 +105,23 @@ extern const char *STEPS[NB_STEP][NB_ROW];
 
     #define SOUND_STRUCT "ffmpeg -loglevel quiet -i %s" SOUND_STRUCT_END
     #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
-    #define MAMBO "./bonus/songs/mambo.mp3"
-    #define YIPPEE "./bonus/songs/yippee.mp3"
+    #define MAMBO_SONG "./bonus/songs/mambo.mp3"
+    #define YIPPEE_SONG "./bonus/songs/yippee.mp3"
+    #define RICKROLL_SONG "./bonus/songs/rickroll.mp3"
+    #define RICKROLL_ODDS 5
 
 typedef struct alias {
+    char *name_alias;
+    char *cmd_alias;
+} alias_t;
+
+typedef struct alias_tool {
     char *new_expanded;
     char *expanded;
     char *prev_first_word;
     char *curr_first_word;
     nodes_t *alias_histo;
-} alias_t;
+} alias_tool_t;
 
 typedef enum exit
 {
@@ -173,6 +199,7 @@ typedef struct tcsh {
     int is_repeat;
     int nb_nb_repeat;
     int error_repeat;
+    nodes_t *alias;
 } tcsh_t;
 
 typedef struct function {
@@ -537,9 +564,9 @@ int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
 
-void *ret_error_alias(alias_t *tmp);
+void *ret_error_alias(alias_tool_t *tmp);
 
-alias_t init_alias(char *cmd);
+alias_tool_t init_alias_tool(char *cmd);
 
 void free_prev_cur(char *prev, char *cur);
 
@@ -569,4 +596,8 @@ int job_execution(tcsh_t *term, jobs_exec_t *sta,
 int empty_error_case(char **commands, char **jobs);
 
 int empty_cmd_detect(char *cmd);
+
+void update_ele(ele_t *ele);
+
+int rickroll(void);
 #endif

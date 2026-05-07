@@ -119,7 +119,7 @@ void loop_hangman(char *word)
 
 int help_hangman(void)
 {
-    char *buff = fill_buff_bonus(HANGMAN);
+    char *buff = fill_buff_bonus(HANGMAN_HELP);
 
     if (!buff)
         return FAILURE_EXIT;

@@ -1,0 +1,10 @@
+<< PELOPHYLAX HELP >>
+
+USAGE
+    pelophylax [-h]   : help menu
+    pelophylax [--help]   : help menu
+
+DESCRIPTION
+    display a short description about the green frog of Europe
+
+<< END >>
