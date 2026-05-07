@@ -122,6 +122,8 @@ static void init_cursor(tcsh_t *term, char **env)
     term->nb_nb_repeat = 0;
     term->nb_repeat = 0;
     term->error_repeat = 0;
+    term->statut_tab = 0;
+    term->result_tab = NULL;
 }
 
 int init(tcsh_t *term, char **env)
