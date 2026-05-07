@@ -35,6 +35,7 @@
     #define VAR_NAME_MUST ": Variable name must contain alphanumeric characters.\n"
     #define NOT_DIR ": Not a directory.\n"
     #define ARG_NOT_SUP ": Argument not supported.\n"
+    #define NO_HOME ": No home directory.\n"
     
 
     #define SEP "()[]'\"`"
