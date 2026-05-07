@@ -126,7 +126,7 @@ typedef struct alias_tool {
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
-    ALTERNATIVE_EXIT = -1,
+    ALT_EXIT = -1,
     TRUE = 1,
     FALSE = 0,
     LIFE = 42,
@@ -283,7 +283,23 @@ int error_permission_denied(char *cmd);
 
 int error_first_caracter(char *cmd);
 
+int apply(tcsh_t *term, char **cmd);
+
+int execute_cmd(tcsh_t *term, char **argv);
+
 int error_no_home(char *cmd);
+
+int exec_else_if(char **lign, char **action, tcsh_t *term, int *cond);
+
+int exec_if(char **lign, char **action, tcsh_t *term, int *cond);
+
+int exec_else(char **lign, char **action, tcsh_t *term, int *cond);
+
+int is_then(char **argv);
+
+char **dupl_array(char **argv);
+
+int search_condition(tcsh_t *term, char **argv, bool *error);
 
 int command_not_found(char *cmd);
 
@@ -567,6 +583,8 @@ int check_back(char *str);
 int play_sound(char *filename);
 
 int mambo(tcsh_t *term, char **argv);
+
+char **take_action(bool *error, const char *end);
 
 int yippee(tcsh_t *term, char **argv);
 

@@ -84,9 +84,9 @@ int correct_var(char *name, char *cmd)
 {
     if ((name[0] < 'a' || name[0] > 'z') &&
         (name[0] < 'A' || name[0] > 'Z') && name[0] != '_')
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     if (my_str_name(name) != 0)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     return SUCCESS_EXIT;
 }
 
@@ -113,11 +113,11 @@ static int check_in(tcsh_t *term, char **argv, int *tmp, int *i)
             *i += *tmp;
             return -1;
         }
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     *tmp = add_variable(&argv[*i], term);
     if (*tmp == -1)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     *i += *tmp;
     return SUCCESS_EXIT;
 }
@@ -132,7 +132,7 @@ int my_set(tcsh_t *term, char **argv)
     for (int i = 0; argv[i];) {
         res = check_in(term, argv, &tmp, &i);
         if (res == -1)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
     }
     return SUCCESS_EXIT;
 }

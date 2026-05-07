@@ -16,7 +16,7 @@ int get_fd_command(tcsh_t *term, char *command, int fd[2])
     int res = 0;
 
     if (pipe(fd) != 0)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     pid = fork();
     if (pid == 0) {
         close(fd[0]);
@@ -29,7 +29,7 @@ int get_fd_command(tcsh_t *term, char *command, int fd[2])
     waitpid(pid, &res, 0);
     if (!WIFEXITED(res) || WEXITSTATUS(res) != 0) {
         close(fd[0]);
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     return SUCCESS_EXIT;
 }

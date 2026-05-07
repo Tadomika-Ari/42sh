@@ -338,7 +338,7 @@ Test(shell, dangerous_alias_keyword, .init = redirect_all_std)
     char *cmd[] = {"alias", "something", NULL};
 
     int ret = my_alias(NULL, cmd);
-    cr_assert_eq(ret, ALTERNATIVE_EXIT);
+    cr_assert_eq(ret, ALT_EXIT);
     cr_assert_stdout_eq_str("alias: Too dangerous to alias that.\n");
 }
 

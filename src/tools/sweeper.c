@@ -30,7 +30,7 @@ static int edit_list(tcsh_t *term, nodes_t *list, bool *error)
         res = translate(term, current, error);
         if (*error == true) {
             free_array(res);
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
         }
         if (!res || !*res)
             continue;
@@ -79,7 +79,7 @@ char **sweeper(tcsh_t *term, char *str, bool *error)
         return NULL;
     }
     free_array(tab);
-    if (edit_list(term, list, error) == ALTERNATIVE_EXIT) {
+    if (edit_list(term, list, error) == ALT_EXIT) {
         free_node(list);
         return NULL;
     }

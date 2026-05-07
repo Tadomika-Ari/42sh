@@ -76,7 +76,7 @@ int my_where(tcsh_t *term, char **argv)
 {
     if (len_array(argv) < 1)
         return my_cmd_error(": Too few arguments.\n",
-            "where", ALTERNATIVE_EXIT);
+            "where", ALT_EXIT);
     for (int i = 0; argv[i] != NULL; i++)
         search_all_cmd(argv[i], term);
     return SUCCESS_EXIT;

@@ -71,8 +71,8 @@ int my_setenv(tcsh_t *term, char **argv)
         return error_too_many_argument("setenv");
     if (len == 0)
         return env(term, NULL);
-    if (correct_name(argv[0], "setenv") == ALTERNATIVE_EXIT)
-        return ALTERNATIVE_EXIT;
+    if (correct_name(argv[0], "setenv") == ALT_EXIT)
+        return ALT_EXIT;
     if (len == 1)
         lign = new_categorize(argv[0]);
     else

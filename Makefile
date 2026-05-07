@@ -76,6 +76,7 @@ SRC = 	src/main.c							            \
 		src/tools/check_back.c                          \
 		src/autocompletation/autocompletation.c	        \
 		src/command_utilities/backsticks.c              \
+		src/built_in/else.c								\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -152,6 +153,7 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/tools/check_parenthesis.c                   \
 		src/tools/check_back.c                          \
 		src/autocompletation/autocompletation.c         \
+        src/built_in/else.c								\
 
 TEST_OBJ = $(TEST_SRC:.c=.o)
 

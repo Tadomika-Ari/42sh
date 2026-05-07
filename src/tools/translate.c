@@ -58,7 +58,7 @@ char **translate(tcsh_t *term, nodes_t *str, bool *error)
 
     if (is_inihbitor(str->data) == TRUE)
         return solo_tab(str->data);
-    if (search_variable(term, str) == ALTERNATIVE_EXIT) {
+    if (search_variable(term, str) == ALT_EXIT) {
         *error = true;
         return NULL;
     }

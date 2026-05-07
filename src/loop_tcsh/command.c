@@ -20,7 +20,7 @@ int search_command(tcsh_t *term, char **command, char *cmd)
     char *lign = search_bin(term, command[0]);
 
     if (!lign)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     return exec(lign, command, term, cmd);
 }
 
@@ -135,7 +135,7 @@ int choose_command(tcsh_t *term, char *cmd)
     is_background = has_background_operator(term, cmd);
     if (reinit(term, cmd, cmd_pipe) != 0) {
         free_array(cmd_pipe);
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     count = len_array(cmd_pipe);
     pipe_fd = malloc(sizeof(int) * count);

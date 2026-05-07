@@ -46,7 +46,7 @@ static int fill_commands_jobs(jobs_cont_t *counts, char *cmd,
     commands[counts->nb_cmd] = strndup(cmd + counts->position,
         counts->i - counts->position);
     if (commands[counts->nb_cmd] == NULL)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     jobs[counts->nb_cmd] = counts->separators;
     counts->position = counts->i + 2;
     counts->nb_cmd++;
@@ -58,8 +58,8 @@ static int handle_separators(jobs_cont_t *counts, char *cmd,
 {
     if (counts->separators == NULL)
         return SUCCESS_EXIT;
-    if (fill_commands_jobs(counts, cmd, commands, jobs) == ALTERNATIVE_EXIT)
-        return ALTERNATIVE_EXIT;
+    if (fill_commands_jobs(counts, cmd, commands, jobs) == ALT_EXIT)
+        return ALT_EXIT;
     counts->i++;
     return SUCCESS_EXIT;
 }
@@ -74,8 +74,8 @@ static int job_cmd_splitting(jobs_cont_t *counts, char *cmd,
     for (counts->i = 0; cmd[counts->i] != '\0'; counts->i++){
         update_state(&parse, cmd[counts->i]);
         counts->separators = is_job_control(&parse, cmd, counts->i);
-        if (handle_separators(counts, cmd, commands, jobs) == ALTERNATIVE_EXIT)
-            return ALTERNATIVE_EXIT;
+        if (handle_separators(counts, cmd, commands, jobs) == ALT_EXIT)
+            return ALT_EXIT;
     }
     commands[counts->nb_cmd] = strndup(cmd + counts->position,
         my_strlen(cmd) - counts->position);
@@ -92,7 +92,7 @@ static int handle_splitting_error(char *cmd, char **commands, char **jobs)
 
     if (job_cmd_splitting(&counts, cmd, commands, jobs) == FAILURE_EXIT){
         free_cmd_jobs(commands, jobs);
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     return SUCCESS_EXIT;
 }
@@ -114,8 +114,8 @@ int job_control(tcsh_t *term, char *cmd)
         free(commands);
         return FAILURE_EXIT;
     }
-    if (handle_splitting_error(cmd, commands, jobs) == ALTERNATIVE_EXIT)
-        return ALTERNATIVE_EXIT;
+    if (handle_splitting_error(cmd, commands, jobs) == ALT_EXIT)
+        return ALT_EXIT;
     value = job_execution(term, &status, commands, jobs);
     free_cmd_jobs(commands, jobs);
     return value;

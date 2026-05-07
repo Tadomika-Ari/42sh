@@ -121,7 +121,7 @@ int my_alias(tcsh_t *term, char **cmd)
         return get_unique_alias(term, cmd[0]);
     if (my_strcmp("alias", cmd[0]) == 0)
         return put_err("alias: Too dangerous to alias that.\n",
-            ALTERNATIVE_EXIT);
+            ALT_EXIT);
     check = check_alias(term, cmd[0]);
     if (check != NULL)
         return replace_alias(term, cmd, check);
