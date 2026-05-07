@@ -69,6 +69,7 @@ SRC = 	src/main.c							\
 		src/tools/fill_buff.c \
 		src/tools/my_strip_newline.c \
 		src/autocompletation/autocompletation.c	\
+		src/autocompletation/see_tab.c   	\
 
 OBJ = 	$(SRC:.c=.o)
 
