@@ -202,6 +202,8 @@ typedef struct tcsh {
     nodes_t *alias;
     int statut_tab;
     char **result_tab;
+    int pos_tab;
+    int maxpos_tab;
 } tcsh_t;
 
 typedef struct function {
