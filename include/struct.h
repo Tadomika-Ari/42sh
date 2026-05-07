@@ -200,6 +200,10 @@ typedef struct tcsh {
     int nb_nb_repeat;
     int error_repeat;
     nodes_t *alias;
+    int statut_tab;
+    char **result_tab;
+    int pos_tab;
+    int maxpos_tab;
 } tcsh_t;
 
 typedef struct function {
@@ -563,6 +567,8 @@ int guessnumber(tcsh_t *term, char **argv);
 int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
+
+int see_tab(tcsh_t *term, getline_t *st_g);
 
 void *ret_error_alias(alias_tool_t *tmp);
 

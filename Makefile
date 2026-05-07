@@ -77,6 +77,7 @@ SRC = 	src/main.c							            \
 		src/autocompletation/autocompletation.c	        \
 		src/command_utilities/backsticks.c              \
 		src/built_in/else.c								\
+		src/autocompletation/see_tab.c   	\
 
 OBJ = 	$(SRC:.c=.o)
 
