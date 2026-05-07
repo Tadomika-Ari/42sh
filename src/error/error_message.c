@@ -28,7 +28,7 @@ int error_not_enough_argument(char *cmd)
 int error_expression_syntax(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Expression Syntax.\n", ALTERNATIVE_EXIT);
+    return put_err(EXPRESSION_SYNTAX, ALTERNATIVE_EXIT);
 }
 
 static int error_glob_match(char *cmd)
