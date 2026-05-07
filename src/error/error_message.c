@@ -22,7 +22,7 @@ int error_too_many_argument(char *cmd)
 int error_not_enough_argument(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Too few arguments.\n", ALTERNATIVE_EXIT);
+    return put_err(TOO_FEW, ALTERNATIVE_EXIT);
 }
 
 int error_expression_syntax(char *cmd)
