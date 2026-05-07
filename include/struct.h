@@ -32,7 +32,7 @@
     #define EXEC_FORMAT ": Exec format error. Binary file not executable.\n"
     #define VAR_NAME ": Variable name must begin with a letter.\n"
     #define AMBIGOUS_OUTPUT "Ambiguous output redirect.\n"
-    #define VAR_NAME_MUST ": Variable name must contain alphanumeric characters.\n"
+    #define VAR_MUST ": Variable name must contain alphanumeric characters.\n"
     #define NOT_DIR ": Not a directory.\n"
     #define ARG_NOT_SUP ": Argument not supported.\n"
     #define NO_HOME ": No home directory.\n"
