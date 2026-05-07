@@ -490,4 +490,6 @@ int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
 
+int see_tab(tcsh_t *term, getline_t *st_g);
+
 #endif
