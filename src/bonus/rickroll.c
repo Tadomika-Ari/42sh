@@ -10,7 +10,7 @@
 int rickroll(void)
 {
     int odd = rand() % 100;
-    char *buff = fill_buff_bonus(RICKROLL_TXT);
+    char *buff = NULL;
 
     if (odd <= RICKROLL_ODDS) {
         buff = fill_buff_bonus(RICKROLL_TXT);
