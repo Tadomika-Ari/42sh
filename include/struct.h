@@ -25,15 +25,17 @@
 
     #define SEP "()[]'\"`"
 
-    #define PELOPHYLAX "./bonus/pelophylax.txt"
-    #define HANGMAN "./bonus/hangman.txt"
-    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
-    #define FLIPCOIN "./bonus/flipcoin.txt"
-    #define THROWDICE "./bonus/throwdice.txt"
-    #define GUESSNUMBER "./bonus/guessnumber.txt"
+    #define PELOPHYLAX_HELP "./bonus/pelophylax_help.txt"
+    #define HANGMAN_HELP "./bonus/hangman.txt"
+    #define FLIPCOIN_HELP "./bonus/flipcoin.txt"
+    #define THROWDICE_HELP "./bonus/throwdice.txt"
+    #define GUESSNUMBER_HELP "./bonus/guessnumber.txt"
+    
     #define AUTHOR "./bonus/author.txt"
-    #define RICKROLL_TXT "./bonus/rickroll.txt"
-    #define RICKROLL_TXT "./bonus/pelophylax_help.txt"
+    #define PELOPHYLAX "./bonus/pelophylax.txt"
+    #define RICKROLL "./bonus/rickroll.txt"
+
+    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -88,9 +90,9 @@ extern const char *STEPS[NB_STEP][NB_ROW];
 
     #define SOUND_STRUCT "ffmpeg -loglevel quiet -i %s" SOUND_STRUCT_END
     #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
-    #define MAMBO "./bonus/songs/mambo.mp3"
-    #define YIPPEE "./bonus/songs/yippee.mp3"
-    #define RICKROLL "./bonus/songs/rickroll.mp3"
+    #define MAMBO_SONG "./bonus/songs/mambo.mp3"
+    #define YIPPEE_SONG "./bonus/songs/yippee.mp3"
+    #define RICKROLL_SONG "./bonus/songs/rickroll.mp3"
     #define RICKROLL_ODDS 5
 
 typedef struct alias {
