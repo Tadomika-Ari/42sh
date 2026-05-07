@@ -90,12 +90,17 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define YIPPEE "./bonus/songs/yippee.mp3"
 
 typedef struct alias {
+    char *name_alias;
+    char *cmd_alias;
+} alias_t;
+
+typedef struct alias_tool {
     char *new_expanded;
     char *expanded;
     char *prev_first_word;
     char *curr_first_word;
     nodes_t *alias_histo;
-} alias_t;
+} alias_tool_t;
 
 typedef enum exit
 {
@@ -173,6 +178,7 @@ typedef struct tcsh {
     int is_repeat;
     int nb_nb_repeat;
     int error_repeat;
+    nodes_t *alias;
 } tcsh_t;
 
 typedef struct function {
@@ -521,9 +527,9 @@ int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
 
-void *ret_error_alias(alias_t *tmp);
+void *ret_error_alias(alias_tool_t *tmp);
 
-alias_t init_alias(char *cmd);
+alias_tool_t init_alias_tool(char *cmd);
 
 void free_prev_cur(char *prev, char *cur);
 

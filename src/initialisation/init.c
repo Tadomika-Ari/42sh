@@ -124,6 +124,13 @@ static void init_cursor(tcsh_t *term, char **env)
     term->error_repeat = 0;
 }
 
+void init_histo(tcsh_t *term)
+{
+    term->history = NULL;
+    term->len_history = 0;
+    term->check_history = 2;
+}
+
 int init(tcsh_t *term, char **env)
 {
     if (!env)
@@ -133,10 +140,9 @@ int init(tcsh_t *term, char **env)
     term->locals = NULL;
     term->life = LIFE;
     term->old = NULL;
-    term->history = NULL;
-    term->len_history = 0;
-    term->check_history = 2;
+    init_histo(term);
     term->return_value = simple('0');
+    term->alias = NULL;
     init_jobs(term);
     init_cursor(term, env);
     if (get_env(term, env) == FAILURE_EXIT)
