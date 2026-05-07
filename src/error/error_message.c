@@ -10,7 +10,7 @@
 int path_not_found(char *path)
 {
     write(1, path, my_strlen(path));
-    return put_err(": No such file or directory.\n", ALTERNATIVE_EXIT);
+    return put_err(NO_SUCH, ALTERNATIVE_EXIT);
 }
 
 int error_too_many_argument(char *cmd)
