@@ -186,6 +186,9 @@ int autocompletation(tcsh_t *term, getline_t *st_g)
     if (term->statut_tab == 1)
         see_tab(term, st_g);
     if (term->statut_tab == 0) {
+        if (term->result_tab != NULL) {
+            free_array(term->result_tab);
+        }
         autocompletation_start(term, st_g);
         term->statut_tab = 1;
     }
