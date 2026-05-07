@@ -32,6 +32,7 @@
     #define THROWDICE "./bonus/throwdice.txt"
     #define GUESSNUMBER "./bonus/guessnumber.txt"
     #define AUTHOR "./bonus/author.txt"
+    #define RICKROLL_TXT "./bonus/rickroll.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -88,6 +89,8 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
     #define MAMBO "./bonus/songs/mambo.mp3"
     #define YIPPEE "./bonus/songs/yippee.mp3"
+    #define RICKROLL "./bonus/songs/rickroll.mp3"
+    #define RICKROLL_ODDS 5
 
 typedef struct alias {
     char *name_alias;
@@ -559,4 +562,6 @@ int empty_error_case(char **commands, char **jobs);
 int empty_cmd_detect(char *cmd);
 
 void update_ele(ele_t *ele);
+
+int rickroll(void);
 #endif
