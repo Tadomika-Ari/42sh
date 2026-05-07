@@ -32,6 +32,8 @@
     #define EXEC_FORMAT ": Exec format error. Binary file not executable.\n"
     #define VAR_NAME ": Variable name must begin with a letter.\n"
     #define AMBIGOUS_OUTPUT "Ambiguous output redirect.\n"
+    #define VAR_NAME_MUST ": Variable name must contain alphanumeric characters.\n"
+    
 
     #define SEP "()[]'\"`"
 
