@@ -157,6 +157,8 @@ typedef struct tcsh {
     int error_repeat;
     int statut_tab;
     char **result_tab;
+    int pos_tab;
+    int maxpos_tab;
 } tcsh_t;
 
 typedef struct function {
