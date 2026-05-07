@@ -10,7 +10,7 @@
 int error_syntax(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Exec format error. Binary file not executable.\n",
+    return put_err(EXEC_FORMAT,
         ALTERNATIVE_EXIT);
 }
 
