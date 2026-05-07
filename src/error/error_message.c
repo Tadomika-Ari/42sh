@@ -16,7 +16,7 @@ int path_not_found(char *path)
 int error_too_many_argument(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Too many arguments.\n", ALTERNATIVE_EXIT);
+    return put_err(TOO_MANY, ALTERNATIVE_EXIT);
 }
 
 int error_not_enough_argument(char *cmd)
