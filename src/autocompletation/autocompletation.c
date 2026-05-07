@@ -157,21 +157,30 @@ int update_line(getline_t *st_g, tcsh_t *term, char **result)
     return SUCCESS_EXIT;
 }
 
-int autocompletation(tcsh_t *term, getline_t *st_g)
+int autocompletation_start(tcsh_t *term, getline_t *st_g)
 {
     char *cmd = st_g->line;
-    char **result = NULL;
 
     write(1, "\n", 1);
-    result = autocomplete_command(cmd, term, st_g);
-    if (result == NULL)
+    term->result_tab = autocomplete_command(cmd, term, st_g);
+    if (term->result_tab == NULL)
         return FAILURE_EXIT;
-    update_line(st_g, term, result);
-    for (int i = 0; result[i] != NULL; i++) {
-        printf("%s\n", result[i]);
+    update_line(st_g, term, term->result_tab);
+    for (int i = 0; term->result_tab[i] != NULL; i++) {
+        printf("%s\n", term->result_tab[i]);
     }
-    free_array(result);
+    free_array(term->result_tab);
     write_argument(NULL, term);
     write(1, st_g->line, my_strlen(st_g->line));
+    term->statut_tab = 1;
     return 0;
+}
+
+int autocompletation(tcsh_t *term, getline_t *st_g)
+{
+    if (term->statut_tab != 1)
+        autocompletation_start(term, st_g);
+    if (term->statut_tab != 0)
+        autocompletation_start(term, st_g);
+    return SUCCESS_EXIT;
 }
