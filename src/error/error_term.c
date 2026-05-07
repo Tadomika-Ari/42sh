@@ -23,7 +23,7 @@ int error_first_caracter(char *cmd)
 
 int error_ambigious(void)
 {
-    return put_err("Ambiguous output redirect.\n", ALTERNATIVE_EXIT);
+    return put_err(AMBIGOUS_OUTPUT, ALTERNATIVE_EXIT);
 }
 
 int error_null(void)
