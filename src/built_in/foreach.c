@@ -27,21 +27,21 @@ static int add(char ***res, char *tmp, int *len)
     *res = realloc(*res, sizeof(char *) * (*len + 2));
     if (*res == NULL) {
         free(tmp);
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     (*res)[*len] = my_strdup(tmp);
     (*res)[*len + 1] = NULL;
     if ((*res)[*len] == NULL) {
         free(tmp);
         free_array(*res);
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     *len = *len + 1;
     free(tmp);
     return SUCCESS_EXIT;
 }
 
-char **take_action(bool *error)
+char **take_action(bool *error, const char *end)
 {
     char **res = malloc(sizeof(char *));
     char *tmp = NULL;
@@ -54,11 +54,11 @@ char **take_action(bool *error)
         tmp = get_user(tmp, error, res);
         if (*error == true)
             return NULL;
-        if (my_strcmp(tmp, "end") == 0) {
+        if (my_strcmp(tmp, end) == 0) {
             free(tmp);
             return res;
         }
-        if (add(&res, tmp, &len) == ALTERNATIVE_EXIT)
+        if (add(&res, tmp, &len) == ALT_EXIT)
             return NULL;
         tmp = NULL;
     }
@@ -72,12 +72,12 @@ int from_one_line(tcsh_t *term, char *cmd)
         term->nb_nb_repeat = 0;
         check_repeat(cmd, term);
         if (check_error(term, cmd, atoi(term->return_value)) == FAILURE_EXIT)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
         repeat_cmd = cut_len(cmd, 7 + term->nb_nb_repeat);
         free(cmd);
         cmd = repeat_cmd;
         if (cmd == NULL)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
     }
     return repeat_or_no_repeat(term, cmd, atoi(term->return_value));
 }
@@ -97,16 +97,16 @@ static int execute_all(tcsh_t *term, char **action)
 int in_for(tcsh_t *term, char **argv, bool *error)
 {
     char **value = NULL;
-    char **action = take_action(error);
+    char **action = take_action(error, "end");
     int res = 0;
 
     if (*error == true)
-        return my_cmd_error(": end not found.\n", "foreach", ALTERNATIVE_EXIT);
+        return my_cmd_error(": end not found.\n", "foreach", ALT_EXIT);
     value = my_str_to_word_array(argv[1], " ()\n\t");
     for (int i = 0; value[i] != NULL; i++) {
         if (my_set(term, (char *[]){argv[0], "=",
                     value[i], NULL}) != SUCCESS_EXIT) {
-            res = ALTERNATIVE_EXIT;
+            res = ALT_EXIT;
             break;
         }
         res = execute_all(term, action);
@@ -125,11 +125,11 @@ int my_foreach(tcsh_t *term, char **argv)
 
     if (len < 2)
         return my_cmd_error(": Too few arguments.\n",
-            "foreach", ALTERNATIVE_EXIT);
+            "foreach", ALT_EXIT);
     if (len > 2)
         return my_cmd_error(": Words not parenthesized.\n",
-            "foreach", ALTERNATIVE_EXIT);
+            "foreach", ALT_EXIT);
     if (correct_name(argv[0], "foreach") != SUCCESS_EXIT)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     return in_for(term, argv, &error);
 }

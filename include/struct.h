@@ -14,19 +14,43 @@
     #define MAX_LINE 1024
 
 
-    #define RC_FILE ".42rc"
+    #define RC_FILE "./bonus/.42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
+    #define UNMATCH_QUOTE "Unmatched '\"'.\n"
+    #define UNMATCH_BACK "Unmatched '`'.\n"
+    #define MANY_CLOSE "Too many )'s.\n"
+    #define MANY_OPEN "Too many ('s.\n"
+    #define NULL_CMD "Invalid null command.\n"
+
+    #define CMD_NOT_FOUND ": Command not found.\n"
+    #define NO_MATCH ": No match.\n"
+    #define EXPRESSION_SYNTAX ": Expression Syntax.\n"
+    #define TOO_FEW ": Too few arguments.\n"
+    #define TOO_MANY ": Too many arguments.\n"
+    #define NO_SUCH ": No such file or directory.\n"
+    #define EXEC_FORMAT ": Exec format error. Binary file not executable.\n"
+    #define VAR_NAME ": Variable name must begin with a letter.\n"
+    #define AMBIGOUS_OUTPUT "Ambiguous output redirect.\n"
+    #define VAR_MUST ": Variable name must contain alphanumeric characters.\n"
+    #define NOT_DIR ": Not a directory.\n"
+    #define ARG_NOT_SUP ": Argument not supported.\n"
+    #define NO_HOME ": No home directory.\n"
+    #define PERMISSION_DENIED ": Permission denied.\n"
 
     #define SEP "()[]'\"`"
 
-    #define PELOPHYLAX "./bonus/pelophylax.txt"
-    #define HANGMAN "./bonus/hangman.txt"
-    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
-    #define FLIPCOIN "./bonus/flipcoin.txt"
-    #define THROWDICE "./bonus/throwdice.txt"
-    #define GUESSNUMBER "./bonus/guessnumber.txt"
+    #define PELOPHYLAX_HELP "./bonus/pelophylax_help.txt"
+    #define HANGMAN_HELP "./bonus/hangman.txt"
+    #define FLIPCOIN_HELP "./bonus/flipcoin.txt"
+    #define THROWDICE_HELP "./bonus/throwdice.txt"
+    #define GUESSNUMBER_HELP "./bonus/guessnumber.txt"
+
     #define AUTHOR "./bonus/author.txt"
+    #define PELOPHYLAX "./bonus/pelophylax.txt"
+    #define RICKROLL "./bonus/rickroll.txt"
+
+    #define HANGMAN_WORDS "./bonus/hangman_words.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -79,10 +103,30 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define COLS "123"
     #define ROWS "ABC"
 
+    #define SOUND_STRUCT "ffmpeg -loglevel quiet -i %s" SOUND_STRUCT_END
+    #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
+    #define MAMBO_SONG "./bonus/songs/mambo.mp3"
+    #define YIPPEE_SONG "./bonus/songs/yippee.mp3"
+    #define RICKROLL_SONG "./bonus/songs/rickroll.mp3"
+    #define RICKROLL_ODDS 5
+
+typedef struct alias {
+    char *name_alias;
+    char *cmd_alias;
+} alias_t;
+
+typedef struct alias_tool {
+    char *new_expanded;
+    char *expanded;
+    char *prev_first_word;
+    char *curr_first_word;
+    nodes_t *alias_histo;
+} alias_tool_t;
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
-    ALTERNATIVE_EXIT = -1,
+    ALT_EXIT = -1,
     TRUE = 1,
     FALSE = 0,
     LIFE = 42,
@@ -155,6 +199,7 @@ typedef struct tcsh {
     int is_repeat;
     int nb_nb_repeat;
     int error_repeat;
+    nodes_t *alias;
     int statut_tab;
     char **result_tab;
     int pos_tab;
@@ -209,6 +254,19 @@ typedef struct hang {
     int letters[26];
 } hang_t;
 
+typedef struct job_control_count {
+    int i;
+    int position;
+    int nb_cmd;
+    char *separators;
+} jobs_cont_t;
+
+typedef struct job_control_exec {
+    int ignore;
+    int or_done;
+    int value;
+} jobs_exec_t;
+
 int init(tcsh_t *term, char **env);
 
 int fill_rc(tcsh_t *term);
@@ -229,7 +287,23 @@ int error_permission_denied(char *cmd);
 
 int error_first_caracter(char *cmd);
 
+int apply(tcsh_t *term, char **cmd);
+
+int execute_cmd(tcsh_t *term, char **argv);
+
 int error_no_home(char *cmd);
+
+int exec_else_if(char **lign, char **action, tcsh_t *term, int *cond);
+
+int exec_if(char **lign, char **action, tcsh_t *term, int *cond);
+
+int exec_else(char **lign, char **action, tcsh_t *term, int *cond);
+
+int is_then(char **argv);
+
+char **dupl_array(char **argv);
+
+int search_condition(tcsh_t *term, char **argv, bool *error);
 
 int command_not_found(char *cmd);
 
@@ -248,8 +322,6 @@ int my_cmd_error(char *str, char *cmd, int out);
 int my_which(tcsh_t *term, char **argv);
 
 int my_cd(tcsh_t *term, char **argv);
-
-int child_cond(tcsh_t *term, int fd[2], char *cond);
 
 void algo_exit(int *result);
 
@@ -403,6 +475,14 @@ char *check_alias(tcsh_t *term, char *cmd);
 
 int my_alias(tcsh_t *term, char **cmd);
 
+int from_one_line(tcsh_t *term, char *cmd);
+
+char *read_fd(int pipefd[2]);
+
+char *backsticks(tcsh_t *term, char *command);
+
+int search_backsticks(tcsh_t *term, nodes_t *str);
+
 char *search_binary(char *path, char *command);
 
 char *alias(tcsh_t *term, char *cmd);
@@ -490,4 +570,40 @@ int author(tcsh_t *term, char **argv);
 
 int see_tab(tcsh_t *term, getline_t *st_g);
 
+void *ret_error_alias(alias_tool_t *tmp);
+
+alias_tool_t init_alias_tool(char *cmd);
+
+void free_prev_cur(char *prev, char *cur);
+
+void free_alias_history(nodes_t *alias_histo);
+
+int occ_in_str(char c, char *str);
+
+int check_parenthesis(char *str);
+
+int check_quotes(char *str);
+
+int check_back(char *str);
+
+int play_sound(char *filename);
+
+int mambo(tcsh_t *term, char **argv);
+
+char **take_action(bool *error, const char *end);
+
+int yippee(tcsh_t *term, char **argv);
+
+int job_control(tcsh_t *term, char *cmd);
+
+int job_execution(tcsh_t *term, jobs_exec_t *sta,
+    char **cmds, char **jobs);
+
+int empty_error_case(char **commands, char **jobs);
+
+int empty_cmd_detect(char *cmd);
+
+void update_ele(ele_t *ele);
+
+int rickroll(void);
 #endif

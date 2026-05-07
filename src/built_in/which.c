@@ -20,7 +20,7 @@ int display_alias(char *cmd, char *value)
 int display_built(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, ": shell built-in command.\n", 26);
+    write(1, " is a shell built in\n", 21);
     return SUCCESS_EXIT;
 }
 
@@ -39,7 +39,7 @@ int search_cmd(char *cmd, tcsh_t *term)
 
     if (value == NULL) {
         free(char_tmp);
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     if (my_strcmp(value, cmd) != 0)
         return display_alias(cmd, value);
@@ -50,8 +50,8 @@ int search_cmd(char *cmd, tcsh_t *term)
             return display_built(cmd);
     value = search_bin(term, cmd);
     if (value == NULL)
-        return my_cmd_error(": Command not found\n",
-            cmd, ALTERNATIVE_EXIT);
+        return my_cmd_error(": Command not found.\n",
+            cmd, ALT_EXIT);
     return display_bin(cmd, value);
 }
 
@@ -61,7 +61,7 @@ int my_which(tcsh_t *term, char **argv)
 
     if (len_array(argv) < 1)
         return my_cmd_error(": Too few arguments.\n",
-            "which", ALTERNATIVE_EXIT);
+            "which", ALT_EXIT);
     for (int i = 0; argv[i] != NULL; i++)
         res = search_cmd(argv[i], term);
     return res;

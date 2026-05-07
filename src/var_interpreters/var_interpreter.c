@@ -36,7 +36,7 @@ static int replace_in_str(nodes_t *str, char *value, char *name, char **tmp)
 
     if (!tmp) {
         free(name);
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     free(name);
     for (; tmp[i + 1] != NULL; i++) {
@@ -46,7 +46,7 @@ static int replace_in_str(nodes_t *str, char *value, char *name, char **tmp)
     res = my_str_rea(res, tmp[i]);
     free_array(tmp);
     if (!res)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     if (str->data)
         free(str->data);
     str->data = res;
@@ -91,7 +91,7 @@ static int search_var(tcsh_t *term, nodes_t *str, char *var, char *name)
     char *value = NULL;
 
     if (!var || !name)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     for (nodes_t *tmp = term->locals; tmp; tmp = tmp->next)
         if (my_strcmp(((locals_t *)tmp->data)->name, name + 1) == 0)
             return replace(str, ((locals_t *)tmp->data)->value, var, name);
@@ -102,9 +102,9 @@ static int search_var(tcsh_t *term, nodes_t *str, char *var, char *name)
         return replace(str, term->return_value, var, name);
     if (my_strcmp(name, "$cwd") == 0)
         return special(str, var, name);
-    my_cmd_error(": Undefined variable.\n", name + 1, ALTERNATIVE_EXIT);
+    my_cmd_error(": Undefined variable.\n", name + 1, ALT_EXIT);
     free(var);
-    return ALTERNATIVE_EXIT;
+    return ALT_EXIT;
 }
 
 static int interpreter(tcsh_t *term, nodes_t *str, int i)
@@ -134,7 +134,7 @@ int search_variable(tcsh_t *term, nodes_t *str)
         if (i == 0)
             continue;
         if (i == -1)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
     }
     return SUCCESS_EXIT;
 }

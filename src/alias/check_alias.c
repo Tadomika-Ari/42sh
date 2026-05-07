@@ -53,26 +53,17 @@ char *get_rc_file(tcsh_t *term)
 
 char *check_alias(tcsh_t *term, char *cmd)
 {
-    char *buf = get_rc_file(term);
-    char **tab = NULL;
-    char *alias = NULL;
+    nodes_t *current = term->alias;
+    alias_t *info = NULL;
 
-    if (buf == NULL)
+    if (current == NULL)
         return NULL;
-    tab = parser3000(buf, "# =\n");
-    if (tab == NULL) {
-        free(buf);
-        return NULL;
+    for (; current != NULL; current = current->next) {
+        info = current->data;
+        if (my_strcmp(info->name_alias, cmd) == 0)
+            return my_strdup(info->cmd_alias);
     }
-    for (int i = 0; tab[i] != NULL && tab[i + 1] != NULL && tab[i + 2] != NULL
-        ; i += 3)
-        if (my_strcmp(tab[i], "alias") == 0 && my_strcmp(tab[i + 1], cmd) == 0){
-            free(alias);
-            alias = strip_single_quotes(tab[i + 2]);
-        }
-    free_array(tab);
-    free(buf);
-    return alias;
+    return NULL;
 }
 
 char *add_rest_to_alias(char *cmd, int i, char *alias)
@@ -121,15 +112,22 @@ static char *expand_first_word_alias(tcsh_t *term, char *cmd)
     return add_rest_to_alias(cmd, i, alias);
 }
 
-static void free_alias_history(nodes_t *alias_histo)
+static char *extract_first_word(char *cmd)
 {
-    nodes_t *next = NULL;
+    char *first_word = NULL;
+    int i = 0;
 
-    for (nodes_t *current = alias_histo; current != NULL; current = next) {
-        next = current->next;
-        free(current->data);
-        free(current);
-    }
+    if (cmd == NULL)
+        return NULL;
+    while (cmd[i] && cmd[i] != ' ' && cmd[i] != '\t')
+        i++;
+    first_word = malloc(i + 1);
+    if (first_word == NULL)
+        return NULL;
+    for (int j = 0; j < i; j++)
+        first_word[j] = cmd[j];
+    first_word[i] = '\0';
+    return first_word;
 }
 
 static int check_loop_alias(nodes_t **alias_histo, char *cmd)
@@ -153,23 +151,35 @@ static int check_loop_alias(nodes_t **alias_histo, char *cmd)
     return 0;
 }
 
+static int get_prev_new(alias_tool_t *tmp, tcsh_t *term)
+{
+    tmp->prev_first_word = extract_first_word(tmp->expanded);
+    tmp->new_expanded = expand_first_word_alias(term, tmp->expanded);
+    if (tmp->new_expanded == tmp->expanded) {
+        free(tmp->prev_first_word);
+        return -1;
+    }
+    return 0;
+}
+
 char *alias(tcsh_t *term, char *cmd)
 {
-    char *new_expanded = NULL;
-    char *expanded = cmd;
-    nodes_t *alias_histo = NULL;
+    alias_tool_t tmp = init_alias_tool(cmd);
 
     while (1) {
-        new_expanded = expand_first_word_alias(term, expanded);
-        if (new_expanded == expanded)
+        if (get_prev_new(&tmp, term) == -1)
             break;
-        if (check_loop_alias(&alias_histo, new_expanded) == -1) {
-            free_alias_history(alias_histo);
-            free(new_expanded);
-            return my_puterror_ptr("Alias loop.\n");
+        tmp.curr_first_word = extract_first_word(tmp.new_expanded);
+        if (my_strcmp(tmp.prev_first_word, tmp.curr_first_word) == 0) {
+            free_prev_cur(tmp.prev_first_word, tmp.curr_first_word);
+            tmp.expanded = tmp.new_expanded;
+            break;
         }
-        expanded = new_expanded;
+        if (check_loop_alias(&tmp.alias_histo, tmp.new_expanded) == -1)
+            return ret_error_alias(&tmp);
+        tmp.expanded = tmp.new_expanded;
+        free_prev_cur(tmp.prev_first_word, tmp.curr_first_word);
     }
-    free_alias_history(alias_histo);
-    return expanded;
+    free_alias_history(tmp.alias_histo);
+    return tmp.expanded;
 }

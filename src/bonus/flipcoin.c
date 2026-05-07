@@ -9,7 +9,7 @@
 
 int help_flipcoin(void)
 {
-    char *buff = fill_buff_bonus(FLIPCOIN);
+    char *buff = fill_buff_bonus(FLIPCOIN_HELP);
 
     if (!buff)
         return FAILURE_EXIT;
