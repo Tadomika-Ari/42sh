@@ -51,12 +51,12 @@ int my_bg(tcsh_t *term, char **argv)
             return print_return(STDERR_FILENO, "bg: usage: bg [%%job]\n");
         if (parse_job_id(argv[0], &id) == FAILURE_EXIT) {
             dprintf(STDERR_FILENO, "bg: %s: invalid job id.\n", argv[0]);
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
         }
         job = find_job_id(term, id);
     } else
         job = last_stopped_or_last(term->jobs);
-    if (no_such_job(job, "bg: No such job.\n") == ALTERNATIVE_EXIT)
-        return ALTERNATIVE_EXIT;
+    if (no_such_job(job, "bg: No such job.\n") == ALT_EXIT)
+        return ALT_EXIT;
     return continue_job_bg(term, job);
 }
