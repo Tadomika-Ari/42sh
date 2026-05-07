@@ -23,7 +23,7 @@ int error_not_a_directory(char *cmd)
 int argument_not_support(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Argument not supported.\n", ALTERNATIVE_EXIT);
+    return put_err(ARG_NOT_SUP, ALTERNATIVE_EXIT);
 }
 
 int error_no_home(char *cmd)
