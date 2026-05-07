@@ -155,6 +155,8 @@ typedef struct tcsh {
     int is_repeat;
     int nb_nb_repeat;
     int error_repeat;
+    int statut_tab;
+    char **result_tab;
 } tcsh_t;
 
 typedef struct function {
