@@ -34,7 +34,7 @@ int error_expression_syntax(char *cmd)
 static int error_glob_match(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": No match.\n", ALTERNATIVE_EXIT);
+    return put_err(NO_MATCH, ALTERNATIVE_EXIT);
 }
 
 int command_not_found(char *cmd)
