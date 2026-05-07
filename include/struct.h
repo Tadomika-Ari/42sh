@@ -27,6 +27,7 @@
     #define NO_MATCH ": No match.\n"
     #define EXPRESSION_SYNTAX ": Expression Syntax.\n"
     #define TOO_FEW ": Too few arguments.\n"
+    #define TOO_MANY ": Too many arguments.\n"
 
     #define SEP "()[]'\"`"
 
