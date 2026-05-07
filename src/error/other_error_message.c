@@ -35,5 +35,5 @@ int error_no_home(char *cmd)
 int error_permission_denied(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Permission denied.\n", ALTERNATIVE_EXIT);
+    return put_err(PERMISSION_DENIED, ALTERNATIVE_EXIT);
 }
