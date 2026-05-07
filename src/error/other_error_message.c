@@ -10,7 +10,7 @@
 int error_alphanumeric(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(VAR_NAME_MUST,
+    return put_err(VAR_MUST,
         ALTERNATIVE_EXIT);
 }
 
