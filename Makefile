@@ -193,6 +193,10 @@ all:	$(NAME)
 $(NAME): do_lib $(OBJ) $(OBJ2)
 	epiclang -o $(NAME) $(OBJ) $(OBJ2) -lmy -Llib/my
 
+debug: CC = epiclang
+debug: do_lib $(OBJ) $(OBJ2)
+	epiclang -o $(NAME) $(OBJ) $(OBJ2) -lmy -Llib/my
+
 bonus: do_lib $(OBJ) $(BONUS_OBJ) $(BONUS_OBJ2)
 	epiclang -o $(NAME) $(OBJ) $(BONUS_OBJ) $(BONUS_OBJ2) -lmy -Llib/my
 
