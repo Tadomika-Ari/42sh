@@ -10,20 +10,6 @@
 #include <unistd.h>
 #include <termios.h>
 
-nodes_t *create_new_node(char *lign_env)
-{
-    nodes_t *new = malloc(sizeof(nodes_t));
-
-    if (!new)
-        return NULL;
-    new->data = my_strdup(lign_env);
-    if (!new->data) {
-        free(new);
-        return NULL;
-    }
-    return new;
-}
-
 static int get_env(tcsh_t *term, char **env)
 {
     nodes_t *new = NULL;
@@ -37,7 +23,7 @@ static int get_env(tcsh_t *term, char **env)
     return SUCCESS_EXIT;
 }
 
-static int push_function(tcsh_t *term,
+int push_function(tcsh_t *term,
     int (*cmd)(tcsh_t *, char **), const char *name)
 {
     nodes_t *new = malloc(sizeof(nodes_t));
@@ -55,6 +41,30 @@ static int push_function(tcsh_t *term,
     return SUCCESS_EXIT;
 }
 
+static int fill_job_control(tcsh_t *term)
+{
+    if (push_function(term, my_fg, "fg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_bg, "bg") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    return EXIT_SUCCESS;
+}
+
+static int fill_annexe(tcsh_t *term)
+{
+    if (push_function(term, my_set, "set") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_if, "if") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_foreach, "foreach") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_which, "which") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_where, "where") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    return SUCCESS_EXIT;
+}
+
 static int fill_function(tcsh_t *term)
 {
     if (push_function(term, my_cd, "cd") == FAILURE_EXIT)
@@ -69,13 +79,11 @@ static int fill_function(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, my_history, "history") == FAILURE_EXIT)
         return FAILURE_EXIT;
-    if (push_function(term, my_fg, "fg") == FAILURE_EXIT)
-        return FAILURE_EXIT;
-    if (push_function(term, my_bg, "bg") == FAILURE_EXIT)
+    if (fill_job_control(term) == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (push_function(term, my_alias, "alias") == FAILURE_EXIT)
         return FAILURE_EXIT;
-    return SUCCESS_EXIT;
+    return fill_annexe(term);
 }
 
 void init_jobs(tcsh_t *term)
@@ -111,6 +119,16 @@ static void init_cursor(tcsh_t *term, char **env)
 {
     term->whereiscursor = 0;
     term->maxposcursor = 0;
+    term->nb_nb_repeat = 0;
+    term->nb_repeat = 0;
+    term->error_repeat = 0;
+}
+
+void init_histo(tcsh_t *term)
+{
+    term->history = NULL;
+    term->len_history = 0;
+    term->check_history = 2;
 }
 
 int init(tcsh_t *term, char **env)
@@ -119,11 +137,12 @@ int init(tcsh_t *term, char **env)
         return FAILURE_EXIT;
     term->env = NULL;
     term->func = NULL;
+    term->locals = NULL;
     term->life = LIFE;
     term->old = NULL;
-    term->history = NULL;
-    term->len_history = 0;
-    term->check_history = 2;
+    init_histo(term);
+    term->return_value = simple('0');
+    term->alias = NULL;
     init_jobs(term);
     init_cursor(term, env);
     if (get_env(term, env) == FAILURE_EXIT)

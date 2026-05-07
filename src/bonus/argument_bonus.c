@@ -1,0 +1,81 @@
+/*
+** EPITECH PROJECT, 2026
+** minishell1
+** File description:
+** argument
+*/
+
+#include "../../include/struct.h"
+
+static void reset_cursor(tcsh_t *term)
+{
+    term->maxposcursor = 0;
+    term->whereiscursor = 0;
+}
+
+static int take_argument(char **cmd, tcsh_t *term)
+{
+    size_t len = 0;
+
+    if (my_getline(cmd, &len, term) == -1) {
+        if (isatty(0) == 0) {
+            free(*cmd);
+            *cmd = NULL;
+            return FAILURE_EXIT;
+        }
+        write(1, "exit\n", 5);
+        term->life = DEAD;
+        return SUCCESS_EXIT;
+    }
+    if (!*cmd)
+        return FAILURE_EXIT;
+    push_to_history(term, cmd[0]);
+    reset_cursor(term);
+    return SUCCESS_EXIT;
+}
+
+char *take_value(nodes_t *head, char *cat)
+{
+    char *res = NULL;
+    nodes_t *tmp = search_node(head, cat);
+
+    if (!tmp)
+        return NULL;
+    res = tmp->data;
+    return res + my_strn(res, "=");
+}
+
+void write_argument(char **cmd, tcsh_t *term)
+{
+    char *lign = fill_buff("/etc/hostname");
+    char *user = take_value(term->env, "USERNAME");
+    int tmp = 0;
+
+    if (lign) {
+        my_strip_newline(lign);
+        cprintf(lign, GREEN);
+        free(lign);
+    }
+    write(1, ":", 1);
+    lign = take_value(term->env, "PWD");
+    if (lign && user) {
+        tmp = my_strn(lign, user);
+        if (tmp != 0)
+            cprintf("~", BLUE);
+        cprintf(lign + tmp, BLUE);
+    }
+    write(1, "> ", 2);
+}
+
+int user_entry(tcsh_t *term, char **cmd)
+{
+    char *precmd = NULL;
+
+    if (isatty(0) != 0) {
+        precmd = check_alias(term, "precmd");
+        if (precmd != NULL)
+            loops_multi_func(term, precmd, SUCCESS_EXIT);
+        write_argument(cmd, term);
+    }
+    return take_argument(cmd, term);
+}

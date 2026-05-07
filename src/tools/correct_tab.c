@@ -7,7 +7,7 @@
 
 #include "../../include/struct.h"
 
-static int occ_in_str(char c, char *str)
+int occ_in_str(char c, char *str)
 {
     int occ = 0;
 
@@ -52,7 +52,11 @@ int unmatch_single(char **str)
 int check_element(char **tab, int i)
 {
     if (unmatch_single(&tab[i]) == TRUE)
-        return put_err(UNMATCH_SINGLE);
+        return put_err(UNMATCH_SINGLE, FALSE);
+    if (check_parenthesis(tab[i]) == TRUE)
+        return FALSE;
+    if (check_back(tab[i]) == TRUE)
+        return put_err(UNMATCH_BACK, FALSE);
     return TRUE;
 }
 

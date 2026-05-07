@@ -7,8 +7,8 @@
 
 #include "../../include/struct.h"
 
-int put_err(char *str)
+int put_err(char *str, int flags)
 {
     write(1, str, my_strlen(str));
-    return FALSE;
+    return flags;
 }

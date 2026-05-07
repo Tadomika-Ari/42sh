@@ -17,33 +17,17 @@ static void close_if_valid(int *fd)
 
 int search_command(tcsh_t *term, char **command, char *cmd)
 {
-    nodes_t *path = search_node(term->env, "PATH");
-    char **bin = NULL;
-    char *lign = NULL;
+    char *lign = search_bin(term, command[0]);
 
-    if (!path)
-        bin = my_str_to_word_array("/usr/bin:/bin:/usr/local/bin", ":=\n");
-    else
-        bin = my_str_to_word_array(path->data, ":=\n");
-    if (!bin)
-        return command_not_found(command[0]);
-    for (int i = 0; bin[i]; i++) {
-        lign = search_binary(bin[i], command[0]);
-        if (lign != NULL) {
-            free_array(bin);
-            return exec(lign, command, term, cmd);
-        }
-    }
-    free_array(bin);
-    return -1;
+    if (!lign)
+        return ALTERNATIVE_EXIT;
+    return exec(lign, command, term, cmd);
 }
 
-static int normalize(tcsh_t *term, char *cmd, char **command, int status)
+int normalize(tcsh_t *term, char *cmd, char **command, int status)
 {
     if (status == -1)
         status = exec(my_strdup(command[0]), command, term, cmd);
-    if (status == -1)
-        command_not_found(command[0]);
     if (status == 1) {
         free_array(command);
         return -1;
@@ -54,17 +38,18 @@ static int normalize(tcsh_t *term, char *cmd, char **command, int status)
 
 static int apply_command(tcsh_t *term, char *cmd)
 {
-    char **command = sweeper(cmd);
+    bool error = false;
+    char **command = sweeper(term, cmd, &error);
     int status = 0;
 
+    if (error == true)
+        return -1;
     if (!command)
         return SUCCESS_EXIT;
     for (nodes_t *tmp = term->func; tmp; tmp = tmp->next)
         if (my_strcmp(command[0], ((function_t *)tmp->data)->name) == 0)
             return execute(tmp, command, term);
     status = search_command(term, command, cmd);
-    if (status == -1)
-        status = sepecial_variable(term, cmd);
     return normalize(term, cmd, command, status);
 }
 
@@ -118,19 +103,16 @@ int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
     return value;
 }
 
-static bool has_background_operator(char *cmd)
+static bool has_background_operator(tcsh_t *term, char *cmd)
 {
-    char **parts =sweeper(cmd);
-    int len = 0;
-    bool result = false;
+    int i = my_strlen(cmd) - 1;
 
-    if (!parts)
+    if (!cmd)
         return false;
-    len = len_array(parts);
-    if (len > 0 && my_strcmp(parts[len - 1], "&") == 0)
-        result = true;
-    free_array(parts);
-    return result;
+    while (i >= 0 && (cmd[i] == ' ' || cmd[i] == '\t'
+            || cmd[i] == '\n' || cmd[i] == '\r'))
+        i--;
+    return (i >= 0 && cmd[i] == '&') ? true : false;
 }
 
 static void reset_pipefd(int *pipe_fd, int count
@@ -150,7 +132,7 @@ int choose_command(tcsh_t *term, char *cmd)
 
     if (correct_type(cmd_pipe) != 0 || correct_lign(cmd, cmd_pipe) != 0)
         return 1;
-    is_background = has_background_operator(cmd);
+    is_background = has_background_operator(term, cmd);
     if (reinit(term, cmd, cmd_pipe) != 0) {
         free_array(cmd_pipe);
         return ALTERNATIVE_EXIT;

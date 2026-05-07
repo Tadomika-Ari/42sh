@@ -8,16 +8,6 @@
 #include "../../include/struct.h"
 #include <sys/wait.h>
 
-static int is_only_spaces(const char *cmd)
-{
-    if (!cmd)
-        return 1;
-    for (int i = 0; cmd[i] != '\0'; i++)
-        if (cmd[i] != ' ' && cmd[i] != '\t' && cmd[i] != '\n' && cmd[i] != '\r')
-            return 0;
-    return 1;
-}
-
 static void reap_jobs(tcsh_t *term)
 {
     int status = 0;
@@ -46,7 +36,7 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 
     tmp = my_str_to_word_array(cmd, ";");
     for (int i = 0; tmp[i] != NULL; i++) {
-        return_value = choose_command(term, tmp[i]);
+        return_value = job_control(term, tmp[i]);
         if (return_value == FAILURE_EXIT)
             return FAILURE_EXIT;
     }
@@ -58,22 +48,33 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 int filter_command(tcsh_t *term, int value)
 {
     char *cmd = NULL;
-    int len = 0;
-    char *expanded = NULL;
+    char *repeat_cmd = NULL;
 
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
-    len = my_strlen(cmd);
-    while (len > 0 && (cmd[len - 1] == '\n' || cmd[len - 1] == '\r')) {
-        cmd[len - 1] = '\0';
-        len--;
-    }
-    if (is_only_spaces(cmd)) {
+    if (strncmp(cmd, "repeat ", 7) == 0 || strncmp(cmd, "repeat", 6) == 0) {
+        term->nb_nb_repeat = 0;
+        check_repeat(cmd, term);
+        if (check_error(term, cmd, value) == FAILURE_EXIT)
+            return ALTERNATIVE_EXIT;
+        repeat_cmd = cut_len(cmd, 7 + term->nb_nb_repeat);
         free(cmd);
-        return 0;
+        cmd = repeat_cmd;
+        if (cmd == NULL)
+            return ALTERNATIVE_EXIT;
     }
-    expanded = alias(term, cmd);
-    return loops_multi_func(term, expanded, value);
+    return repeat_or_no_repeat(term, cmd, value);
+}
+
+char *int_to_str(int n)
+{
+    int len = snprintf(NULL, 0, "%d", n);
+    char *s = malloc(len + 1);
+
+    if (!s)
+        return NULL;
+    snprintf(s, len + 1, "%d", n);
+    return s;
 }
 
 int running(tcsh_t *term)
@@ -84,11 +85,16 @@ int running(tcsh_t *term)
     while (term->life == LIFE) {
         reap_jobs(term);
         tmp = filter_command(term, return_value);
+        term->is_repeat = FALSE;
+        term->error_repeat = 0;
         if (tmp == -1)
             break;
         return_value = tmp;
         if (return_value == FAILURE_EXIT)
             break;
+        if (term->return_value)
+            free(term->return_value);
+        term->return_value = int_to_str(return_value);
     }
     free_all(term);
     return return_value;
@@ -96,7 +102,7 @@ int running(tcsh_t *term)
 
 int my_sh(char **env)
 {
-    tcsh_t *term = malloc(sizeof(tcsh_t));
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
 
     if (!term)
         return FAILURE_EXIT;

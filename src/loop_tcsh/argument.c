@@ -47,12 +47,15 @@ char *take_value(nodes_t *head, char *cat)
 
 void write_argument(char **cmd, tcsh_t *term)
 {
-    char *lign = take_value(term->env, "HOST");
+    char *lign = fill_buff("/etc/hostname");
     char *user = take_value(term->env, "USERNAME");
     int tmp = 0;
 
-    if (lign)
+    if (lign) {
+        my_strip_newline(lign);
         write(1, lign, strlen(lign));
+        free(lign);
+    }
     write(1, ":", 1);
     lign = take_value(term->env, "PWD");
     if (lign && user) {
