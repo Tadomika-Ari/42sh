@@ -9,6 +9,6 @@
 
 int yippee(tcsh_t *term, char **argv)
 {
-    play_sound(YIPPEE);
+    play_sound(YIPPEE_SONG);
     return SUCCESS_EXIT;
 }
