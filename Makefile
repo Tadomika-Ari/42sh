@@ -153,6 +153,8 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/tools/check_back.c                          \
 		src/autocompletation/autocompletation.c         \
 
+TEST_OBJ = $(TEST_SRC:.c=.o)
+
 BONUS_SRC = src/bonus/pelophylax.c                      \
 		src/bonus/cprintf.c                             \
 		src/bonus/fill_bonus.c                          \
@@ -189,19 +191,19 @@ NAME =	42sh
 all:	$(NAME)
 
 $(NAME): do_lib $(OBJ) $(OBJ2)
-	epiclang -o $(NAME) $(SRC) $(SRC2) -lmy -Llib/my
+	epiclang -o $(NAME) $(OBJ) $(OBJ2) -lmy -Llib/my
 
 bonus: do_lib $(OBJ) $(BONUS_OBJ) $(BONUS_OBJ2)
-	epiclang -o $(NAME) $(SRC) $(BONUS_SRC) $(BONUS_SRC2) -lmy -Llib/my
+	epiclang -o $(NAME) $(OBJ) $(BONUS_OBJ) $(BONUS_OBJ2) -lmy -Llib/my
 
 do_lib:
 	make -C lib/my/
 
 make_debug:	$(OBJ)
-	epiclang -o $(NAME) $(SRC) -g3
+	epiclang -o $(NAME) $(OBJ) -g3
 	valgrind --leak-check=full ./42sh 2> val.txt
 
-unit_tests:	all
+unit_tests:	do_lib $(TEST_OBJ) $(OBJ2)
 	@epiclang -o $(TEST_NAME) $(TEST_SRC) $(SRC2) --coverage -lcriterion -lmy -Llib/my
 
 tests_run: unit_tests
