@@ -26,6 +26,7 @@
     #define CMD_NOT_FOUND ": Command not found.\n"
     #define NO_MATCH ": No match.\n"
     #define EXPRESSION_SYNTAX ": Expression Syntax.\n"
+    #define TOO_FEW ": Too few arguments.\n"
 
     #define SEP "()[]'\"`"
 
