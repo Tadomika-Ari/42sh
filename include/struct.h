@@ -200,6 +200,8 @@ typedef struct tcsh {
     int nb_nb_repeat;
     int error_repeat;
     nodes_t *alias;
+    int statut_tab;
+    char **result_tab;
 } tcsh_t;
 
 typedef struct function {
