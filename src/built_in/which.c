@@ -20,7 +20,7 @@ int display_alias(char *cmd, char *value)
 int display_built(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, "is a shell built in\n", 20);
+    write(1, " is a shell built in\n", 21);
     return SUCCESS_EXIT;
 }
 
