@@ -23,6 +23,21 @@
     #define MANY_OPEN "Too many ('s.\n"
     #define NULL_CMD "Invalid null command.\n"
 
+    #define CMD_NOT_FOUND ": Command not found.\n"
+    #define NO_MATCH ": No match.\n"
+    #define EXPRESSION_SYNTAX ": Expression Syntax.\n"
+    #define TOO_FEW ": Too few arguments.\n"
+    #define TOO_MANY ": Too many arguments.\n"
+    #define NO_SUCH ": No such file or directory.\n"
+    #define EXEC_FORMAT ": Exec format error. Binary file not executable.\n"
+    #define VAR_NAME ": Variable name must begin with a letter.\n"
+    #define AMBIGOUS_OUTPUT "Ambiguous output redirect.\n"
+    #define VAR_MUST ": Variable name must contain alphanumeric characters.\n"
+    #define NOT_DIR ": Not a directory.\n"
+    #define ARG_NOT_SUP ": Argument not supported.\n"
+    #define NO_HOME ": No home directory.\n"
+    #define PERMISSION_DENIED ": Permission denied.\n"
+
     #define SEP "()[]'\"`"
 
     #define PELOPHYLAX_HELP "./bonus/pelophylax_help.txt"
