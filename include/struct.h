@@ -30,6 +30,7 @@
     #define TOO_MANY ": Too many arguments.\n"
     #define NO_SUCH ": No such file or directory.\n"
     #define EXEC_FORMAT ": Exec format error. Binary file not executable.\n"
+    #define VAR_NAME ": Variable name must begin with a letter.\n"
 
     #define SEP "()[]'\"`"
 
