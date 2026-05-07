@@ -33,6 +33,7 @@
     #define VAR_NAME ": Variable name must begin with a letter.\n"
     #define AMBIGOUS_OUTPUT "Ambiguous output redirect.\n"
     #define VAR_NAME_MUST ": Variable name must contain alphanumeric characters.\n"
+    #defien NOT_DIR ": Not a directory.\n"
     
 
     #define SEP "()[]'\"`"
