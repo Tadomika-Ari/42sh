@@ -88,6 +88,8 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
     #define MAMBO "./bonus/songs/mambo.mp3"
     #define YIPPEE "./bonus/songs/yippee.mp3"
+    #define RICKROLL "./bonus/songs/rickroll.mp3"
+    #define RICKROLL_ODDS 20
 
 typedef struct alias {
     char *new_expanded;
