@@ -89,7 +89,7 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define MAMBO "./bonus/songs/mambo.mp3"
     #define YIPPEE "./bonus/songs/yippee.mp3"
     #define RICKROLL "./bonus/songs/rickroll.mp3"
-    #define RICKROLL_ODDS 20
+    #define RICKROLL_ODDS 5
 
 typedef struct alias {
     char *new_expanded;
