@@ -192,6 +192,7 @@ BONUS_OBJ2 = 	$(BONUS_SRC2:.c=.o)
 
 NAME =	42sh
 
+all: CC = epiclang
 all:	$(NAME)
 
 $(NAME): do_lib $(OBJ) $(OBJ2)
