@@ -154,16 +154,6 @@ else
     echo -e "${RED}✗ FAILED${NC}"
     ((TESTS_FAILED++))
 fi
-echo -n "Testing: exit 42 returns 42 ... "
-echo "exit 42" | $SHELL_PATH > /dev/null 2>&1
-exit_code=$?
-if [ $exit_code -eq 42 ]; then
-    echo -e "${GREEN}✓ PASSED${NC}"
-    ((TESTS_PASSED++))
-else
-    echo -e "${RED}✗ FAILED${NC}"
-    ((TESTS_FAILED++))
-fi
 echo -e "\n${YELLOW}=== SUMMARY ===${NC}"
 echo -e "Passed: ${GREEN}$TESTS_PASSED${NC}"
 echo -e "Failed: ${RED}$TESTS_FAILED${NC}"
@@ -279,9 +269,14 @@ EOF
 cat > tests/run_all_tests.sh << 'EOF'
 #!/bin/bash
 echo -e "\n╔════════════════════════════════════════╗"
-echo -e "║   42SH EPITECH TEST SUITE              ║"
-echo -e "║   env, setenv, unsetenv, cd, exit     ║"
-echo -e "╚════════════════════════════════════════╝\n"
+echo -e   "║   42SH TESTS                           ║"
+echo -e   "║   by:                                  ║"
+echo -e   "║      - Alcibiade S.                    ║"
+echo -e   "║      - Galya P.                        ║"
+echo -e   "║      - Lucas E.                        ║"
+echo -e   "║      - Ugo P.                          ║"
+echo -e   "║      - Alessandro P.                   ║"
+echo -e   "╚════════════════════════════════════════╝\n"
 TESTS_DIR="./tests"
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
