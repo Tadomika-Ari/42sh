@@ -124,6 +124,8 @@ static void init_cursor(tcsh_t *term, char **env)
     term->error_repeat = 0;
     term->statut_tab = 0;
     term->result_tab = NULL;
+    term->pos_tab = 0;
+    term->maxpos_tab = 0;
 }
 
 void init_histo(tcsh_t *term)
