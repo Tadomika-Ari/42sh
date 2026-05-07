@@ -42,5 +42,5 @@ int command_not_found(char *cmd)
     if (is_globing(cmd) == TRUE)
         return error_glob_match(cmd);
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Command not found.\n", 1);
+    return put_err(CMD_NOT_FOUND, 1);
 }
