@@ -17,7 +17,7 @@ int error_syntax(char *cmd)
 int error_first_caracter(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    return put_err(": Variable name must begin with a letter.\n",
+    return put_err(VAR_NAME,
         ALTERNATIVE_EXIT);
 }
 
