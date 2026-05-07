@@ -36,6 +36,7 @@
     #define NOT_DIR ": Not a directory.\n"
     #define ARG_NOT_SUP ": Argument not supported.\n"
     #define NO_HOME ": No home directory.\n"
+    #define PERMISSION_DENIED ": Permission denied.\n"
     
 
     #define SEP "()[]'\"`"
