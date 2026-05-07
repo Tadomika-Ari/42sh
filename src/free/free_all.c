@@ -86,6 +86,8 @@ void free_all(tcsh_t *term)
 {
     if (!term)
         return;
+    if (term->result_tab)
+        free_array(term->result_tab);
     free(term->return_value);
     free_node(term->env);
     free_node_locals(term->locals);
