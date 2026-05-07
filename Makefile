@@ -166,7 +166,8 @@ BONUS_SRC = src/bonus/pelophylax.c          \
 		src/bonus/author.c                  \
 		src/bonus/play_sound.c              \
 		src/bonus/mambo.c                   \
-		src/bonus/yippee.c                   \
+		src/bonus/yippee.c                  \
+		src/bonus/rickroll.c                  \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
