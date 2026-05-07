@@ -68,6 +68,36 @@ static char **add(char *partial_cmd, char **tmp_char, int i, char **tab)
     return tab;
 }
 
+static char **add_array(char **tab, nodes_t *tmp)
+{
+    char **new_tab = NULL;
+    int len = len_array(tab);
+
+    new_tab = malloc(sizeof(char *) * (len + 2));
+    if (!new_tab)
+        return tab;
+    for (int i = 0; i < len; i++)
+        new_tab[i] = tab[i];
+    new_tab[len] = my_strdup(((function_t *)tmp->data)->name);
+    new_tab[len + 1] = NULL;
+    free(tab);
+    tab = new_tab;
+    len++;
+    return new_tab;
+}
+
+char **search_in_built(char **tab, tcsh_t *term, getline_t *st_g,
+    char *partial_cmd)
+{
+    for (nodes_t *tmp = term->func; tmp; tmp = tmp->next) {
+        if (strncmp(partial_cmd, ((function_t *)tmp->data)->name,
+                my_strlen(partial_cmd)) == 0) {
+            tab = add_array(tab, tmp);
+        }
+    }
+    return tab;
+}
+
 char **other_commande(char **tab, tcsh_t *term, getline_t *st_g,
     char *partial_cmd)
 {
@@ -99,11 +129,11 @@ char **autocomplete_command(char *partial_cmd, tcsh_t *term, getline_t *st_g)
     snprintf(pattern, sizeof(pattern), "%s*", partial_cmd);
     if (glob(pattern, GLOB_NOSORT, NULL, &results) == 0) {
         tab = dup_array(results.gl_pathv, &results);
-        show_array(tab);
     } else {
         globfree(&results);
     }
     tab = other_commande(tab, term, st_g, partial_cmd);
+    tab = search_in_built(tab, term, st_g, partial_cmd);
     return tab;
 }
 
