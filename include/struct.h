@@ -568,6 +568,8 @@ int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
 
+int see_tab(tcsh_t *term, getline_t *st_g);
+
 void *ret_error_alias(alias_tool_t *tmp);
 
 alias_tool_t init_alias_tool(char *cmd);
