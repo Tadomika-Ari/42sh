@@ -56,12 +56,12 @@ int filter_command(tcsh_t *term, int value)
         term->nb_nb_repeat = 0;
         check_repeat(cmd, term);
         if (check_error(term, cmd, value) == FAILURE_EXIT)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
         repeat_cmd = cut_len(cmd, 7 + term->nb_nb_repeat);
         free(cmd);
         cmd = repeat_cmd;
         if (cmd == NULL)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
     }
     return repeat_or_no_repeat(term, cmd, value);
 }
