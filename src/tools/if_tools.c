@@ -38,7 +38,7 @@ static int child_cond(tcsh_t *term, int fd[2], char *cond)
     int res = 0;
 
     if (pipe(in) != SUCCESS_EXIT)
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     pid = fork();
     if (pid == 0)
         in_child(term, fd, in);
@@ -68,7 +68,7 @@ int not_cond(char *str)
             && str[i] != '|' && str[i] != '&' && str[i] != '>'
             && str[i] != '<' && str[i] != ')' && str[i] != '(' &&
             str[i] != '+' && str[i] != '-' && str[i] != '*' && str[i] != ' ')
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
     return SUCCESS_EXIT;
 }
 
@@ -88,12 +88,12 @@ char *read_fd(int pipefd[2])
 static int is_numeric_output(const char *str)
 {
     if (str == NULL || str[0] == '\0')
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     for (int i = 0; str[i] != '\0'; i++) {
         if ((str[i] >= '0' && str[i] <= '9') || str[i] == ' ' ||
             str[i] == '\n' || str[i] == '\t' || str[i] == '-')
             continue;
-        return ALTERNATIVE_EXIT;
+        return ALT_EXIT;
     }
     return SUCCESS_EXIT;
 }
@@ -105,11 +105,11 @@ int fallback_cond(tcsh_t *term, char *cond, bool *error)
     char *tmp = NULL;
 
     if (pipe(pipefd) != SUCCESS_EXIT)
-        return my_err(error, ALTERNATIVE_EXIT);
+        return my_err(error, ALT_EXIT);
     if (child_cond(term, pipefd, cond) != SUCCESS_EXIT) {
         close(pipefd[0]);
         close(pipefd[1]);
-        return my_err(error, ALTERNATIVE_EXIT);
+        return my_err(error, ALT_EXIT);
     }
     tmp = read_fd(pipefd);
     if (is_numeric_output(tmp) != SUCCESS_EXIT) {
