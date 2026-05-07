@@ -70,8 +70,9 @@ static int loop_getline(getline_t *st_g, tcsh_t *term)
     if (st_g->rd <= 0)
         return return_reset(st_g);
     if (st_g->c == '\t') {
-        autocompletation(term, st_g);
+        return autocompletation(term, st_g);
     }
+    term->statut_tab = 0;
     if (st_g->c == '\n' || st_g->c == '\r') {
         write(STDOUT_FILENO, "\n", 1);
         st_g->statut_getline = FALSE;
