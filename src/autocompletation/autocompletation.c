@@ -86,7 +86,7 @@ static char **add_array(char **tab, nodes_t *tmp)
     return new_tab;
 }
 
-char **search_in_built(char **tab, tcsh_t *term, getline_t *st_g,
+static char **search_in_built(char **tab, tcsh_t *term, getline_t *st_g,
     char *partial_cmd)
 {
     for (nodes_t *tmp = term->func; tmp; tmp = tmp->next) {
@@ -157,21 +157,40 @@ int update_line(getline_t *st_g, tcsh_t *term, char **result)
     return SUCCESS_EXIT;
 }
 
-int autocompletation(tcsh_t *term, getline_t *st_g)
+int autocompletation_start(tcsh_t *term, getline_t *st_g)
 {
     char *cmd = st_g->line;
-    char **result = NULL;
+    int count = 0;
 
     write(1, "\n", 1);
-    result = autocomplete_command(cmd, term, st_g);
-    if (result == NULL)
+    term->result_tab = autocomplete_command(cmd, term, st_g);
+    if (term->result_tab == NULL)
         return FAILURE_EXIT;
-    update_line(st_g, term, result);
-    for (int i = 0; result[i] != NULL; i++) {
-        printf("%s\n", result[i]);
+    count = len_array(term->result_tab);
+    if (count == 0) {
+        term->statut_tab = 0;
+        return FAILURE_EXIT;
     }
-    free_array(result);
+    term->pos_tab = 0;
+    term->maxpos_tab = count - 1;
+    update_line(st_g, term, term->result_tab);
+    for (int i = 0; term->result_tab[i] != NULL; i++)
+        printf("%s\n", term->result_tab[i]);
     write_argument(NULL, term);
     write(1, st_g->line, my_strlen(st_g->line));
     return 0;
+}
+
+int autocompletation(tcsh_t *term, getline_t *st_g)
+{
+    if (term->statut_tab == 1)
+        see_tab(term, st_g);
+    if (term->statut_tab == 0) {
+        if (term->result_tab != NULL) {
+            free_array(term->result_tab);
+        }
+        autocompletation_start(term, st_g);
+        term->statut_tab = 1;
+    }
+    return SUCCESS_EXIT;
 }
