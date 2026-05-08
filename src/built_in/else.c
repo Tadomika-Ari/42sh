@@ -58,32 +58,13 @@ int exec_if(char **lign, char **action, tcsh_t *term, int *cond)
     int res = -2;
     int then = is_then(lign);
 
+    if (search_variable(term, (nodes_t *)(&lign[1])) == ALT_EXIT)
+        return ALT_EXIT;
     *cond = search_condition(term, lign + 1, &error);
     if (error == true)
         res = my_cmd_error(": Too few arguments.\n", "if", ALT_EXIT);
     if (lign[1] == NULL)
         res = my_cmd_error(": Empty if.\n", "if", ALT_EXIT);
-    if (*cond == 0 && res != ALT_EXIT)
-        res = SUCCESS_EXIT;
-    if (*cond != 0 && lign[1] != NULL && res != ALT_EXIT && then == 0)
-        res = apply(term, dupl_array(lign + 2));
-    if (*cond != 0 && res != ALT_EXIT && then == 1)
-        res = execute_cmd(term, action + 1);
-    free_array(lign);
-    return res;
-}
-
-int exec_else_if(char **lign, char **action, tcsh_t *term, int *cond)
-{
-    bool error = false;
-    int res = -2;
-    int then = is_then(lign);
-
-    *cond = search_condition(term, lign + 1, &error);
-    if (error == true)
-        res = my_cmd_error(": Too few arguments.\n", "else if", ALT_EXIT);
-    if (lign[2] == NULL)
-        res = my_cmd_error(": Empty if.\n", "else if", ALT_EXIT);
     if (*cond == 0 && res != ALT_EXIT)
         res = SUCCESS_EXIT;
     if (*cond != 0 && lign[1] != NULL && res != ALT_EXIT && then == 0)
@@ -99,10 +80,11 @@ int exec_else(char **lign, char **action, tcsh_t *term, int *cond)
 
     if (len_array(lign) == 1 && *cond == 0)
         res = execute_cmd(term, action + 1);
-    if (my_strcmp(lign[1], "if") == 0 && *cond == 0 && res == -2)
-        res = exec_else_if(lign + 1, action, term, cond);
+    if (lign[1] != NULL && my_strcmp(lign[1], "if") == 0 &&
+        *cond == 0 && res == -2)
+        res = exec_if(lign + 1, action, term, cond);
     if (res == -2)
-        res = ALT_EXIT;
+        res = SUCCESS_EXIT;
     free_array(lign);
     return res;
 }
