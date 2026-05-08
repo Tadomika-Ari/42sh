@@ -15,16 +15,13 @@ static char *get_variable(char *str)
     for (int i = 1; str[i]; i++) {
         if (str[i] == '{' && i == 1)
             parenthesis = true;
-        if (str[i] == '}' && parenthesis == true) {
-            res = get_name(str, i);
-            break;
-        }
-        if (((str[i] < 'A' || str[i] > 'Z') && (str[i] < 'a' || str[i] > 'z') &&
-                (str[i] < '0' || str[i] > '9') && parenthesis == false)
-            || str[i + 1] == '\0') {
-            res = get_name(str, i);
-            break;
-        }
+        if (str[i] == '}' && parenthesis == true)
+            return get_name(str, i);
+        if ((str[i] < 'A' || str[i] > 'Z') && (str[i] < 'a' || str[i] > 'z') &&
+            (str[i] < '0' || str[i] > '9') && parenthesis == false)
+            return get_name(str, i - 1);
+        if (str[i + 1] == '\0')
+            return get_name(str, i);
     }
     return res;
 }
