@@ -55,6 +55,7 @@ SRC = 	src/main.c							            \
 		src/built_in/which.c							\
 		src/built_in/where.c							\
 		src/built_in/foreach.c							\
+		src/built_in/foreach_tools.c					\
 		src/alias/add_alias.c                           \
 		src/alias/check_alias.c                         \
 		src/loop_tcsh/search_binary.c                   \
@@ -77,6 +78,7 @@ SRC = 	src/main.c							            \
 		src/autocompletation/autocompletation.c	        \
 		src/command_utilities/backsticks.c              \
 		src/built_in/else.c								\
+		src/built_in/is_scripting.c						\
 
 OBJ = 	$(SRC:.c=.o)
 
@@ -129,6 +131,7 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/jobs/job_control_empty_case.c	            \
 		src/var_interpreters/var_interpreter.c			\
 		src/built_in/foreach.c							\
+		src/built_in/foreach_tools.c					\
         src/var_interpreters/var_manipulator.c			\
         src/tools/if_tools.c							\
         src/built_in/which.c							\
@@ -154,6 +157,7 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/tools/check_back.c                          \
 		src/autocompletation/autocompletation.c         \
         src/built_in/else.c								\
+		src/built_in/is_scripting.c						\
 
 TEST_OBJ = $(TEST_SRC:.c=.o)
 
