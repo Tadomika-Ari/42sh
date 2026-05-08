@@ -66,7 +66,7 @@ void search_in_file(char *path, char *command)
     closedir(bin);
 }
 
-void display_all_bin(char *cmd, tcsh_t *term)
+static void display_all_bin(char *cmd, tcsh_t *term)
 {
     nodes_t *path = search_node(term->env, "PATH");
     char **bin = NULL;
@@ -82,7 +82,7 @@ void display_all_bin(char *cmd, tcsh_t *term)
     free_array(bin);
 }
 
-void search_all_cmd(char *cmd, tcsh_t *term)
+static void search_all_cmd(char *cmd, tcsh_t *term)
 {
     display_all_alias(cmd, term);
     display_all_built(cmd, term);
