@@ -7,7 +7,7 @@
 
 #include "../../include/struct.h"
 
-int display_alias(char *cmd, char *value)
+int display_alias_which(char *cmd, char *value)
 {
     write(1, cmd, my_strlen(cmd));
     write(1, ":\taliased to ", 13);
@@ -17,10 +17,10 @@ int display_alias(char *cmd, char *value)
     return SUCCESS_EXIT;
 }
 
-int display_built(char *cmd)
+int display_built_which(char *cmd)
 {
     write(1, cmd, my_strlen(cmd));
-    write(1, " is a shell built in\n", 21);
+    write(1, ": shell built-in command.\n", 26);
     return SUCCESS_EXIT;
 }
 
@@ -42,12 +42,12 @@ int search_cmd(char *cmd, tcsh_t *term)
         return ALT_EXIT;
     }
     if (my_strcmp(value, cmd) != 0)
-        return display_alias(cmd, value);
+        return display_alias_which(cmd, value);
     free(char_tmp);
     value = NULL;
     for (nodes_t *tmp = term->func; tmp; tmp = tmp->next)
         if (my_strcmp(((function_t *)(tmp->data))->name, cmd) == 0)
-            return display_built(cmd);
+            return display_built_which(cmd);
     value = search_bin(term, cmd);
     if (value == NULL)
         return my_cmd_error(": Command not found.\n",

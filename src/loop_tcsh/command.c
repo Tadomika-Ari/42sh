@@ -27,6 +27,8 @@ int search_command(tcsh_t *term, char **command, char *cmd)
 int normalize(tcsh_t *term, char *cmd, char **command, int status)
 {
     if (status == -1)
+        status = is_scripting(term, command);
+    if (status == -1)
         status = exec(my_strdup(command[0]), command, term, cmd);
     if (status == 1) {
         free_array(command);
@@ -74,11 +76,15 @@ static void pipe_in(tcsh_t *term, int *pipe_fd, char **cmd_pipe)
     }
 }
 
-static void algo(int *pipe_fd, int *value, int count)
+static void algo(int *pipe_fd, int *value, int count, tcsh_t *term)
 {
     for (int i = 0; i != count; i++) {
         waitpid(pipe_fd[i], value, 0);
         algo_exit(value);
+        if (pipe_fd[i] == -67 && term->script != 0) {
+            *value = term->script;
+            term->script = 0;
+        }
         if (pipe_fd[i] == -1)
             *value = 1;
         *value = *value == -1 ? 1 : *value;
@@ -93,7 +99,7 @@ int do_pipe(tcsh_t *term, int *pipe_fd, int count, char **cmd_pipe)
     if (term->prev != -1)
         close(term->prev);
     if (!term->is_background)
-        algo(pipe_fd, &value, count);
+        algo(pipe_fd, &value, count, term);
     free(pipe_fd);
     free_array(cmd_pipe);
     if (term->fd[0] != -1 && term->fd[0] != STDIN_FILENO)

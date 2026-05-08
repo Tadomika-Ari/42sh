@@ -176,6 +176,7 @@ typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
     nodes_t *locals;
+    int script;
     char *return_value;
     int life;
     char *old;
@@ -244,6 +245,11 @@ typedef struct tic_tac_toe {
     int player_win;
     int gride_int[9];
 } ttt_t;
+
+struct foreach_ctx {
+    char **values;
+    char **action;
+};
 
 typedef struct hang {
     int hp;
@@ -314,6 +320,8 @@ int path_not_found(char *path);
 int error_syntax(char *cmd);
 
 int env(tcsh_t *term, char **argv);
+
+int is_scripting(tcsh_t *term, char **command);
 
 char *simple(char c);
 
@@ -500,6 +508,10 @@ char *strip_single_quotes(char *word);
 int check_repeat(char *av, tcsh_t *term);
 
 int my_foreach(tcsh_t *term, char **argv);
+int foreach_is_valid_name(const char *name);
+char **take_action(bool *error, const char *end);
+int from_one_line(tcsh_t *term, char *cmd);
+int foreach_execute_actions(tcsh_t *term, char **action);
 
 int my_lenbase(int nb, int base);
 

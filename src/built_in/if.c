@@ -87,11 +87,15 @@ int execute_cmd(tcsh_t *term, char **argv)
 static int choice_good(char **action, tcsh_t *term, char *verif, int *cond)
 {
     char **tmp = parser3000(verif, " \t\n");
+    int res = 0;
 
     if (tmp == NULL)
         return SUCCESS_EXIT;
-    if (my_strcmp(tmp[0], "if") == 0)
-        return exec_if(tmp, action, term, cond);
+    if (my_strcmp(tmp[0], "if") == 0) {
+        res = exec_if(tmp, action, term, cond);
+        free_array(tmp);
+        return res;
+    }
     if (my_strcmp(tmp[0], "else") == 0)
         return exec_else(tmp, action, term, cond);
     free_array(tmp);

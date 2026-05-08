@@ -143,6 +143,7 @@ int init(tcsh_t *term, char **env)
     term->func = NULL;
     term->locals = NULL;
     term->life = LIFE;
+    term->script = 0;
     term->old = NULL;
     init_histo(term);
     term->return_value = simple('0');

@@ -7,6 +7,23 @@
 
 #include "../../include/struct.h"
 
+int display_alias(char *cmd, char *value)
+{
+    write(1, cmd, my_strlen(cmd));
+    write(1, " is aliased to ", 15);
+    write(1, value, my_strlen(value));
+    write(1, "\n", 1);
+    free(value);
+    return SUCCESS_EXIT;
+}
+
+int display_built(char *cmd)
+{
+    write(1, cmd, my_strlen(cmd));
+    write(1, " is a shell built-in\n", 21);
+    return SUCCESS_EXIT;
+}
+
 static void display_all_alias(char *cmd, tcsh_t *term)
 {
     char *char_tmp = my_strdup(cmd);
@@ -49,7 +66,7 @@ void search_in_file(char *path, char *command)
     closedir(bin);
 }
 
-void display_all_bin(char *cmd, tcsh_t *term)
+static void display_all_bin(char *cmd, tcsh_t *term)
 {
     nodes_t *path = search_node(term->env, "PATH");
     char **bin = NULL;
@@ -65,7 +82,7 @@ void display_all_bin(char *cmd, tcsh_t *term)
     free_array(bin);
 }
 
-void search_all_cmd(char *cmd, tcsh_t *term)
+static void search_all_cmd(char *cmd, tcsh_t *term)
 {
     display_all_alias(cmd, term);
     display_all_built(cmd, term);
