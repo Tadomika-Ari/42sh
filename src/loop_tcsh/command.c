@@ -131,7 +131,7 @@ static void reset_pipefd(int *pipe_fd, int count
 
 int choose_command(tcsh_t *term, char *cmd)
 {
-    char **cmd_pipe = my_str_to_word_array(cmd, "|\n");
+    char **cmd_pipe = parser3000(cmd, "|\n");
     int *pipe_fd = NULL;
     int count = 0;
     bool is_background = false;

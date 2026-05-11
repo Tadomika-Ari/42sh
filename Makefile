@@ -159,6 +159,7 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/autocompletation/autocompletation.c         \
         src/built_in/else.c								\
 		src/autocompletation/see_tab.c   				\
+		src/built_in/is_scripting.c						\
 
 TEST_OBJ = $(TEST_SRC:.c=.o)
 
@@ -197,7 +198,7 @@ NAME =	42sh
 
 all:	$(NAME)
 
-$(NAME): do_lib $(OBJ) $(OBJ2)
+$(NAME): do_lib
 	epiclang -o $(NAME) $(SRC) $(SRC2) -lmy -Llib/my
 
 debug: CC = epiclang
