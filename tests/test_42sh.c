@@ -615,4 +615,12 @@ Test(shell, choose_command_in_redirection_simple, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, parser3000_with_backticks_tokens, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo `echo parser_ok`", "\t \n");
+
+    cr_assert_not_null(tab);
+    cr_assert(len_array(tab) >= 1);
+    free_array(tab);
+}
 
