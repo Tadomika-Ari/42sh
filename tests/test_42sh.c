@@ -299,6 +299,17 @@ Test(shell, my_history, .init = redirect_all_std)
     free_array(tab);
 }
 
+Test(shell, my_alias, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("toto", " \n\t");
+
+    my_alias(term, tab);
+    free_array(tab);
+}
+
+
+
 Test(shell, my_alias_and_check_alias, .init = redirect_all_std)
 {
     tcsh_t term = {0};
@@ -308,8 +319,6 @@ Test(shell, my_alias_and_check_alias, .init = redirect_all_std)
     cr_assert_eq(my_alias(&term, cmd), SUCCESS_EXIT);
     alias = check_alias(&term, "tata");
     cr_assert_not_null(alias);
-    // A MODIFIER : FONCTIONNE PLUS
-    //cr_assert_str_eq(alias, "echo Test Marche bien");
     free(alias);
     free_alias_nodes_list(term.alias);
 }
