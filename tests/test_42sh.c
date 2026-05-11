@@ -660,3 +660,9 @@ Test(shell, my_lenbase_negative, .init = redirect_all_std)
     int nb = my_lenbase(-42, 10);
     cr_assert_eq(nb, 3);
 }
+
+Test(shell, reapet_error_only_spaces, .init = redirect_all_std)
+{
+    int nb = is_only_spaces("            ");
+    cr_assert_eq(nb, 1);
+}
