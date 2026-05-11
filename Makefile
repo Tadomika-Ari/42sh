@@ -198,7 +198,7 @@ NAME =	42sh
 
 all:	$(NAME)
 
-$(NAME): do_lib $(OBJ) $(OBJ2)
+$(NAME): do_lib
 	epiclang -o $(NAME) $(SRC) $(SRC2) -lmy -Llib/my
 
 debug: CC = epiclang
