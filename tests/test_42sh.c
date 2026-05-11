@@ -535,4 +535,15 @@ Test(shell, choose_command_repeat_builtin, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, choose_command_if_syntax_path, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("if ( 1 ) echo ok");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
 
