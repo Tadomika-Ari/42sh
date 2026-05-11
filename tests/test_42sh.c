@@ -437,3 +437,15 @@ Test(shell, alias_test_ls_and_check, .init = redirect_all_std)
     free(alias);
     free_alias_nodes_list(term.alias);
 }
+
+
+Test(shell, strip_single_quotess, .init = redirect_all_std)
+{
+    char *str = my_strdup("\'toto\'");
+    char *res = strip_single_quotes(str);
+
+    free(str);
+    free(res);
+}
+
+
