@@ -734,3 +734,14 @@ Test(shell, check_repeat_av_null, .init = redirect_all_std)
     cr_assert_eq(nb, FAILURE_EXIT);
     free(term);
 }
+
+Test(shell, check_repeat_tmp_one, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    int nb = check_repeat("one", term);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
+
