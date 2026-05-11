@@ -308,6 +308,15 @@ Test(shell, my_alias, .init = redirect_all_std)
     free_array(tab);
 }
 
+Test(shell, my_alias_print, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("toto", " \n\t");
+
+    my_alias(term, &tab[1]);
+    free_array(tab);
+}
+
 
 
 Test(shell, my_alias_and_check_alias, .init = redirect_all_std)
