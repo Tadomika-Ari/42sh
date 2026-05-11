@@ -624,3 +624,11 @@ Test(shell, parser3000_with_backticks_tokens, .init = redirect_all_std)
     free_array(tab);
 }
 
+Test(shell, parser3000_with_glob_tokens, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo src/*.c", "\t \n");
+
+    cr_assert_not_null(tab);
+    cr_assert(len_array(tab) >= 1);
+    free_array(tab);
+}
