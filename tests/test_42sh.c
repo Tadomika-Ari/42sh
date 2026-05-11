@@ -524,4 +524,15 @@ Test(shell, choose_command_fg_builtin_no_job, .init = redirect_all_std)
     choose_command(term, cmd);
     free(term);
 }
+Test(shell, choose_command_repeat_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("repeat 2 echo test_repeat");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
 
