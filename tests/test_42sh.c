@@ -693,3 +693,13 @@ Test(shell, repeat_error_check_error, .init = redirect_all_std)
     cr_assert_eq(nb, FAILURE_EXIT);
     free(term);
 }
+
+Test(shell, repeat_error_fail_check, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("test");
+    int nb = fail_repeat_check(term, cmd, 0);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
