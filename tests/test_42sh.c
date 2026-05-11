@@ -648,3 +648,15 @@ Test(shell, cut_len_null, .init = redirect_all_std)
     cr_assert_null(str);
     free(str);
 }
+
+Test(shell, my_lenbase, .init = redirect_all_std)
+{
+    int nb = my_lenbase(100, 10);
+    cr_assert_eq(nb, 3);
+}
+
+Test(shell, my_lenbase_negative, .init = redirect_all_std)
+{
+    int nb = my_lenbase(-42, 10);
+    cr_assert_eq(nb, 3);
+}
