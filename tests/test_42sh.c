@@ -652,30 +652,35 @@ Test(shell, cut_len_null, .init = redirect_all_std)
 Test(shell, my_lenbase, .init = redirect_all_std)
 {
     int nb = my_lenbase(100, 10);
+
     cr_assert_eq(nb, 3);
 }
 
 Test(shell, my_lenbase_negative, .init = redirect_all_std)
 {
     int nb = my_lenbase(-42, 10);
+
     cr_assert_eq(nb, 3);
 }
 
 Test(shell, reapet_error_only_spaces, .init = redirect_all_std)
 {
     int nb = is_only_spaces("            ");
+
     cr_assert_eq(nb, 1);
 }
 
 Test(shell, reapet_error_char, .init = redirect_all_std)
 {
     int nb = is_only_spaces("    y");
+
     cr_assert_eq(nb, 0);
 }
 
 Test(shell, reapet_error_null, .init = redirect_all_std)
 {
     int nb = is_only_spaces(NULL);
+
     cr_assert_eq(nb, 1);
 }
 
@@ -683,8 +688,8 @@ Test(shell, repeat_error_check_error, .init = redirect_all_std)
 {
     tcsh_t *term = calloc(1, sizeof(tcsh_t));
     char *cmd = my_strdup("rp");
-
     int nb = check_error(term, cmd, 0);
+
     cr_assert_eq(nb, FAILURE_EXIT);
     free(term);
 }
