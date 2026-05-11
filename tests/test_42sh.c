@@ -568,3 +568,14 @@ Test(shell, choose_command_backticks_path, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, choose_command_glob_path, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("echo src/*");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
