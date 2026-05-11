@@ -480,4 +480,15 @@ Test(shell, choose_command_where_builtin, .init = redirect_all_std)
     choose_command(term, cmd);
     free(term);
 }
+Test(shell, choose_command_which_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("which ls");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    fill_rc(term);
+    choose_command(term, cmd);
+    free(term);
+}
 
