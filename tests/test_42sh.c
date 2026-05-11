@@ -678,3 +678,13 @@ Test(shell, reapet_error_null, .init = redirect_all_std)
     int nb = is_only_spaces(NULL);
     cr_assert_eq(nb, 1);
 }
+
+Test(shell, repeat_error_check_error, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("rp");
+
+    int nb = check_error(term, cmd, 0);
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
