@@ -601,4 +601,18 @@ Test(shell, choose_command_out_redirection_append, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, choose_command_in_redirection_simple, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *prep = my_strdup("echo redir_in > /tmp/42sh_ut_in.txt");
+    char *cmd = my_strdup("cat < /tmp/42sh_ut_in.txt");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(prep);
+    cr_assert_not_null(cmd);
+    choose_command(term, prep);
+    choose_command(term, cmd);
+    free(term);
+}
+
 
