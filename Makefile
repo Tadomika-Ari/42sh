@@ -198,14 +198,14 @@ NAME =	42sh
 all:	$(NAME)
 
 $(NAME): do_lib $(OBJ) $(OBJ2)
-	epiclang -o $(NAME) $(OBJ) $(OBJ2) -lmy -Llib/my
+	epiclang -o $(NAME) $(SRC) $(SRC2) -lmy -Llib/my
 
 debug: CC = epiclang
 debug: do_lib $(OBJ) $(OBJ2)
-	epiclang -o $(NAME) $(OBJ) $(OBJ2) -lmy -Llib/my
+	epiclang -o $(NAME) $(SRC) $(SRC2) -lmy -Llib/my
 
 bonus: do_lib $(OBJ) $(BONUS_OBJ) $(BONUS_OBJ2)
-	epiclang -o $(NAME) $(OBJ) $(BONUS_OBJ) $(BONUS_OBJ2) -lmy -Llib/my
+	epiclang -o $(NAME) $(SRC) $(BONUS_SRC) $(BONUS_SRC2) -lmy -Llib/my
 
 do_lib:
 	make -C lib/my/
