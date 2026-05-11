@@ -468,3 +468,16 @@ Test(shell, check_aliam_linked_list_empty, .init = redirect_all_std)
     char *str = my_strdup("ceci est un test que qualité qualitatif");
     check_alias(&term, str);
 }
+
+Test(shell, choose_command_where_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("where ls");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    fill_rc(term);
+    choose_command(term, cmd);
+    free(term);
+}
+
