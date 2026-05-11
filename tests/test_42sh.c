@@ -632,3 +632,19 @@ Test(shell, parser3000_with_glob_tokens, .init = redirect_all_std)
     cr_assert(len_array(tab) >= 1);
     free_array(tab);
 }
+
+Test(shell, cut_len_basic, .init = redirect_all_std)
+{
+    char *str = cut_len("Hello World", 6);
+
+    cr_assert_str_eq(str, "World");
+    free(str);
+}
+
+Test(shell, cut_len_null, .init = redirect_all_std)
+{
+    char *str = cut_len("Hello", 10);
+
+    cr_assert_null(str);
+    free(str);
+}
