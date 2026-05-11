@@ -27,30 +27,6 @@ char *strip_single_quotes(char *word)
     return my_strdup(word);
 }
 
-char *get_rc_file(tcsh_t *term)
-{
-    struct stat sb;
-    char *buf = NULL;
-    ssize_t rd = 0;
-
-    if (term->fd_rc == FAILURE_EXIT)
-        return NULL;
-    if (lseek(term->fd_rc, 0, SEEK_SET) == FAILURE_EXIT)
-        return NULL;
-    if (fstat(term->fd_rc, &sb) == FAILURE_EXIT)
-        return NULL;
-    buf = malloc(sb.st_size + 1);
-    if (buf == NULL)
-        return NULL;
-    rd = read(term->fd_rc, buf, sb.st_size);
-    if (rd < 0) {
-        free(buf);
-        return NULL;
-    }
-    buf[rd] = '\0';
-    return buf;
-}
-
 char *check_alias(tcsh_t *term, char *cmd)
 {
     nodes_t *current = term->alias;
