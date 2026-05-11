@@ -704,11 +704,32 @@ Test(shell, fail_check_error, .init = redirect_all_std)
     free(term);
 }
 
-Test(shell, repeat_error_fail_check, .init = redirect_all_std)
+Test(shell, repeat_error_fail_check_one, .init = redirect_all_std)
 {
     tcsh_t *term = calloc(1, sizeof(tcsh_t));
     char *cmd = my_strdup("test");
     int nb = fail_repeat_check(term, cmd, 0);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
+Test(shell, repeat_error_fail_valid, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("test 3 echo three");
+    int nb = fail_repeat_check(term, cmd, 0);
+
+    cr_assert_eq(nb, SUCCESS_EXIT);
+    free(term);
+    free(cmd);
+}
+
+Test(shell, check_repeat_av_null, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *av = NULL;
+    int nb = check_repeat(av, term);
 
     cr_assert_eq(nb, FAILURE_EXIT);
     free(term);
