@@ -38,7 +38,7 @@ jobs:
         run: banana-check-repo
 
       - name: compile-with-make
-        timeout-minutes: 2
+        timeout-minutes: 3
         run: make 2>&1 | tee error.txt
         env:
           CC: epiclang
