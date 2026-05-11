@@ -492,3 +492,14 @@ Test(shell, choose_command_which_builtin, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, choose_command_set_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("set");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
