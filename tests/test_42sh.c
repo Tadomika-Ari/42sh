@@ -299,6 +299,56 @@ Test(shell, my_history, .init = redirect_all_std)
     free_array(tab);
 }
 
+Test(shell, my_alias, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("toto", " \n\t");
+
+    my_alias(term, tab);
+    free_array(tab);
+}
+
+Test(shell, my_alias_print, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("toto", " \n\t");
+
+    my_alias(term, &tab[1]);
+    free_array(tab);
+}
+
+Test(shell, my_alias_print_add, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("toto tata", " \n\t");
+
+    my_alias(term, tab);
+    my_alias(term, &tab[2]);
+    free_array(tab);
+}
+
+Test(shell, my_alias_unique_alias, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("toto tata", " \n\t");
+
+    my_alias(term, tab);
+    my_alias(term, &tab[1]);
+    free_array(tab);
+}
+Test(shell, my_alias_change_alias, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("toto tata", " \n\t");
+
+    my_alias(term, tab);
+    my_alias(term, &tab[1]);
+    tab[1][0] = 'u';
+    my_alias(term, tab);
+    free_array(tab);
+}
+
+
 Test(shell, my_alias_and_check_alias, .init = redirect_all_std)
 {
     tcsh_t term = {0};
@@ -308,8 +358,6 @@ Test(shell, my_alias_and_check_alias, .init = redirect_all_std)
     cr_assert_eq(my_alias(&term, cmd), SUCCESS_EXIT);
     alias = check_alias(&term, "tata");
     cr_assert_not_null(alias);
-    // A MODIFIER : FONCTIONNE PLUS
-    //cr_assert_str_eq(alias, "echo Test Marche bien");
     free(alias);
     free_alias_nodes_list(term.alias);
 }
@@ -388,4 +436,199 @@ Test(shell, alias_test_ls_and_check, .init = redirect_all_std)
     cr_assert_str_eq(alias, "ls -l");
     free(alias);
     free_alias_nodes_list(term.alias);
+}
+
+
+Test(shell, strip_single_quotess, .init = redirect_all_std)
+{
+    char *str = my_strdup("\'toto\'");
+    char *res = strip_single_quotes(str);
+
+    free(str);
+    free(res);
+}
+
+Test(shell, strip_single_quotes_to_short, .init = redirect_all_std)
+{
+    char *str = my_strdup("a");
+    char *res = strip_single_quotes(str);
+
+    free(str);
+    free(res);
+}
+
+Test(shell, strip_single_quotess_null, .init = redirect_all_std)
+{
+    char *res = strip_single_quotes(NULL);
+}
+
+Test(shell, check_aliam_linked_list_empty, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *str = my_strdup("ceci est un test que qualité qualitatif");
+    check_alias(&term, str);
+}
+
+Test(shell, choose_command_where_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("where ls");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    fill_rc(term);
+    choose_command(term, cmd);
+    free(term);
+}
+Test(shell, choose_command_which_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("which ls");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    fill_rc(term);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_set_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("set");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_bg_builtin_no_job, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("bg");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_fg_builtin_no_job, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("fg");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+Test(shell, choose_command_repeat_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("repeat 2 echo test_repeat");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_if_syntax_path, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("if ( 1 ) echo ok");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_foreach_syntax_path, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("foreach x ( a b ) echo $x");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_backticks_path, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("echo `echo backticks_ok`");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_glob_path, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("echo src/*");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_out_redirection_simple, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("echo redir_out > /tmp/42sh_ut_out.txt");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_out_redirection_append, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("echo redir_append >> /tmp/42sh_ut_out.txt");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(cmd);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, choose_command_in_redirection_simple, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *prep = my_strdup("echo redir_in > /tmp/42sh_ut_in.txt");
+    char *cmd = my_strdup("cat < /tmp/42sh_ut_in.txt");
+
+    cr_assert_not_null(term);
+    cr_assert_not_null(prep);
+    cr_assert_not_null(cmd);
+    choose_command(term, prep);
+    choose_command(term, cmd);
+    free(term);
+}
+
+Test(shell, parser3000_with_backticks_tokens, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo `echo parser_ok`", "\t \n");
+
+    cr_assert_not_null(tab);
+    cr_assert(len_array(tab) >= 1);
+    free_array(tab);
+}
+
+Test(shell, parser3000_with_glob_tokens, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo src/*.c", "\t \n");
+
+    cr_assert_not_null(tab);
+    cr_assert(len_array(tab) >= 1);
+    free_array(tab);
 }
