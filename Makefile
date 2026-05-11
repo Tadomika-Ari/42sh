@@ -159,6 +159,7 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/autocompletation/autocompletation.c         \
         src/built_in/else.c								\
 		src/autocompletation/see_tab.c   				\
+		src/built_in/is_scripting.c						\
 
 TEST_OBJ = $(TEST_SRC:.c=.o)
 
