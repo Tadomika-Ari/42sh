@@ -754,3 +754,13 @@ Test(shell, check_repeat_success, .init = redirect_all_std)
     cr_assert_eq(term->is_repeat, TRUE);
     free(term);
 }
+
+Test(shell, check_repeat_space_cmd, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("    ");
+    int nb = repeat_or_no_repeat(term, cmd, 0);
+
+    cr_assert_eq(nb, 0);
+    free(term);
+}
