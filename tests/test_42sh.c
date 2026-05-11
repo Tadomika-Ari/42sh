@@ -666,3 +666,9 @@ Test(shell, reapet_error_only_spaces, .init = redirect_all_std)
     int nb = is_only_spaces("            ");
     cr_assert_eq(nb, 1);
 }
+
+Test(shell, reapet_error_char, .init = redirect_all_std)
+{
+    int nb = is_only_spaces("    y");
+    cr_assert_eq(nb, 0);
+}
