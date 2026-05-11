@@ -448,4 +448,13 @@ Test(shell, strip_single_quotess, .init = redirect_all_std)
     free(res);
 }
 
+Test(shell, strip_single_quotes_to_short, .init = redirect_all_std)
+{
+    char *str = my_strdup("a");
+    char *res = strip_single_quotes(str);
+
+    free(str);
+    free(res);
+}
+
 
