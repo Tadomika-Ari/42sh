@@ -744,4 +744,13 @@ Test(shell, check_repeat_tmp_one, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, check_repeat_success, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    int nb = check_repeat("repeat 3 echo three", term);
 
+    cr_assert_eq(nb, SUCCESS_EXIT);
+    cr_assert_eq(term->nb_repeat, 3);
+    cr_assert_eq(term->is_repeat, TRUE);
+    free(term);
+}
