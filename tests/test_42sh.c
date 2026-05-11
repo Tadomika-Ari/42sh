@@ -457,4 +457,9 @@ Test(shell, strip_single_quotes_to_short, .init = redirect_all_std)
     free(res);
 }
 
+Test(shell, strip_single_quotess_null, .init = redirect_all_std)
+{
+    char *res = strip_single_quotes(NULL);
+}
+
 
