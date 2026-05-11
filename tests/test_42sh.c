@@ -462,4 +462,9 @@ Test(shell, strip_single_quotess_null, .init = redirect_all_std)
     char *res = strip_single_quotes(NULL);
 }
 
-
+Test(shell, check_aliam_linked_list_empty, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *str = my_strdup("ceci est un test que qualité qualitatif");
+    check_alias(&term, str);
+}
