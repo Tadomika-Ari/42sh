@@ -694,6 +694,16 @@ Test(shell, repeat_error_check_error, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, fail_check_error, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("test");
+    int nb = check_error(term, cmd, 0);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
 Test(shell, repeat_error_fail_check, .init = redirect_all_std)
 {
     tcsh_t *term = calloc(1, sizeof(tcsh_t));
