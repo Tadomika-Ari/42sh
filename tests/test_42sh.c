@@ -1788,3 +1788,89 @@ Test(shell, else_via_choose_command_if_else, .init = redirect_all_std)
     free_array(env);
     free(term);
 }
+
+Test(shell, sweeper_brace_var, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char *set_home[] = {"HOME", "/tmp", NULL};
+    char **res = NULL;
+
+    my_setenv(term, set_home);
+    res = sweeper(term, "echo ${HOME}", &error);
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_local_var, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char *setargs[] = {"myvar", "=", "hello", NULL};
+    char **res = NULL;
+
+    my_set(term, setargs);
+    res = sweeper(term, "echo $myvar", &error);
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_var_mid_string, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char *set_host[] = {"HOST", "myserver", NULL};
+    char **res = NULL;
+
+    my_setenv(term, set_host);
+    res = sweeper(term, "echo user@$HOST", &error);
+    if (res)
+        free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_inhibitor_str, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo 'hello world'", &error);
+
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_single_quoted, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo 'hello world'", &error);
+
+    if (res)
+        free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_double_quoted, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo \"hello world\"", &error);
+
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_glob_pattern, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo src/*.c", &error);
+
+    if (res)
+        free_array(res);
+    free(term);
+}
