@@ -163,7 +163,8 @@ Test(shell, reinit, .init = redirect_all_std)
     free_array(tab);
 }
 
-Test(shell, my_unsetenv, .init = redirect_all_std) {
+Test(shell, my_unsetenv, .init = redirect_all_std)
+{
     char **tab = my_str_to_word_array("setenv toto", "\n \t");
     char **tab2 = my_str_to_word_array("unsetenv toto", "\n \t");
     tcsh_t *term = calloc(1, sizeof(tcsh_t));
@@ -317,7 +318,7 @@ Test(shell, push_to_history, .init = redirect_all_std)
 
 Test(shell, dangerous_alias_keyword, .init = redirect_all_std)
 {
-    char *cmd[] = {"alias", "something", NULL};
+    char *cmd[] = {"alias", "alais", "toto", NULL};
 
     int ret = my_alias(NULL, cmd);
     cr_assert_eq(ret, ALT_EXIT);
