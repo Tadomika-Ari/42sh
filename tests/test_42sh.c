@@ -2026,3 +2026,23 @@ Test(shell, my_unsetenv_middle_node, .init = redirect_all_std)
     cr_assert_eq(my_unsetenv(term, u2), SUCCESS_EXIT);
     free(term);
 }
+
+Test(shell, my_bg_percent_empty, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_bg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, my_fg_percent_empty, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_fg(&term, argv);
+    free_jobs(term.jobs);
+}
