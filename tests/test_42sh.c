@@ -1693,3 +1693,38 @@ Test(shell, is_sep_not_found, .init = redirect_all_std)
 {
     cr_assert_eq(is_sep('a', " \t\n"), FALSE);
 }
+
+Test(shell, my_where_with_alias, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *envp[] = {"PATH=/usr/bin:/bin", NULL};
+    char *alias_cmd[] = {"myls", "ls", NULL};
+    char *argv[] = {"myls", NULL};
+
+    init(term, envp);
+    my_alias(term, alias_cmd);
+    my_where(term, argv);
+    free_all(term);
+}
+
+Test(shell, my_where_builtin_with_func_list, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *envp[] = {"PATH=/usr/bin:/bin", NULL};
+    char *argv[] = {"ls", NULL};
+
+    init(term, envp);
+    my_where(term, argv);
+    free_all(term);
+}
+
+Test(shell, my_where_cd_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *envp[] = {"PATH=/usr/bin:/bin", NULL};
+    char *argv[] = {"cd", NULL};
+
+    init(term, envp);
+    my_where(term, argv);
+    free_all(term);
+}
