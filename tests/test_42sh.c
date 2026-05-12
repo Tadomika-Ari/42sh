@@ -781,3 +781,10 @@ Test(shell, has_newline, .init = redirect_all_std)
     cr_assert_str_eq(str, "test");
     free(str);
 }
+
+Test(shell, fill_buff_no_file, .init = redirect_all_std)
+{
+    char *res = fill_buff("no_file.txt");
+
+    cr_assert_null(res);
+}
