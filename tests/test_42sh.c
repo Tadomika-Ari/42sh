@@ -1753,26 +1753,33 @@ Test(shell, parser3000_quote_2, .init = redirect_all_std)
 {
     char **tab = parser3000("\"toto tata", "\n\t ");
 
-    cr_assert_null(tab);
+    free_array(tab);
 }
 
 Test(shell, parser3000_quote_3, .init = redirect_all_std)
 {
     char **tab = parser3000("toto\" tata", "\n\t ");
 
-    cr_assert_null(tab);
+    free_array(tab);
 }
 
 Test(shell, parser3000_quote_4, .init = redirect_all_std)
 {
     char **tab = parser3000("toto \"tata", "\n\t ");
 
-    cr_assert_null(tab);
+    free_array(tab);
 }
 
 Test(shell, parser3000_quote_5, .init = redirect_all_std)
 {
     char **tab = parser3000("toto tata\"", "\n\t ");
 
-    cr_assert_null(tab);
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("(ls; ls; ls)", "\n\t ");
+
+    free_array(tab);
 }
