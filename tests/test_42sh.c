@@ -2046,3 +2046,25 @@ Test(shell, my_fg_percent_empty, .init = redirect_all_std)
     my_fg(&term, argv);
     free_jobs(term.jobs);
 }
+
+Test(shell, my_if_then_false_else_runs, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    int pipefd[2];
+    int saved = dup(STDIN_FILENO);
+    char *argv[] = {"0", "then", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    pipe(pipefd);
+    write(pipefd[1], "echo yes\nelse\necho no\nendif\n", 27);
+    close(pipefd[1]);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[0]);
+    my_if(term, argv);
+    dup2(saved, STDIN_FILENO);
+    close(saved);
+    free_array(env);
+    free(term);
+}
