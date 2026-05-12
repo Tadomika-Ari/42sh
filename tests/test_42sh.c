@@ -1531,3 +1531,10 @@ Test(shell, parser3000_normal_2, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_normal_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("tOtO tAtA", "\n\t ");
+
+    free_array(tab);
+}
