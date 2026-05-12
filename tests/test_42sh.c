@@ -1378,3 +1378,89 @@ Test(shell, from_one_line_echo, .init = redirect_all_std)
     free_array(env);
     free(term);
 }
+
+Test(shell, simple_char, .init = redirect_all_std)
+{
+    char *s = simple('Z');
+
+    cr_assert_not_null(s);
+    cr_assert_str_eq(s, "Z");
+    free(s);
+}
+
+Test(shell, array_null_basic, .init = redirect_all_std)
+{
+    char **arr = array_null('x');
+
+    cr_assert_not_null(arr);
+    cr_assert_str_eq(arr[0], "x");
+    free_array(arr);
+}
+
+Test(shell, my_str_rea_concat, .init = redirect_all_std)
+{
+    char *base = my_strdup("hello");
+
+    base = my_str_rea(base, " world");
+    cr_assert_str_eq(base, "hello world");
+    free(base);
+}
+
+Test(shell, my_str_rea_null_value, .init = redirect_all_std)
+{
+    char *base = my_strdup("hello");
+
+    base = my_str_rea(base, NULL);
+    cr_assert_str_eq(base, "hello");
+    free(base);
+}
+
+Test(shell, without_braces, .init = redirect_all_std)
+{
+    char *s = without("{myvar}");
+
+    cr_assert_str_eq(s, "myvar");
+    free(s);
+}
+
+Test(shell, get_name_basic, .init = redirect_all_std)
+{
+    char *name = get_name("hello", 4);
+
+    cr_assert_str_eq(name, "hello");
+    free(name);
+}
+
+Test(shell, sweeper_dollar_home, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char *set_home[] = {"HOME", "/tmp", NULL};
+    char **res = NULL;
+
+    my_setenv(term, set_home);
+    res = sweeper(term, "echo $HOME", &error);
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_dollar_cwd, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo $cwd", &error);
+
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_dollar_undefined, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+
+    sweeper(term, "echo $UNDEFINED_VAR_XYZ", &error);
+    free(term);
+}
