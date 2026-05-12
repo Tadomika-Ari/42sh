@@ -1797,3 +1797,10 @@ Test(shell, parser3000_cmd_3, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_cmd_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("mkdir \"$HOME\"", "\n\t ");
+
+    free_array(tab);
+}
