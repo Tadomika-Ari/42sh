@@ -2021,3 +2021,10 @@ Test(shell, parser3000_globbing_2, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_globbing_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("abc?", "\n\t ");
+
+    free_array(tab);
+}
