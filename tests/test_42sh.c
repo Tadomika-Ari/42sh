@@ -1853,3 +1853,10 @@ Test(shell, parser3000_cmd_11, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_cmd_12, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo $PATH", "\n\t ");
+
+    free_array(tab);
+}
