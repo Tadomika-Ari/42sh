@@ -1567,3 +1567,18 @@ Test(shell, free_all_with_history, .init = redirect_all_std)
     push_to_history(term, "echo three");
     free_all(term);
 }
+
+Test(shell, backsticks_echo, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *result = NULL;
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    result = backsticks(term, "`echo hello`");
+    cr_assert_not_null(result);
+    free(result);
+    free_array(env);
+    free(term);
+}
