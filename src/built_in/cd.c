@@ -32,10 +32,10 @@ int to_path(char **argv, tcsh_t *term, char *pwd)
     if (exit != 0) {
         free(pwd);
         if (errno == EACCES)
-            return error_permission_denied(argv[0]);
+            return my_cmd_error(PERMISSION_DENIED, argv[0], ALT_EXIT);
         if (is_it_file(argv[0]) == 0)
-            return error_not_a_directory(argv[0]);
-        return path_not_found(argv[0]);
+            return my_cmd_error(NOT_DIR, argv[0], ALT_EXIT);
+        return my_cmd_error(NO_SUCH, argv[0], ALT_EXIT);
     }
     if (new_path(term, pwd) == FAILURE_EXIT)
         return FAILURE_EXIT;
@@ -50,7 +50,7 @@ int whitout_argument(tcsh_t *term, char **argv)
     char *home = take_value(term->env, "HOME");
 
     if (!home)
-        return error_no_home("cd");
+        return my_cmd_error(NO_HOME, "cd", ALT_EXIT);
     return my_cd(term, (char *[]){home, NULL});
 }
 
@@ -60,12 +60,12 @@ int my_cd(tcsh_t *term, char **argv)
     char *pwd = NULL;
 
     if (len >= 2)
-        return error_too_many_argument("cd");
+        return my_cmd_error(TOO_MANY, "cd", ALT_EXIT);
     if (len == 0)
         return whitout_argument(term, argv);
     if (argv[0][0] == '-' && argv[0][1] == '\0') {
         if (!term->old)
-            return path_not_found("");
+            return my_cmd_error(NO_SUCH, "", ALT_EXIT);
         return my_cd(term, (char *[]){term->old, NULL});
     }
     errno = 0;

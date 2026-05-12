@@ -7,28 +7,23 @@
 
 #include "../../include/struct.h"
 
-int path_not_found(char *path)
+int put_err(char *str, int flags)
 {
-    write(1, path, my_strlen(path));
-    return put_err(NO_SUCH, ALT_EXIT);
+    write(2, str, my_strlen(str));
+    return flags;
 }
 
-int error_too_many_argument(char *cmd)
+void *my_puterror_ptr(char *message)
 {
-    write(1, cmd, my_strlen(cmd));
-    return put_err(TOO_MANY, ALT_EXIT);
+    write(2, message, my_strlen(message));
+    return NULL;
 }
 
-int error_not_enough_argument(char *cmd)
+int my_cmd_error(char *str, char *cmd, int out)
 {
-    write(1, cmd, my_strlen(cmd));
-    return put_err(TOO_FEW, ALT_EXIT);
-}
-
-int error_expression_syntax(char *cmd)
-{
-    write(1, cmd, my_strlen(cmd));
-    return put_err(EXPRESSION_SYNTAX, ALT_EXIT);
+    write(2, cmd, my_strlen(cmd));
+    write(2, str, my_strlen(str));
+    return out;
 }
 
 static int error_glob_match(char *cmd)
@@ -41,6 +36,6 @@ int command_not_found(char *cmd)
 {
     if (is_globing(cmd) == TRUE)
         return error_glob_match(cmd);
-    write(1, cmd, my_strlen(cmd));
+    write(2, cmd, my_strlen(cmd));
     return put_err(CMD_NOT_FOUND, 1);
 }

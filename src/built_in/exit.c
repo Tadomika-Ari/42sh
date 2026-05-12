@@ -10,7 +10,7 @@
 int my_exit(tcsh_t *term, char **argv)
 {
     if (len_array(argv) > 1)
-        return error_expression_syntax(argv[0]);
+        return my_cmd_error(EXPRESSION_SYNTAX, argv[0], ALT_EXIT);
     term->life = DEAD;
     write(1, "exit\n", 5);
     return SUCCESS_EXIT;
