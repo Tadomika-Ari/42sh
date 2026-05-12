@@ -890,3 +890,109 @@ Test(shell, print_return_val, .init = redirect_all_std)
     cr_assert_eq(no_such_job(NULL, "no job\n"), ALT_EXIT);
     cr_assert_eq(no_such_job(&job, "no job\n"), EXIT_SUCCESS);
 }
+
+Test(shell, job_control_null_cmd, .init = redirect_all_std)
+{
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+
+    cr_assert_eq(job_control(term, NULL), FAILURE_EXIT);
+    free(term);
+}
+
+Test(shell, job_control_echo, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+
+    my_setenv(term, env);
+    cr_assert_eq(job_control(term, my_strdup("echo hi")), SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, job_control_and_operator, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+
+    my_setenv(term, env);
+    job_control(term, my_strdup("echo a && echo b"));
+    free_array(env);
+    free(term);
+}
+
+Test(shell, job_control_or_operator, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+
+    my_setenv(term, env);
+    job_control(term, my_strdup("false_xyz || echo fallback"));
+    free_array(env);
+    free(term);
+}
+
+Test(shell, job_execution_null_args, .init = redirect_all_std)
+{
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+    jobs_exec_t sta = {0};
+
+    cr_assert_eq(job_execution(term, &sta, NULL, NULL), FALSE);
+    free(term);
+}
+
+Test(shell, job_execution_and, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    jobs_exec_t sta = {0};
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *cmds[] = {"echo a", "echo b", NULL};
+    char *jobs_arr[] = {"&&", "", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    job_execution(term, &sta, cmds, jobs_arr);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, loops_multi_func_single, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    cr_assert_eq(loops_multi_func(term, my_strdup("echo hello"), 0),
+        SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, loops_multi_func_semicolon, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    loops_multi_func(term, my_strdup("echo a; echo b"), 0);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, empty_cmd_detect, .init = redirect_all_std)
+{
+    cr_assert_eq(empty_cmd_detect(""), TRUE);
+    cr_assert_eq(empty_cmd_detect("   "), TRUE);
+    cr_assert_eq(empty_cmd_detect("echo"), FALSE);
+    cr_assert_eq(empty_cmd_detect(NULL), TRUE);
+}
+
+Test(shell, empty_error_case_no_empty, .init = redirect_all_std)
+{
+    char *cmds[] = {"echo hi", NULL};
+    char *jobs[] = {"", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), FALSE);
+}
