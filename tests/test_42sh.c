@@ -1595,4 +1595,11 @@ Test(shell, parser3000_edge_3_maj, .init = redirect_all_std)
     free_array(tab);
 }
 
+Test(shell, parser3000_edge_4_maj, .init = redirect_all_std)
+{
+    char **tab = parser3000("TOto tATA         ", "\n\t ");
+
+    free_array(tab);
+}
+
 
