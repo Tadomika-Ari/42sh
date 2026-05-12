@@ -788,3 +788,11 @@ Test(shell, fill_buff_no_file, .init = redirect_all_std)
 
     cr_assert_null(res);
 }
+
+Test(shell, fill_buff_file, .init = redirect_all_std)
+{
+    char *res = fill_buff("Makefile");
+
+    cr_assert_not_null(res);
+    free(res);
+}
