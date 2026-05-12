@@ -1181,3 +1181,26 @@ Test(shell, my_which_aliased, .init = redirect_all_std)
     my_which(term, argv);
     free(term);
 }
+
+Test(shell, my_where_too_few_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("where", "\n \t");
+
+    cr_assert_eq(my_where(term, &tab[1]), ALT_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_where_ls, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *argv[] = {"ls", NULL};
+
+    my_setenv(term, env);
+    fill_rc(term);
+    my_where(term, argv);
+    free_array(env);
+    free(term);
+}
