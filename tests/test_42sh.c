@@ -1992,3 +1992,37 @@ Test(shell, my_setenv_update, .init = redirect_all_std)
     cr_assert_eq(my_setenv(term, set3), SUCCESS_EXIT);
     free(term);
 }
+
+Test(shell, my_unsetenv_no_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("unsetenv", "\n \t");
+
+    cr_assert_eq(my_unsetenv(term, &tab[1]), ALT_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_unsetenv_star_arg, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"*", NULL};
+
+    cr_assert_eq(my_unsetenv(term, argv), ALT_EXIT);
+    free(term);
+}
+
+Test(shell, my_unsetenv_middle_node, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *s1[] = {"A", "1", NULL};
+    char *s2[] = {"B", "2", NULL};
+    char *s3[] = {"C", "3", NULL};
+    char *u2[] = {"B", NULL};
+
+    my_setenv(term, s1);
+    my_setenv(term, s2);
+    my_setenv(term, s3);
+    cr_assert_eq(my_unsetenv(term, u2), SUCCESS_EXIT);
+    free(term);
+}
