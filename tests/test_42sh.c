@@ -1066,3 +1066,65 @@ Test(shell, my_bg_too_many_args, .init = redirect_all_std)
     my_bg(&term, argv);
     free_jobs(term.jobs);
 }
+
+Test(shell, my_set_display_empty, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("", " ");
+
+    cr_assert_eq(my_set(term, tab), SUCCESS_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_set_with_equals, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"myvar", "=", "42", NULL};
+
+    cr_assert_eq(my_set(term, argv), SUCCESS_EXIT);
+    cr_assert_not_null(term->locals);
+    free(term);
+}
+
+Test(shell, my_set_no_value, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"bare_var", NULL};
+
+    my_set(term, argv);
+    cr_assert_not_null(term->locals);
+    free(term);
+}
+
+Test(shell, my_set_inline_eq, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"x=hello", NULL};
+
+    my_set(term, argv);
+    cr_assert_not_null(term->locals);
+    free(term);
+}
+
+Test(shell, my_set_update_existing, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *a[] = {"x", "=", "old", NULL};
+    char *b[] = {"x", "=", "new", NULL};
+
+    my_set(term, a);
+    cr_assert_eq(my_set(term, b), SUCCESS_EXIT);
+    free(term);
+}
+
+Test(shell, my_set_then_free_all, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *a[] = {"x", "=", "1", NULL};
+    char *b[] = {"y", "=", "2", NULL};
+
+    my_set(term, a);
+    my_set(term, b);
+    free_all(term);
+}
