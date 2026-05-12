@@ -1874,3 +1874,50 @@ Test(shell, sweeper_glob_pattern, .init = redirect_all_std)
         free_array(res);
     free(term);
 }
+
+Test(shell, empty_cmd_and_is_and, .init = redirect_all_std)
+{
+    char *cmds[] = {"", "echo hi", NULL};
+    char *jobs[] = {"&&", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), FALSE);
+}
+
+Test(shell, empty_cmd_and_not_and, .init = redirect_all_std)
+{
+    char *cmds[] = {"", "echo hi", NULL};
+    char *jobs[] = {"", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), TRUE);
+}
+
+Test(shell, empty_error_case_leading_empty, .init = redirect_all_std)
+{
+    char *cmds[] = {"", "echo hi", NULL};
+    char *jobs[] = {"", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), TRUE);
+}
+
+Test(shell, empty_error_case_empty_cmd_after_cmd, .init = redirect_all_std)
+{
+    char *cmds[] = {"echo hi", "", NULL};
+    char *jobs[] = {"&&", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), TRUE);
+}
+
+Test(shell, job_execution_or, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    jobs_exec_t sta = {0};
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *cmds[] = {"false_xyz_abc", "echo fallback", NULL};
+    char *jobs_arr[] = {"||", "", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    job_execution(term, &sta, cmds, jobs_arr);
+    free_array(env);
+    free(term);
+}
