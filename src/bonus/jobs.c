@@ -22,9 +22,11 @@ static char *format_state(job_state_t state)
 
 static void print_jobs(job_t *current)
 {
-    printf("[%d] [PGID: %d] [%s] %s\n",
+    printf("%s[%d] [PGID: %d] [%s] %s%s\n",
+        YELLOW,
         current->id, (int)current->pgid,
-        format_state(current->state), current->cmd);
+        format_state(current->state), current->cmd,
+        NORMAL);
 }
 
 int jobs(tcsh_t *term, char **argv)
