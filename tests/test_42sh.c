@@ -764,3 +764,11 @@ Test(shell, check_repeat_space_cmd, .init = redirect_all_std)
     cr_assert_eq(nb, 0);
     free(term);
 }
+
+Test(shell, my_strip_newline_null, .init = redirect_all_std)
+{
+    char *str = NULL;
+    char *res = my_strip_newline(str);
+
+    cr_assert_null(res);
+}
