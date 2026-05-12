@@ -1576,7 +1576,14 @@ Test(shell, parser3000_edge_5, .init = redirect_all_std)
 
 Test(shell, parser3000_edge_1_maj, .init = redirect_all_std)
 {
-    char **tab = parser3000("toto tata ", "\n\t ");
+    char **tab = parser3000("toTo tAtA ", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_2_maj, .init = redirect_all_std)
+{
+    char **tab = parser3000(" tOtO tATa", "\n\t ");
 
     free_array(tab);
 }
