@@ -1706,3 +1706,12 @@ Test(shell, parser3000_bracket_9, .init = redirect_all_std)
 
     cr_assert_null(tab);
 }
+
+Test(shell, parser3000_single_quote_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("\'toto \' tata", "\n\t ");
+
+    free_array(tab);
+}
+
+
