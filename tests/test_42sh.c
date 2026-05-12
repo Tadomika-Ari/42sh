@@ -796,3 +796,12 @@ Test(shell, fill_buff_file, .init = redirect_all_std)
     cr_assert_not_null(res);
     free(res);
 }
+
+Test(shell, free_jobs, .init = redirect_all_std)
+{
+    job_t *job = calloc(1, sizeof(job_t));
+    job->id = 4;
+    job->cmd = my_strdup("test");
+    job->next = NULL;
+    free_jobs(job);
+}
