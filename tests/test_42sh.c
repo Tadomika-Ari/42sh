@@ -1965,3 +1965,10 @@ Test(shell, parser3000_job_6, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_job_7, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls && echo a || jsp", "\n\t ");
+
+    free_array(tab);
+}
