@@ -1616,4 +1616,11 @@ Test(shell, parser3000_edge_1_num, .init = redirect_all_std)
     free_array(tab);
 }
 
+Test(shell, parser3000_edge_2_num, .init = redirect_all_std)
+{
+    char **tab = parser3000(" t0to tat4", "\n\t ");
+
+    free_array(tab);
+}
+
 
