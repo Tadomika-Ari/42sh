@@ -2035,3 +2035,10 @@ Test(shell, parser3000_pipe_1, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_pipe_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls | grep a | grep b | grep c", "\n\t ");
+
+    free_array(tab);
+}
