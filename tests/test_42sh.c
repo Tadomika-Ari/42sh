@@ -1128,3 +1128,56 @@ Test(shell, my_set_then_free_all, .init = redirect_all_std)
     my_set(term, b);
     free_all(term);
 }
+
+Test(shell, my_which_too_few_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("which", "\n \t");
+
+    cr_assert_eq(my_which(term, &tab[1]), ALT_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_which_find_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *envp[] = {"PATH=/usr/bin:/bin", NULL};
+    char *argv[] = {"cd", NULL};
+
+    init(term, envp);
+    cr_assert_eq(my_which(term, argv), SUCCESS_EXIT);
+    free_all(term);
+}
+
+Test(shell, my_which_find_binary, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *argv[] = {"ls", NULL};
+
+    my_setenv(term, env);
+    my_which(term, argv);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, my_which_not_found, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"nonexistent_xyz_abc", NULL};
+
+    cr_assert_eq(my_which(term, argv), ALT_EXIT);
+    free(term);
+}
+
+Test(shell, my_which_aliased, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *alias_cmd[] = {"myls", "ls", NULL};
+    char *argv[] = {"myls", NULL};
+
+    my_alias(term, alias_cmd);
+    my_which(term, argv);
+    free(term);
+}
