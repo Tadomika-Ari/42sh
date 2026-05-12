@@ -2014,3 +2014,10 @@ Test(shell, parser3000_globbing_1, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_globbing_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("./src/*.c", "\n\t ");
+
+    free_array(tab);
+}
