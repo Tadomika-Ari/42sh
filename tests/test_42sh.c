@@ -2028,3 +2028,10 @@ Test(shell, parser3000_globbing_3, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_pipe_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls | cat -e", "\n\t ");
+
+    free_array(tab);
+}
