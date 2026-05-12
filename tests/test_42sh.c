@@ -805,3 +805,88 @@ Test(shell, free_jobs, .init = redirect_all_std)
     job->next = NULL;
     free_jobs(job);
 }
+
+Test(shell, add_job_basic, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+
+    add_job(&term, 42, "sleep 5", RUNNING);
+    cr_assert_not_null(term.jobs);
+    cr_assert_eq(term.jobs->id, 1);
+    cr_assert_str_eq(term.jobs->cmd, "sleep 5");
+    free_jobs(term.jobs);
+}
+
+Test(shell, add_job_multiple, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+
+    add_job(&term, 10, "cmd1", RUNNING);
+    add_job(&term, 20, "cmd2", STOPPED);
+    cr_assert_not_null(find_job_id(&term, 1));
+    cr_assert_not_null(find_job_id(&term, 2));
+    cr_assert_null(find_job_id(&term, 99));
+    free_jobs(term.jobs);
+}
+
+Test(shell, find_job_by_pid, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+
+    add_job(&term, 777, "myjob", STOPPED);
+    cr_assert_not_null(find_job_pid(&term, 777));
+    cr_assert_null(find_job_pid(&term, 999));
+    free_jobs(term.jobs);
+}
+
+Test(shell, find_job_null_term, .init = redirect_all_std)
+{
+    cr_assert_null(find_job_id(NULL, 1));
+    cr_assert_null(find_job_pid(NULL, 1));
+}
+
+Test(shell, remove_job_first, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+
+    add_job(&term, 1, "a", RUNNING);
+    add_job(&term, 2, "b", RUNNING);
+    remove_job(&term, term.jobs);
+    cr_assert_null(find_job_id(&term, 1));
+    cr_assert_not_null(find_job_id(&term, 2));
+    free_jobs(term.jobs);
+}
+
+Test(shell, remove_job_last, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    job_t *last = NULL;
+
+    add_job(&term, 1, "a", RUNNING);
+    add_job(&term, 2, "b", RUNNING);
+    last = find_job_id(&term, 2);
+    remove_job(&term, last);
+    cr_assert_null(find_job_id(&term, 2));
+    cr_assert_not_null(find_job_id(&term, 1));
+    free_jobs(term.jobs);
+}
+
+Test(shell, get_max_job_id, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+
+    cr_assert_eq(get_max_job_id(&term), 0);
+    add_job(&term, 1, "a", RUNNING);
+    add_job(&term, 2, "b", RUNNING);
+    cr_assert_eq(get_max_job_id(&term), 2);
+    free_jobs(term.jobs);
+}
+
+Test(shell, print_return_val, .init = redirect_all_std)
+{
+    job_t job = {0};
+
+    cr_assert_eq(print_return(STDERR_FILENO, "err\n"), ALT_EXIT);
+    cr_assert_eq(no_such_job(NULL, "no job\n"), ALT_EXIT);
+    cr_assert_eq(no_such_job(&job, "no job\n"), EXIT_SUCCESS);
+}
