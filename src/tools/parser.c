@@ -134,7 +134,6 @@ char **parser3000(char *str, char *sep)
     copy_next(&parse, str, res, 0);
     res[parse.count] = NULL;
     if (correct_tab(res) == FALSE) {
-        free_array(res);
         return NULL;
     }
     return res;

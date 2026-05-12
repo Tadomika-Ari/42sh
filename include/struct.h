@@ -475,8 +475,6 @@ int display_built(char *cmd);
 
 int my_where(tcsh_t *term, char **argv);
 
-char *get_rc_file(tcsh_t *term);
-
 char *strip_single_quotes(char *word);
 
 int check_repeat(char *av, tcsh_t *term);

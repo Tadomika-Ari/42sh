@@ -34,7 +34,11 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 {
     char **tmp = NULL;
 
-    tmp = my_str_to_word_array(cmd, ";");
+    tmp = parser3000(cmd, ";");
+    if (!tmp || !tmp[0]) {
+        free(cmd);
+        return 0;
+    }
     for (int i = 0; tmp[i] != NULL; i++) {
         return_value = job_control(term, tmp[i]);
         if (return_value == FAILURE_EXIT)
