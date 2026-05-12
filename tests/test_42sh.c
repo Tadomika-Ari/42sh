@@ -566,3 +566,176 @@ Test(shell, parser3000_with_glob_tokens, .init = redirect_all_std)
     cr_assert(len_array(tab) >= 1);
     free_array(tab);
 }
+
+Test(shell, cut_len_basic, .init = redirect_all_std)
+{
+    char *str = cut_len("Hello World", 6);
+
+    cr_assert_str_eq(str, "World");
+    free(str);
+}
+
+Test(shell, cut_len_null, .init = redirect_all_std)
+{
+    char *str = cut_len("Hello", 10);
+
+    cr_assert_null(str);
+    free(str);
+}
+
+Test(shell, my_lenbase, .init = redirect_all_std)
+{
+    int nb = my_lenbase(100, 10);
+
+    cr_assert_eq(nb, 3);
+}
+
+Test(shell, my_lenbase_negative, .init = redirect_all_std)
+{
+    int nb = my_lenbase(-42, 10);
+
+    cr_assert_eq(nb, 3);
+}
+
+Test(shell, reapet_error_only_spaces, .init = redirect_all_std)
+{
+    int nb = is_only_spaces("            ");
+
+    cr_assert_eq(nb, 1);
+}
+
+Test(shell, reapet_error_char, .init = redirect_all_std)
+{
+    int nb = is_only_spaces("    y");
+
+    cr_assert_eq(nb, 0);
+}
+
+Test(shell, reapet_error_null, .init = redirect_all_std)
+{
+    int nb = is_only_spaces(NULL);
+
+    cr_assert_eq(nb, 1);
+}
+
+Test(shell, repeat_error_check_error, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("rp");
+    int nb = check_error(term, cmd, 0);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
+Test(shell, fail_check_error, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("test");
+    int nb = check_error(term, cmd, 0);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
+Test(shell, repeat_error_fail_check_one, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("test");
+    int nb = fail_repeat_check(term, cmd, 0);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
+Test(shell, repeat_error_fail_valid, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("test 3 echo three");
+    int nb = fail_repeat_check(term, cmd, 0);
+
+    cr_assert_eq(nb, SUCCESS_EXIT);
+    free(term);
+    free(cmd);
+}
+
+Test(shell, check_repeat_av_null, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *av = NULL;
+    int nb = check_repeat(av, term);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
+Test(shell, check_repeat_tmp_one, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    int nb = check_repeat("one", term);
+
+    cr_assert_eq(nb, FAILURE_EXIT);
+    free(term);
+}
+
+Test(shell, check_repeat_success, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    int nb = check_repeat("repeat 3 echo three", term);
+
+    cr_assert_eq(nb, SUCCESS_EXIT);
+    cr_assert_eq(term->nb_repeat, 3);
+    cr_assert_eq(term->is_repeat, TRUE);
+    free(term);
+}
+
+Test(shell, check_repeat_space_cmd, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *cmd = my_strdup("    ");
+    int nb = repeat_or_no_repeat(term, cmd, 0);
+
+    cr_assert_eq(nb, 0);
+    free(term);
+}
+
+Test(shell, my_strip_newline_null, .init = redirect_all_std)
+{
+    char *str = NULL;
+    char *res = my_strip_newline(str);
+
+    cr_assert_null(res);
+}
+
+Test(shell, has_newline, .init = redirect_all_std)
+{
+    char *str = my_strdup("test\n");
+    char *res = my_strip_newline(str);
+
+    cr_assert_str_eq(str, "test");
+    free(str);
+}
+
+Test(shell, fill_buff_no_file, .init = redirect_all_std)
+{
+    char *res = fill_buff("no_file.txt");
+
+    cr_assert_null(res);
+}
+
+Test(shell, fill_buff_file, .init = redirect_all_std)
+{
+    char *res = fill_buff("Makefile");
+
+    cr_assert_not_null(res);
+    free(res);
+}
+
+Test(shell, free_jobs, .init = redirect_all_std)
+{
+    job_t *job = calloc(1, sizeof(job_t));
+    job->id = 4;
+    job->cmd = my_strdup("test");
+    job->next = NULL;
+    free_jobs(job);
+}
