@@ -1846,3 +1846,10 @@ Test(shell, parser3000_cmd_10, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_cmd_11, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo $HOME", "\n\t ");
+
+    free_array(tab);
+}
