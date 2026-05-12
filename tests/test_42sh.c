@@ -318,11 +318,11 @@ Test(shell, push_to_history, .init = redirect_all_std)
 
 Test(shell, dangerous_alias_keyword, .init = redirect_all_std)
 {
-    char *cmd[] = {"alias", "alais", "toto", NULL};
+    char *cmd[] = {"alias", "alias", "toto", NULL};
 
     int ret = my_alias(NULL, cmd);
     cr_assert_eq(ret, ALT_EXIT);
-    cr_assert_stdout_eq_str("alias: Too dangerous to alias that.\n");
+    cr_assert_stderr_eq_str("alias: Too dangerous to alias that.\n");
 }
 
 
@@ -1516,4 +1516,11 @@ Test(shell, backsticks_echo, .init = redirect_all_std)
     free(result);
     free_array(env);
     free(term);
+}
+
+Test(shell, parser3000_normal_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata", "\n\t ");
+
+    free_array(tab);
 }
