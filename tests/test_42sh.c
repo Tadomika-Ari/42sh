@@ -1921,3 +1921,30 @@ Test(shell, job_execution_or, .init = redirect_all_std)
     free_array(env);
     free(term);
 }
+
+Test(shell, my_cd_no_home, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
+
+Test(shell, my_cd_too_many_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"/tmp", "/var", NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
+
+Test(shell, my_cd_dash_no_old, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"-", NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
