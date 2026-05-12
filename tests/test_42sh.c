@@ -1300,3 +1300,81 @@ Test(shell, my_if_empty_condition, .init = redirect_all_std)
     my_if(term, argv);
     free(term);
 }
+
+Test(shell, foreach_is_valid_name_valid, .init = redirect_all_std)
+{
+    cr_assert_eq(foreach_is_valid_name("x"), 1);
+    cr_assert_eq(foreach_is_valid_name("_var"), 1);
+    cr_assert_eq(foreach_is_valid_name("Var123"), 1);
+}
+
+Test(shell, foreach_is_valid_name_invalid, .init = redirect_all_std)
+{
+    cr_assert_eq(foreach_is_valid_name("1bad"), 0);
+    cr_assert_eq(foreach_is_valid_name("my-var"), 0);
+    cr_assert_eq(foreach_is_valid_name(""), 0);
+    cr_assert_eq(foreach_is_valid_name(NULL), 0);
+}
+
+Test(shell, my_foreach_too_few_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("foreach", "\n \t");
+
+    cr_assert_eq(my_foreach(term, &tab[1]), ALT_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_foreach_too_many_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"x", "(a b)", "extra", NULL};
+
+    cr_assert_eq(my_foreach(term, argv), ALT_EXIT);
+    free(term);
+}
+
+Test(shell, my_foreach_invalid_varname, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"1bad", "(a b)", NULL};
+
+    cr_assert_eq(my_foreach(term, argv), ALT_EXIT);
+    free(term);
+}
+
+Test(shell, foreach_via_piped_stdin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    int pipefd[2];
+    int saved_stdin = 0;
+    char *argv[] = {"x", "(a b c)", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    cr_assert_eq(pipe(pipefd), 0);
+    write(pipefd[1], "echo $x\nend\n", 12);
+    close(pipefd[1]);
+    saved_stdin = dup(STDIN_FILENO);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[0]);
+    my_foreach(term, argv);
+    dup2(saved_stdin, STDIN_FILENO);
+    close(saved_stdin);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, from_one_line_echo, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    cr_assert_eq(from_one_line(term, my_strdup("echo test")), SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
