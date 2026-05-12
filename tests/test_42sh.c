@@ -1204,3 +1204,99 @@ Test(shell, my_where_ls, .init = redirect_all_std)
     free_array(env);
     free(term);
 }
+
+Test(shell, apply_null_cmd, .init = redirect_all_std)
+{
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+
+    cr_assert_eq(apply(term, NULL), ALT_EXIT);
+    free(term);
+}
+
+Test(shell, execute_cmd_null, .init = redirect_all_std)
+{
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+
+    cr_assert_eq(execute_cmd(term, NULL), ALT_EXIT);
+    free(term);
+}
+
+Test(shell, is_then_null, .init = redirect_all_std)
+{
+    cr_assert_eq(is_then(NULL), 0);
+}
+
+Test(shell, is_then_no_then, .init = redirect_all_std)
+{
+    char *argv[] = {"echo", "hi", NULL};
+
+    cr_assert_eq(is_then(argv), 0);
+}
+
+Test(shell, is_then_at_end, .init = redirect_all_std)
+{
+    char *argv[] = {"1", "then", NULL};
+
+    cr_assert_eq(is_then(argv), 1);
+}
+
+Test(shell, is_then_not_last, .init = redirect_all_std)
+{
+    char *argv[] = {"then", "echo", NULL};
+
+    cr_assert_eq(is_then(argv), -1);
+}
+
+Test(shell, dupl_array_basic, .init = redirect_all_std)
+{
+    char *src[] = {"a", "b", "c", NULL};
+    char **copy = dupl_array(src);
+
+    cr_assert_not_null(copy);
+    cr_assert_str_eq(copy[0], "a");
+    cr_assert_null(copy[3]);
+    free_array(copy);
+}
+
+Test(shell, my_if_no_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("if", "\n \t");
+
+    my_if(term, &tab[1]);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_if_false_no_then, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"0", "echo", "skip", NULL};
+
+    term->return_value = my_strdup("0");
+    cr_assert_eq(my_if(term, argv), SUCCESS_EXIT);
+    free(term);
+}
+
+Test(shell, my_if_true_no_then, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *argv[] = {"1", "echo", "run", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    my_if(term, argv);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, my_if_empty_condition, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"1", NULL};
+
+    term->return_value = my_strdup("0");
+    my_if(term, argv);
+    free(term);
+}
