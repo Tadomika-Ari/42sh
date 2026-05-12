@@ -2001,4 +2001,9 @@ Test(shell, parser3000_backtick_4, .init = redirect_all_std)
     free_array(tab);
 }
 
+Test(shell, parser3000_backtick_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata`", "\n\t ");
 
+    free_array(tab);
+}
