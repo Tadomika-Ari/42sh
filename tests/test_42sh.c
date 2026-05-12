@@ -1464,3 +1464,40 @@ Test(shell, sweeper_dollar_undefined, .init = redirect_all_std)
     sweeper(term, "echo $UNDEFINED_VAR_XYZ", &error);
     free(term);
 }
+
+Test(shell, my_cd_to_tmp, .init = redirect_all_std)
+{
+    char **tab = my_str_to_word_array("/tmp", "\n \t");
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PWD=/home", " ");
+
+    my_setenv(term, env);
+    cr_assert_eq(my_cd(term, tab), SUCCESS_EXIT);
+    free_array(tab);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, my_cd_back_with_dash, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PWD=/home", " ");
+    char *argv_tmp[] = {"/tmp", NULL};
+    char *argv_dash[] = {"-", NULL};
+
+    my_setenv(term, env);
+    my_cd(term, argv_tmp);
+    cr_assert_eq(my_cd(term, argv_dash), SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, my_cd_file_not_dir, .init = redirect_all_std)
+{
+    char **tab = my_str_to_word_array("/bin/ls", "\n \t");
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+
+    my_cd(term, tab);
+    free_array(tab);
+    free(term);
+}
