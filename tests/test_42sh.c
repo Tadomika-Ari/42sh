@@ -1818,3 +1818,10 @@ Test(shell, parser3000_cmd_6, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_cmd_7, .init = redirect_all_std)
+{
+    char **tab = parser3000("setenv", "\n\t ");
+
+    free_array(tab);
+}
