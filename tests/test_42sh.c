@@ -1948,3 +1948,47 @@ Test(shell, my_cd_dash_no_old, .init = redirect_all_std)
     my_cd(term, argv);
     free(term);
 }
+
+Test(shell, my_setenv_no_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("setenv", "\n \t");
+
+    my_setenv(term, &tab[1]);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_setenv_no_value, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("setenv MYVAR2", "\n \t");
+
+    cr_assert_eq(my_setenv(term, &tab[1]), SUCCESS_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_setenv_replace_existing, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *set1[] = {"MYVAR", "first", NULL};
+    char *set2[] = {"MYVAR", "second", NULL};
+
+    my_setenv(term, set1);
+    cr_assert_eq(my_setenv(term, set2), SUCCESS_EXIT);
+    free(term);
+}
+
+Test(shell, my_setenv_update, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *set1[] = {"X", "1", NULL};
+    char *set2[] = {"Y", "2", NULL};
+    char *set3[] = {"X", "99", NULL};
+
+    my_setenv(term, set1);
+    my_setenv(term, set2);
+    cr_assert_eq(my_setenv(term, set3), SUCCESS_EXIT);
+    free(term);
+}
