@@ -1,7 +1,8 @@
 # 42sh
 
-Our project 42SH is a recreation of a Unix SHELL based on **TCSH**, coded entirely in **C**.  
-We implemented all the **TCSH** supported features, except for **command group** and **command substitution**.  
+Our project 42SH is a recreation of a Unix SHELL based on **TCSH**, written entirely in **C**.  
+For this project we chose the TCSH base created by one of our team members, Alcibiade Streit-Soumaila, and worked to add to this base all the **TCSH** features.  
+We implemented a large part of **TCSH** supported features, except for **command group** and **command substitution**.  
 
 This project was completed over the course of 5 weeks by our team of 5, divided into groups.
 
@@ -21,10 +22,32 @@ And run our shell with :
 ./42sh
 ```
 
-Once inside the shell, you can try classic TCSH supported command and our builtin commands.  
+Once inside the shell, you can try classic TCSH supported commands and our builtin commands.  
 
 
 --- 
+## Features
+
+- Command execution
+- PATH handling
+- Environment variable management
+- Pipes
+- Redirections
+- Command separators (;)
+- Job control (&&, ||)
+- Parenthesis
+- Inhibitors
+- History management
+- Aliases
+- Signal handling
+- Builtin commands
+- Error handling
+- If
+- Foreach
+- Which
+- Where
+- Scripting
+
 ## Builtin commands
 
 - cd
@@ -33,6 +56,7 @@ Once inside the shell, you can try classic TCSH supported command and our builti
 - unsetenv
 - alias
 - history
+- 
 
 
 We implemented bonus builtin commands in our shell as well.
@@ -47,7 +71,7 @@ make bonus
 
 And running with :
 ```bash
-./42
+./42sh
 ```
 
 ## Bonus builtin commands
@@ -65,6 +89,29 @@ Below you will find a table containing the command and it's description.
 | mambo |       play mambo sound        |
 | yippee |       play yippee sound       |
 
+
+---
+## Project structure
+
+Our functions are in a src folder and then divided in a folder containing only linked functions :
+
+src  
+ |_src/alias  
+ |_src/autocompletion  
+ |_src/bonus  
+ |_src/built_in  
+ |_src/command_utilities  
+ |_src/error  
+ |_src/free  
+ |_src/history  
+ |_src/initialisation  
+ |_src/jobs  
+ |_src/loop_tcsh  
+ |_src/redirection  
+ |_src/repeat  
+ |_src/tools  
+ |_src/user  
+ |_src/var_interpreters  
 
 ## Tests
 
@@ -87,10 +134,10 @@ the_command --help
 
 ## Authors
 
-name 1  
-name 2  
-name 3  
-name 4  
-name 5  
+Alcibiade Streit Soumaila -> dev
+Alessendro Paris -> dev, tester  
+Galya Packer -> dev, tester  
+Ugo Pascallon -> dev, scrum master  
+Lucas Eeckhoutte -> dev
 
 -----------
