@@ -772,3 +772,12 @@ Test(shell, my_strip_newline_null, .init = redirect_all_std)
 
     cr_assert_null(res);
 }
+
+Test(shell, has_newline, .init = redirect_all_std)
+{
+    char *str = my_strdup("test\n");
+    char *res = my_strip_newline(str);
+
+    cr_assert_str_eq(str, "test");
+    free(str);
+}
