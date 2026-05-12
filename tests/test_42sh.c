@@ -1557,3 +1557,13 @@ Test(shell, my_unsetenv_existing_var, .init = redirect_all_std)
     free_array(unset);
     free(term);
 }
+
+Test(shell, free_all_with_history, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+
+    push_to_history(term, "echo one");
+    push_to_history(term, "echo two");
+    push_to_history(term, "echo three");
+    free_all(term);
+}
