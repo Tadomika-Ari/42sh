@@ -1804,3 +1804,10 @@ Test(shell, parser3000_cmd_4, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_cmd_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls ; ls -la", "\n\t ");
+
+    free_array(tab);
+}
