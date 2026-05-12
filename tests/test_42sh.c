@@ -1582,3 +1582,29 @@ Test(shell, backsticks_echo, .init = redirect_all_std)
     free_array(env);
     free(term);
 }
+
+Test(shell, foreach_execute_simple, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *actions[] = {"echo hello", "echo world", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    cr_assert_eq(foreach_execute_actions(term, actions), SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, foreach_execute_with_if, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *actions[] = {"if ( 1 ) echo ok", "echo done", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    foreach_execute_actions(term, actions);
+    free_array(env);
+    free(term);
+}
