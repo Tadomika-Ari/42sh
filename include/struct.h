@@ -110,6 +110,8 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define RICKROLL_SONG "./bonus/songs/rickroll.mp3"
     #define RICKROLL_ODDS 5
 
+    #define NO_JOBS "jobs: currently no jobs\n"
+
 typedef struct alias {
     char *name_alias;
     char *cmd_alias;
