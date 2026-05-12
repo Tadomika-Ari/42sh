@@ -1629,3 +1629,13 @@ Test(shell, my_cd_parent_dir, .init = redirect_all_std)
     free_array(env);
     free(term);
 }
+
+Test(shell, my_bg_percent_not_found, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%99", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_bg(&term, argv);
+    free_jobs(term.jobs);
+}
