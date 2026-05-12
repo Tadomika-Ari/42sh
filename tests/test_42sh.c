@@ -1524,3 +1524,10 @@ Test(shell, parser3000_normal_1, .init = redirect_all_std)
 
     free_array(tab);
 }
+
+Test(shell, parser3000_normal_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto", "\n\t ");
+
+    free_array(tab);
+}
