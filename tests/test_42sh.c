@@ -1651,3 +1651,23 @@ Test(shell, history_push_and_display, .init = redirect_all_std)
     free_array(tab);
     free_all(term);
 }
+
+Test(shell, is_inihbitor_true, .init = redirect_all_std)
+{
+    cr_assert_eq(is_inihbitor("'hello'"), TRUE);
+}
+
+Test(shell, is_inihbitor_false, .init = redirect_all_std)
+{
+    cr_assert_eq(is_inihbitor("hello"), FALSE);
+}
+
+Test(shell, is_parenthesis_true, .init = redirect_all_std)
+{
+    cr_assert_eq(is_parenthesis("(hello)"), TRUE);
+}
+
+Test(shell, is_parenthesis_false, .init = redirect_all_std)
+{
+    cr_assert_eq(is_parenthesis("hello"), FALSE);
+}
