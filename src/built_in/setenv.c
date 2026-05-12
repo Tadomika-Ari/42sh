@@ -56,9 +56,9 @@ int correct_name(char *name, char *cmd)
 {
     if ((name[0] < 'a' || name[0] > 'z') &&
         (name[0] < 'A' || name[0] > 'Z') && name[0] != '_')
-        return error_first_caracter(cmd);
+        return my_cmd_error(VAR_NAME, cmd, ALT_EXIT);
     if (my_str_name(name) != 0)
-        return error_alphanumeric(cmd);
+        return my_cmd_error(VAR_MUST, cmd, ALT_EXIT);
     return SUCCESS_EXIT;
 }
 
@@ -68,7 +68,7 @@ int my_setenv(tcsh_t *term, char **argv)
     int len = len_array(argv);
 
     if (len > 2)
-        return error_too_many_argument("setenv");
+        return my_cmd_error(TOO_MANY, "setenv", ALT_EXIT);
     if (len == 0)
         return env(term, NULL);
     if (correct_name(argv[0], "setenv") == ALT_EXIT)

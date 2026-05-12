@@ -47,10 +47,10 @@ static int is_that_a_star(char *argv)
 int my_unsetenv(tcsh_t *term, char **argv)
 {
     if (len_array(argv) == 0)
-        return error_not_enough_argument("unsetenv");
+        return my_cmd_error(TOO_FEW, "unsetenv", ALT_EXIT);
     for (int i = 0; argv[i]; i++)
         if (is_that_a_star(argv[i]) == TRUE)
-            return argument_not_support("unsetenv");
+            return my_cmd_error(ARG_NOT_SUP, "unsetenv", ALT_EXIT);
     for (int i = 0; argv[i]; i++)
         delete_in_list(&term->env, argv[i]);
     return SUCCESS_EXIT;

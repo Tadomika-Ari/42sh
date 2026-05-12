@@ -10,7 +10,7 @@
 int env(tcsh_t *term, char **argv)
 {
     if (len_array(argv) > 0)
-        return error_too_many_argument("env");
+        return my_cmd_error(TOO_MANY, "env", ALT_EXIT);
     for (nodes_t *tmp = term->env; tmp; tmp = tmp->next) {
         if (term->pipe_fd[1] != -1 || term->last != true) {
             write(term->pipe_fd[1], tmp->data, my_strlen(tmp->data));

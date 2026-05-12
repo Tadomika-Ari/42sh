@@ -37,7 +37,7 @@ int reinit(tcsh_t *term, char *cmd, char **cmd_pipe)
             close(term->fd[0]);
         if (term->fd[1] != -1 && term->fd[1] != STDOUT_FILENO)
             close(term->fd[1]);
-        return error_ambigious();
+        return my_cmd_error(AMBIGOUS_OUTPUT, "", ALT_EXIT);
     }
     delete_red(cmd_pipe);
     return SUCCESS_EXIT;
@@ -59,7 +59,7 @@ int correct_lign(char *cmd, char **cmd_pipe)
         if (cmd[i] == '|')
             id++;
         if (cmd_pipe[id] == NULL)
-            return error_null();
+            return my_cmd_error(NULL_CMD, "", ALT_EXIT);
     }
     return SUCCESS_EXIT;
 }
@@ -69,20 +69,20 @@ int correct_type(char **cmd)
     int mid = 1;
 
     if (!cmd || !cmd[0])
-        return error_null();
+        return my_cmd_error(NULL_CMD, "", ALT_EXIT);
     if (len_array(cmd) == 1)
         return SUCCESS_EXIT;
     for (int i = 0; cmd[0][i]; i++)
         if (cmd[0][i] == '>')
-            return error_ambigious();
+            return my_cmd_error(AMBIGOUS_OUTPUT, "", ALT_EXIT);
     for (; cmd[mid]; mid++) {
         if (!cmd[mid + 1])
             break;
         if (red_in_pipe(cmd[mid]) != 0)
-            return error_ambigious();
+            return my_cmd_error(AMBIGOUS_OUTPUT, "", ALT_EXIT);
     }
     for (int i = 0; cmd[mid][i]; i++)
         if (cmd[mid][i] == '<')
-            return error_ambigious();
+            return my_cmd_error(AMBIGOUS_OUTPUT, "", ALT_EXIT);
     return SUCCESS_EXIT;
 }

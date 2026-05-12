@@ -77,54 +77,9 @@ Test(shell, fill_rc, .init = redirect_all_std)
     free(term);
 }
 
-Test(shell, error_alphanumeric, .init = redirect_all_std)
-{
-    error_alphanumeric("CMD");
-}
-
-Test(shell, error_not_enough_argument, .init = redirect_all_std)
-{
-    error_not_enough_argument("CMD");
-}
-
-Test(shell, error_too_many_argument, .init = redirect_all_std)
-{
-    error_too_many_argument("CMD");
-}
-
-Test(shell, error_permission_denied, .init = redirect_all_std)
-{
-    error_permission_denied("CMD");
-}
-
-Test(shell, error_first_caracter, .init = redirect_all_std)
-{
-    error_first_caracter("CMD");
-}
-
-Test(shell, error_no_home, .init = redirect_all_std)
-{
-    error_no_home("CMD");
-}
-
 Test(shell, command_not_found, .init = redirect_all_std)
 {
     command_not_found("CMD");
-}
-
-Test(shell, path_not_found, .init = redirect_all_std)
-{
-    path_not_found("CMD");
-}
-
-Test(shell, error_syntax, .init = redirect_all_std)
-{
-    error_syntax("CMD");
-}
-
-Test(shell, error_expression_syntax, .init = redirect_all_std)
-{
-    error_expression_syntax("CMD");
 }
 
 Test(shell, env, .init = redirect_all_std)
@@ -208,8 +163,7 @@ Test(shell, reinit, .init = redirect_all_std)
     free_array(tab);
 }
 
-Test(shell, my_unsetenv, .init = redirect_all_std)
-{
+Test(shell, my_unsetenv, .init = redirect_all_std) {
     char **tab = my_str_to_word_array("setenv toto", "\n \t");
     char **tab2 = my_str_to_word_array("unsetenv toto", "\n \t");
     tcsh_t *term = calloc(1, sizeof(tcsh_t));
@@ -219,16 +173,6 @@ Test(shell, my_unsetenv, .init = redirect_all_std)
     free_array(tab);
     free_array(tab2);
     free(term);
-}
-
-Test(shell, error_ambigious, .init = redirect_all_std)
-{
-    error_ambigious();
-}
-
-Test(shell, error_not_a_directory, .init = redirect_all_std)
-{
-    error_not_a_directory("THIS IS A BUCKET");
 }
 
 Test(shell, is_it_file, .init = redirect_all_std)
@@ -265,11 +209,6 @@ Test(shell, search_in, .init = redirect_all_std)
     search_in("cat < ls");
 }
 
-Test(shell, error_null, .init = redirect_all_std)
-{
-    error_null();
-}
-
 Test(shell, correct_lign, .init = redirect_all_std)
 {
     char *cmd = my_strdup("toto | tata");
@@ -283,11 +222,6 @@ Test(shell, correct_lign, .init = redirect_all_std)
 Test(shell, my_free, .init = redirect_all_std)
 {
     my_free(NULL, 0, 84);
-}
-
-Test(shell, argument_not_support, .init = redirect_all_std)
-{
-    argument_not_support("la lib lapin n'est plus disponible");
 }
 
 Test(shell, my_history, .init = redirect_all_std)
