@@ -618,4 +618,6 @@ int empty_cmd_detect(char *cmd);
 void update_ele(ele_t *ele);
 
 int rickroll(void);
+
+int jobs(tcsh_t *term, char **argv);
 #endif
