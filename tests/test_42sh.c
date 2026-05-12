@@ -996,3 +996,73 @@ Test(shell, empty_error_case_no_empty, .init = redirect_all_std)
 
     cr_assert_eq(empty_error_case(cmds, jobs), FALSE);
 }
+
+Test(shell, my_fg_no_jobs, .init = redirect_all_std)
+{
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("fg", "\n \t");
+
+    my_fg(term, &tab[1]);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_fg_invalid_id, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"notanumber", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_fg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, my_fg_too_many_args, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%1", "%2", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_fg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, my_fg_job_not_found, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%99", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_fg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, my_bg_no_jobs, .init = redirect_all_std)
+{
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("bg", "\n \t");
+
+    my_bg(term, &tab[1]);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_bg_invalid_id, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"notanumber", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_bg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, my_bg_too_many_args, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%1", "%2", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_bg(&term, argv);
+    free_jobs(term.jobs);
+}
