@@ -1639,3 +1639,15 @@ Test(shell, my_bg_percent_not_found, .init = redirect_all_std)
     my_bg(&term, argv);
     free_jobs(term.jobs);
 }
+
+Test(shell, history_push_and_display, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("history", "\n \t");
+
+    push_to_history(term, "echo one");
+    push_to_history(term, "echo two");
+    cr_assert_eq(my_history(term, &tab[1]), SUCCESS_EXIT);
+    free_array(tab);
+    free_all(term);
+}
