@@ -178,6 +178,7 @@ BONUS_SRC = src/bonus/pelophylax.c                      \
 		src/bonus/mambo.c                               \
 		src/bonus/yippee.c                              \
 		src/bonus/rickroll.c                            \
+		src/bonus/tic_tac_toe.c                         \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
@@ -190,7 +191,6 @@ OBJ2 = 	$(SRC2:.c=.o)
 BONUS_SRC2 = src/bonus/init.c                           \
 		src/bonus/argument_bonus.c                      \
 		src/bonus/put_err_bonus.c			            \
-		src/bonus/tic_tac_toe.c                         \
 
 BONUS_OBJ2 = 	$(BONUS_SRC2:.c=.o)
 
