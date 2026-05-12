@@ -1608,3 +1608,24 @@ Test(shell, foreach_execute_with_if, .init = redirect_all_std)
     free_array(env);
     free(term);
 }
+
+Test(shell, my_cd_missing_home, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
+
+Test(shell, my_cd_parent_dir, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PWD=/tmp", " ");
+    char *argv[] = {"..", NULL};
+
+    my_setenv(term, env);
+    cr_assert_eq(my_cd(term, argv), SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
