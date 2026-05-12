@@ -1728,3 +1728,63 @@ Test(shell, my_where_cd_builtin, .init = redirect_all_std)
     my_where(term, argv);
     free_all(term);
 }
+
+Test(shell, exec_if_with_then_keyword, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    int pipefd[2];
+    int saved = dup(STDIN_FILENO);
+    char *action[] = {"then", "echo inside", NULL};
+    char *lign[] = {"if", "1", "then", NULL};
+    int cond = 0;
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    pipe(pipefd);
+    write(pipefd[1], "echo inside\nendif\n", 18);
+    close(pipefd[1]);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[0]);
+    exec_if(lign, action, term, &cond);
+    dup2(saved, STDIN_FILENO);
+    close(saved);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, exec_else_with_elif, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char **lign = my_str_to_word_array("else", " ");
+    char *action[] = {"else", "echo else_body", NULL};
+    int cond = 0;
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    exec_else(lign, action, term, &cond);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, else_via_choose_command_if_else, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    int pipefd[2];
+    int saved = dup(STDIN_FILENO);
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    pipe(pipefd);
+    write(pipefd[1], "echo fallback\nendif\n", 20);
+    close(pipefd[1]);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[0]);
+    choose_command(term, my_strdup("if ( 0 ) then"));
+    dup2(saved, STDIN_FILENO);
+    close(saved);
+    free_array(env);
+    free(term);
+}
