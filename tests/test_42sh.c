@@ -1721,4 +1721,11 @@ Test(shell, parser3000_single_quote_2, .init = redirect_all_std)
     cr_assert_null(tab);
 }
 
+Test(shell, parser3000_single_quote_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto\' tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
 
