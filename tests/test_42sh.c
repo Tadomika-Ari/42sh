@@ -1501,3 +1501,59 @@ Test(shell, my_cd_file_not_dir, .init = redirect_all_std)
     free_array(tab);
     free(term);
 }
+
+Test(shell, env_too_many_args, .init = redirect_all_std)
+{
+    char **tab = my_str_to_word_array("env extra", "\n \t");
+    tcsh_t *term = malloc(sizeof(tcsh_t));
+
+    cr_assert_eq(env(term, tab), ALT_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, env_display_entries, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("env", "\n \t");
+    char **home = my_str_to_word_array("HOME=/tmp", " ");
+
+    my_setenv(term, home);
+    term->pipe_fd[1] = -1;
+    term->last = true;
+    cr_assert_eq(env(term, &tab[1]), SUCCESS_EXIT);
+    free_array(tab);
+    free_array(home);
+    free(term);
+}
+
+Test(shell, env_with_pipe_fd, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("env", "\n \t");
+    char *set_home[] = {"HOME", "/tmp", NULL};
+    int pipefd[2];
+
+    my_setenv(term, set_home);
+    cr_assert_eq(pipe(pipefd), 0);
+    term->pipe_fd[1] = pipefd[1];
+    term->last = false;
+    env(term, &tab[1]);
+    close(pipefd[0]);
+    close(pipefd[1]);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_unsetenv_existing_var, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **set = my_str_to_word_array("setenv MYVAR hello", "\n \t");
+    char **unset = my_str_to_word_array("unsetenv MYVAR", "\n \t");
+
+    my_setenv(term, &set[1]);
+    my_unsetenv(term, &unset[1]);
+    free_array(set);
+    free_array(unset);
+    free(term);
+}
