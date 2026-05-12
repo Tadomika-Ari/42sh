@@ -1671,3 +1671,25 @@ Test(shell, is_parenthesis_false, .init = redirect_all_std)
 {
     cr_assert_eq(is_parenthesis("hello"), FALSE);
 }
+
+Test(shell, show_array_basic, .init = redirect_all_std)
+{
+    char *arr[] = {"a", "b", "c", NULL};
+
+    show_array(arr);
+}
+
+Test(shell, show_array_null, .init = redirect_all_std)
+{
+    show_array(NULL);
+}
+
+Test(shell, is_sep_found, .init = redirect_all_std)
+{
+    cr_assert_eq(is_sep(' ', " \t\n"), TRUE);
+}
+
+Test(shell, is_sep_not_found, .init = redirect_all_std)
+{
+    cr_assert_eq(is_sep('a', " \t\n"), FALSE);
+}
