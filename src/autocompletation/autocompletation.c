@@ -162,7 +162,6 @@ int autocompletation_start(tcsh_t *term, getline_t *st_g)
     char *cmd = st_g->line;
     int count = 0;
 
-    write(1, "\n", 1);
     term->result_tab = autocomplete_command(cmd, term, st_g);
     if (term->result_tab == NULL)
         return FAILURE_EXIT;
@@ -171,6 +170,7 @@ int autocompletation_start(tcsh_t *term, getline_t *st_g)
         term->statut_tab = 0;
         return FAILURE_EXIT;
     }
+    write(1, "\n", 1);
     term->pos_tab = 0;
     term->maxpos_tab = count - 1;
     update_line(st_g, term, term->result_tab);

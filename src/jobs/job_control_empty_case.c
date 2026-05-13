@@ -23,8 +23,7 @@ int empty_cmd_and(char *job)
 {
     if (job != NULL && my_strcmp(job, "&&") == 0)
         return FALSE;
-    error_null();
-    return TRUE;
+    return my_cmd_error(NULL_CMD, "", TRUE);
 }
 
 int empty_error_case(char **commands, char **jobs)
@@ -35,8 +34,7 @@ int empty_error_case(char **commands, char **jobs)
         if (empty_cmd_detect(commands[i]) == FALSE)
             cmd_count = 1;
         if (empty_cmd_detect(commands[i]) == TRUE && cmd_count == TRUE){
-            error_null();
-            return TRUE;
+            return my_cmd_error(NULL_CMD, "", TRUE);
         }
         if (empty_cmd_detect(commands[i]) == TRUE && cmd_count == FALSE
             && empty_cmd_and(jobs[i]) == TRUE)

@@ -77,54 +77,9 @@ Test(shell, fill_rc, .init = redirect_all_std)
     free(term);
 }
 
-Test(shell, error_alphanumeric, .init = redirect_all_std)
-{
-    error_alphanumeric("CMD");
-}
-
-Test(shell, error_not_enough_argument, .init = redirect_all_std)
-{
-    error_not_enough_argument("CMD");
-}
-
-Test(shell, error_too_many_argument, .init = redirect_all_std)
-{
-    error_too_many_argument("CMD");
-}
-
-Test(shell, error_permission_denied, .init = redirect_all_std)
-{
-    error_permission_denied("CMD");
-}
-
-Test(shell, error_first_caracter, .init = redirect_all_std)
-{
-    error_first_caracter("CMD");
-}
-
-Test(shell, error_no_home, .init = redirect_all_std)
-{
-    error_no_home("CMD");
-}
-
 Test(shell, command_not_found, .init = redirect_all_std)
 {
     command_not_found("CMD");
-}
-
-Test(shell, path_not_found, .init = redirect_all_std)
-{
-    path_not_found("CMD");
-}
-
-Test(shell, error_syntax, .init = redirect_all_std)
-{
-    error_syntax("CMD");
-}
-
-Test(shell, error_expression_syntax, .init = redirect_all_std)
-{
-    error_expression_syntax("CMD");
 }
 
 Test(shell, env, .init = redirect_all_std)
@@ -221,16 +176,6 @@ Test(shell, my_unsetenv, .init = redirect_all_std)
     free(term);
 }
 
-Test(shell, error_ambigious, .init = redirect_all_std)
-{
-    error_ambigious();
-}
-
-Test(shell, error_not_a_directory, .init = redirect_all_std)
-{
-    error_not_a_directory("THIS IS A BUCKET");
-}
-
 Test(shell, is_it_file, .init = redirect_all_std)
 {
     is_it_file("THIS IS A BUCKET");
@@ -265,11 +210,6 @@ Test(shell, search_in, .init = redirect_all_std)
     search_in("cat < ls");
 }
 
-Test(shell, error_null, .init = redirect_all_std)
-{
-    error_null();
-}
-
 Test(shell, correct_lign, .init = redirect_all_std)
 {
     char *cmd = my_strdup("toto | tata");
@@ -283,11 +223,6 @@ Test(shell, correct_lign, .init = redirect_all_std)
 Test(shell, my_free, .init = redirect_all_std)
 {
     my_free(NULL, 0, 84);
-}
-
-Test(shell, argument_not_support, .init = redirect_all_std)
-{
-    argument_not_support("la lib lapin n'est plus disponible");
 }
 
 Test(shell, my_history, .init = redirect_all_std)
@@ -383,11 +318,11 @@ Test(shell, push_to_history, .init = redirect_all_std)
 
 Test(shell, dangerous_alias_keyword, .init = redirect_all_std)
 {
-    char *cmd[] = {"alias", "something", NULL};
+    char *cmd[] = {"alias", "alias", "toto", NULL};
 
     int ret = my_alias(NULL, cmd);
     cr_assert_eq(ret, ALT_EXIT);
-    cr_assert_stdout_eq_str("alias: Too dangerous to alias that.\n");
+    cr_assert_stderr_eq_str("alias: Too dangerous to alias that.\n");
 }
 
 
@@ -2067,4 +2002,527 @@ Test(shell, my_if_then_false_else_runs, .init = redirect_all_std)
     close(saved);
     free_array(env);
     free(term);
+Test(shell, parser3000_normal_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_normal_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_normal_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("tOtO tAtA", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata ", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_2, .init = redirect_all_std)
+{
+    char **tab = parser3000(" toto tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto      tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata         ", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("           toto tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_1_maj, .init = redirect_all_std)
+{
+    char **tab = parser3000("toTo tAtA ", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_2_maj, .init = redirect_all_std)
+{
+    char **tab = parser3000(" tOtO tATa", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_3_maj, .init = redirect_all_std)
+{
+    char **tab = parser3000("tOTo      taTA", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_4_maj, .init = redirect_all_std)
+{
+    char **tab = parser3000("TOto tATA         ", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_5_maj, .init = redirect_all_std)
+{
+    char **tab = parser3000("           toTO TATa", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_1_num, .init = redirect_all_std)
+{
+    char **tab = parser3000("tot0 t4ta ", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_2_num, .init = redirect_all_std)
+{
+    char **tab = parser3000(" t0to tat4", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_3_num, .init = redirect_all_std)
+{
+    char **tab = parser3000("t0to      tat4", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_4_num, .init = redirect_all_std)
+{
+    char **tab = parser3000("tot0 t4ta         ", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_edge_5_num, .init = redirect_all_std)
+{
+    char **tab = parser3000("           t0t0 t4t4", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_bracket_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("(toto) tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_bracket_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("(toto tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_bracket_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto( tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_bracket_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto (tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_bracket_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata(", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_bracket_6, .init = redirect_all_std)
+{
+    char **tab = parser3000(")toto tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_bracket_7, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto) tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_bracket_8, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto )tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_bracket_9, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata)", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_single_quote_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("\'toto \' tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_single_quote_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("\'toto tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_single_quote_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto\' tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_single_quote_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto \'tata", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_single_quote_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata\'", "\n\t ");
+
+    cr_assert_null(tab);
+}
+
+Test(shell, parser3000_quote_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("\"toto \" tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_quote_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("\"toto tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_quote_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto\" tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_quote_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto \"tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_quote_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata\"", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("(ls; ls; ls)", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("alias toto echo tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("mkdir \"a b\"", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("mkdir \"$HOME\"", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls ; ls -la", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_6, .init = redirect_all_std)
+{
+    char **tab = parser3000("env", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_7, .init = redirect_all_std)
+{
+    char **tab = parser3000("setenv", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_8, .init = redirect_all_std)
+{
+    char **tab = parser3000("unsetenv", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_9, .init = redirect_all_std)
+{
+    char **tab = parser3000("setenv a b", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_10, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls ; exit", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_11, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo $HOME", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_12, .init = redirect_all_std)
+{
+    char **tab = parser3000("echo $PATH", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_13, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls > test", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_21, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls >> test", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_14, .init = redirect_all_std)
+{
+    char **tab = parser3000("./binary < cmds", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_15, .init = redirect_all_std)
+{
+    char **tab = parser3000("cat << toto", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_16, .init = redirect_all_std)
+{
+    char **tab = parser3000("/bin/ls", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_17, .init = redirect_all_std)
+{
+    char **tab = parser3000("[a-z] toto", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_18, .init = redirect_all_std)
+{
+    char **tab = parser3000("cat *.c", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_19, .init = redirect_all_std)
+{
+    char **tab = parser3000("rm -rf *.o", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_cmd_20, .init = redirect_all_std)
+{
+    char **tab = parser3000("if (1 == 1)", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_job_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("fg", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_job_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("bg", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_job_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("sleep 10 &", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_job_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls -l -a -d &", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_job_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls folder && echo \"that is good\"", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_job_6, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls folder || echo \"that is not good\"", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_job_7, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls && echo a || jsp", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_backtick_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("`toto ` tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_backtick_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("`toto tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_backtick_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto` tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_backtick_4, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto `tata", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_backtick_5, .init = redirect_all_std)
+{
+    char **tab = parser3000("toto tata`", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_globbing_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("[a-z]", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_globbing_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("./src/*.c", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_globbing_3, .init = redirect_all_std)
+{
+    char **tab = parser3000("abc?", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_pipe_1, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls | cat -e", "\n\t ");
+
+    free_array(tab);
+}
+
+Test(shell, parser3000_pipe_2, .init = redirect_all_std)
+{
+    char **tab = parser3000("ls | grep a | grep b | grep c", "\n\t ");
+
+    free_array(tab);
 }

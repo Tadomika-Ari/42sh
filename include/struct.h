@@ -110,6 +110,8 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define RICKROLL_SONG "./bonus/songs/rickroll.mp3"
     #define RICKROLL_ODDS 5
 
+    #define NO_JOBS "jobs: currently no jobs\n"
+
 typedef struct alias {
     char *name_alias;
     char *cmd_alias;
@@ -283,21 +285,9 @@ void free_locals(locals_t *locals);
 
 int my_set(tcsh_t *term, char **argv);
 
-int error_alphanumeric(char *cmd);
-
-int error_not_enough_argument(char *cmd);
-
-int error_too_many_argument(char *cmd);
-
-int error_permission_denied(char *cmd);
-
-int error_first_caracter(char *cmd);
-
 int apply(tcsh_t *term, char **cmd);
 
 int execute_cmd(tcsh_t *term, char **argv);
-
-int error_no_home(char *cmd);
 
 int exec_else_if(char **lign, char **action, tcsh_t *term, int *cond);
 
@@ -314,10 +304,6 @@ int search_condition(tcsh_t *term, char **argv, bool *error);
 int command_not_found(char *cmd);
 
 int search_variable(tcsh_t *term, nodes_t *str);
-
-int path_not_found(char *path);
-
-int error_syntax(char *cmd);
 
 int env(tcsh_t *term, char **argv);
 
@@ -342,8 +328,6 @@ int fallback_cond(tcsh_t *term, char *cond, bool *error);
 char *search_bin(tcsh_t *term, char *command);
 
 int normalize(tcsh_t *term, char *cmd, char **command, int status);
-
-int error_expression_syntax(char *cmd);
 
 nodes_t *create_new_node(char *lign_env);
 
@@ -373,10 +357,6 @@ int choose_command(tcsh_t *term, char *cmd);
 
 int is_it_file(char *path);
 
-int error_not_a_directory(char *cmd);
-
-int error_ambigious(void);
-
 char *crop(char *argv);
 
 int search_ind(char *argv, char c);
@@ -385,13 +365,9 @@ int search_out(char *argv);
 
 int search_in(char *argv);
 
-int error_null(void);
-
 int correct_lign(char *cmd, char **cmd_pipe);
 
 int my_free(void **pointer, int max, int exit);
-
-int argument_not_support(char *cmd);
 
 int my_history(tcsh_t *term, char **cmd);
 
@@ -616,4 +592,6 @@ int empty_cmd_detect(char *cmd);
 void update_ele(ele_t *ele);
 
 int rickroll(void);
+
+int jobs(tcsh_t *term, char **argv);
 #endif

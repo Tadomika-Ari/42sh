@@ -18,12 +18,10 @@ SRC = 	src/main.c							            \
 		src/redirection/out_simple.c		            \
 		src/redirection/tools.c				            \
 		src/free/free_all.c					            \
-		src/error/other_error_message.c		            \
 		src/tools/file.c					            \
 		src/free/my_free.c					            \
 		src/loop_tcsh/child.c				            \
 		src/loop_tcsh/error_handling_pipe.c	            \
-		src/error/error_term.c			                \
 		src/history/history.c                           \
 		src/tools/parser.c                              \
 		src/initialisation/fill_rc.c                    \
@@ -61,7 +59,6 @@ SRC = 	src/main.c							            \
 		src/loop_tcsh/search_binary.c                   \
 		src/repeat/check_repeat.c                       \
 		src/repeat/error_repeat.c                       \
-		src/error/put_error_ptr.c                       \
 		src/built_in/set.c                              \
 	    src/tools/if_tools.c                            \
 		src/built_in/if.c                               \
@@ -98,12 +95,10 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/redirection/out_simple.c		            \
 		src/redirection/tools.c				            \
 		src/free/free_all.c					            \
-		src/error/other_error_message.c		            \
 		src/tools/file.c					            \
 		src/free/my_free.c					            \
 		src/loop_tcsh/child.c				            \
 		src/loop_tcsh/error_handling_pipe.c	            \
-		src/error/error_term.c			                \
 		src/history/history.c                           \
 		src/tools/parser.c                              \
 		src/initialisation/fill_rc.c                    \
@@ -143,7 +138,6 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/command_utilities/backsticks.c              \
 		src/repeat/check_repeat.c			            \
 		src/repeat/error_repeat.c    		            \
-		src/error/put_error_ptr.c                       \
 		src/built_in/set.c					            \
 		src/built_in/if.c					            \
 		src/tools/parsing_tool.c                        \
@@ -158,8 +152,8 @@ TEST_SRC = tests/test_42sh.c                            \
 		src/tools/check_back.c                          \
 		src/autocompletation/autocompletation.c         \
         src/built_in/else.c								\
+        src/built_in/is_scripting.c						\
 		src/autocompletation/see_tab.c   				\
-		src/built_in/is_scripting.c						\
 
 TEST_OBJ = $(TEST_SRC:.c=.o)
 
@@ -178,19 +172,19 @@ BONUS_SRC = src/bonus/pelophylax.c                      \
 		src/bonus/mambo.c                               \
 		src/bonus/yippee.c                              \
 		src/bonus/rickroll.c                            \
+		src/bonus/tic_tac_toe.c                         \
+		src/bonus/jobs.c                                \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
 SRC2 = src/initialisation/init.c                        \
 		src/loop_tcsh/argument.c			            \
-		src/error/put_err.c			                    \
 
 OBJ2 = 	$(SRC2:.c=.o)
 
 BONUS_SRC2 = src/bonus/init.c                           \
 		src/bonus/argument_bonus.c                      \
 		src/bonus/put_err_bonus.c			            \
-		src/bonus/tic_tac_toe.c                         \
 
 BONUS_OBJ2 = 	$(BONUS_SRC2:.c=.o)
 
