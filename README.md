@@ -1,8 +1,8 @@
 # 42sh
 
 Our project 42SH is a recreation of a Unix SHELL based on **TCSH**, written entirely in **C**.  
-For this project we chose the shell base created by one of our team members, Alcibiade Streit-Soumaila.  
-And implemented a large part of **TCSH** supported features, except for **command group** and **command substitution**.  
+For this project we chose the shell base created by one of our team members, Alcibiade Streit-Soumaila,  
+and implemented a large part of **TCSH** supported features, except for **command group** and **command substitution**.  
 
 This project was completed over the course of 5 weeks by our team of 5, divided into groups.
 
@@ -10,13 +10,15 @@ This project was completed over the course of 5 weeks by our team of 5, divided 
 -----------------
 ## Features
 
+#### Core features
 - Command execution
 - PATH handling
 - Environment variable management
 - Pipes
 - Redirections
 - Command separators (;)
-- Job control (&&, ||)
+- Job control
+- && and ||
 - Parenthesis
 - Inhibitors
 - History management
@@ -24,6 +26,8 @@ This project was completed over the course of 5 weeks by our team of 5, divided 
 - Signal handling
 - Builtin commands
 - Error handling
+
+#### Scripting features
 - If
 - Foreach
 - Which
@@ -69,17 +73,17 @@ Once inside the shell, you can try classic TCSH supported commands and our built
 - bg
 - exit
 
-We implemented bonus builtin commands in our shell as well.
+Bonus builtin commands are implemented as well.
 
-#### Accessible by :
+#### Bonus usage :
 
-Compiling with :
+Compile with :
 
 ```bash
 make bonus
 ```
 
-And running with :
+And run with :
 ```bash
 ./42sh
 ```
@@ -107,22 +111,22 @@ Our functions are in a src folder and then divided in folders organized by featu
 
 ```text
 src  
- |_src/alias  
- |_src/autocompletion/  
- |_src/bonus/  
- |_src/built_in/  
- |_src/command_utilities/  
- |_src/error/  
- |_src/free/  
- |_src/history/  
- |_src/initialisation/  
- |_src/jobs/  
- |_src/loop_tcsh/  
- |_src/redirection/  
- |_src/repeat/  
- |_src/tools/  
- |_src/user/  
- |_src/var_interpreters/  
+ |_alias/  
+ |_autocompletion/  
+ |_bonus/  
+ |_built_in/  
+ |_command_utilities/  
+ |_error/  
+ |_free/  
+ |_history/  
+ |_initialisation/  
+ |_jobs/  
+ |_loop_tcsh/  
+ |_redirection/  
+ |_repeat/  
+ |_tools/  
+ |_user/  
+ |_var_interpreters/  
  ```
 
 ## Tests
