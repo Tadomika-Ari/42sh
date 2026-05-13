@@ -174,11 +174,13 @@ BONUS_SRC = src/bonus/pelophylax.c                      \
 		src/bonus/rickroll.c                            \
 		src/bonus/tic_tac_toe.c                         \
 		src/bonus/jobs.c                                \
+		src/bonus/velkoz.c \
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
 SRC2 = src/initialisation/init.c                        \
 		src/loop_tcsh/argument.c			            \
+		scr/error/put_err.c\
 
 OBJ2 = 	$(SRC2:.c=.o)
 
