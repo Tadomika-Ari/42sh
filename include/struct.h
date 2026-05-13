@@ -47,6 +47,7 @@
     #define GUESSNUMBER_HELP "./bonus/guessnumber.txt"
 
     #define AUTHOR "./bonus/author.txt"
+    #define VELKOZ "./bonus/velkoz.txt"
     #define PELOPHYLAX "./bonus/pelophylax.txt"
     #define RICKROLL "./bonus/rickroll.txt"
 
@@ -596,4 +597,7 @@ void update_ele(ele_t *ele);
 int rickroll(void);
 
 int jobs(tcsh_t *term, char **argv);
+
+int my_velkoz(tcsh_t *term, char **cmd);
+
 #endif

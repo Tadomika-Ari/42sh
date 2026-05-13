@@ -7,12 +7,6 @@
 
 #include "../../include/struct.h"
 
-int put_err(char *str, int flags)
-{
-    write(2, str, my_strlen(str));
-    return flags;
-}
-
 void *my_puterror_ptr(char *message)
 {
     write(2, message, my_strlen(message));
