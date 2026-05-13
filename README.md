@@ -151,7 +151,17 @@ Run functional tests with:
 make 
 ```
 
-You can find more information in the README file in the test folder.
+You can find more information in the README file in
+
+++++++++++++++
+
+
+
+
+
+
+
+the test folder.
 
 ### For more help:
 Use the help flag to display more information about the command.
