@@ -1,10 +1,10 @@
 # 42sh
 
-Our project 42SH is a recreation of a Unix SHELL based on **TCSH**, written entirely in **C**.  
+Our project 42SH is a recreation of a Unix shell based on **TCSH**, written entirely in **C**.  
 For this project we chose the shell base created by one of our team members, Alcibiade Streit-Soumaila,  
-and implemented a large part of **TCSH** supported features, except for **command group** and **command substitution**.  
+and implemented a large selection of **TCSH** features, except for **command group** and **command substitution**.  
 
-This project was completed over the course of 5 weeks by our team of 5, divided into groups.
+This project was completed over the course of 5 weeks by our team of 5 members.
 
 
 -----------------
@@ -112,34 +112,49 @@ Our functions are in a src folder and then divided in folders organized by featu
 
 ```text
 src/  
- |_alias/  
- |_autocompletion/  
- |_bonus/  
- |_built_in/  
- |_command_utilities/  
- |_error/  
- |_free/  
- |_history/  
- |_initialisation/  
- |_jobs/  
- |_loop_tcsh/  
- |_redirection/  
- |_repeat/  
- |_tools/  
- |_user/  
- |_var_interpreters/  
+ |--alias/  
+ |--autocompletion/  
+ |--bonus/  
+ |--built_in/  
+ |--command_utilities/  
+ |--error/  
+ |--free/  
+ |--history/  
+ |--initialisation/  
+ |--jobs/  
+ |--loop_tcsh/  
+ |--redirection/  
+ |--repeat/  
+ |--tools/  
+ |--user/  
+ |__var_interpreters/  
  ```
 
 ## Tests
 
-Unit tests are available as well, see the coverage by :
+Unit tests and functional tests are available as well.
+
+
+#### Unit test
+
+Run unit tests with:
 
 ```bash
 make tests_run
 ```
 
+#### Functional test
+
+Run functional tests with:
+
+```bash
+make 
+```
+
+You can find more information on this section in the readme file present in the test folder.
+
 ### For more help:
-Use the help flag to have a longer help about the command.
+Use the help flag to display more information about the command.
 
 ```bash
 the_command -h
