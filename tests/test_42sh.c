@@ -2002,6 +2002,8 @@ Test(shell, my_if_then_false_else_runs, .init = redirect_all_std)
     close(saved);
     free_array(env);
     free(term);
+}
+
 Test(shell, parser3000_normal_1, .init = redirect_all_std)
 {
     char **tab = parser3000("toto tata", "\n\t ");
