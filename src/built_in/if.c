@@ -5,76 +5,22 @@
 ** if
 */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include "../../include/struct.h"
 
-static int fallback_cond(char *expr)
+int apply(tcsh_t *term, char **cmd)
 {
-    int left = 0;
-    int right = 0;
+    int status = 0;
 
-    if (expr && sscanf(expr, " ( %d == %d ) ", &left, &right) == 2)
-        return left == right;
-    if (expr && sscanf(expr, "(%d==%d)", &left, &right) == 2)
-        return left == right;
-    return 0;
+    if (!cmd || cmd[0] == NULL)
+        return ALT_EXIT;
+    for (nodes_t *tmp = term->func; tmp; tmp = tmp->next)
+        if (my_strcmp(cmd[0], ((function_t *)tmp->data)->name) == 0)
+            return execute(tmp, cmd, term);
+    status = search_command(term, cmd, NULL);
+    return normalize(term, NULL, cmd, status);
 }
 
-static int join_len_until_then(char **argv)
-{
-    int len = 0;
-
-    if (argv == NULL)
-        return 0;
-    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++)
-        len += strlen(argv[i]) + 1;
-    return len;
-}
-
-static char *join(char **argv)
-{
-    int pos = 0;
-    int len = join_len_until_then(argv);
-    char *res = NULL;
-
-    if (argv == NULL)
-        return NULL;
-    res = malloc(len + 1);
-    if (res == NULL)
-        return NULL;
-    for (int i = 0; argv[i] != NULL && my_strcmp(argv[i], "then") != 0; i++) {
-        memcpy(res + pos, argv[i], strlen(argv[i]));
-        pos += strlen(argv[i]);
-        if (argv[i + 1] != NULL && my_strcmp(argv[i + 1], "then") != 0) {
-            res[pos] = ' ';
-            pos++;
-        }
-    }
-    res[pos] = '\0';
-    return res;
-}
-
-static int search_condition(tcsh_t *term, char **argv, bool *error)
-{
-    char *expr = join(argv);
-    int cond = 0;
-
-    (void)term;
-    if (expr == NULL) {
-        *error = true;
-        return ALTERNATIVE_EXIT;
-    }
-    cond = fallback_cond(expr);
-    if (cond == 0 && atoi(expr) != 0)
-        cond = 1;
-    free(expr);
-    return cond;
-}
-
-static int is_then(char **argv)
+int is_then(char **argv)
 {
     int res = 0;
 
@@ -93,88 +39,105 @@ static int is_then(char **argv)
     return res;
 }
 
-static int stop(char **argv)
+char **dupl_array(char **argv)
 {
-    if (argv == NULL || argv[0] == NULL)
-        return ALTERNATIVE_EXIT;
-    if (my_strcmp("else", argv[0]) == 0) {
-        if (argv[1] == NULL)
-            return SUCCESS_EXIT;
-        return ALTERNATIVE_EXIT;
+    int len = len_array(argv);
+    char **array = malloc(sizeof(char *) * (len + 1));
+
+    if (!array)
+        return NULL;
+    for (int i = 0; argv[i]; i++) {
+        array[i] = my_strdup(argv[i]);
+        if (array[i] == NULL)
+            return array;
     }
-    if (my_strcmp("endif", argv[0]) == 0)
-        return SUCCESS_EXIT;
-    return ALTERNATIVE_EXIT;
+    array[len] = NULL;
+    return array;
 }
 
-int else_if(tcsh_t *term, char **argv)
+static int begin_with(char *argv)
+{
+    bool cond = false;
+    char **tmp = my_str_to_word_array(argv, " \t\n");
+
+    if (tmp == NULL)
+        return ALT_EXIT;
+    if (my_strcmp(tmp[0], "else") == 0)
+        cond = true;
+    if (cond == false && my_strcmp(tmp[0], "if") == 0)
+        cond = true;
+    free_array(tmp);
+    return cond;
+}
+
+int execute_cmd(tcsh_t *term, char **argv)
+{
+    int res = 0;
+
+    if (!argv)
+        return ALT_EXIT;
+    for (int i = 0; argv[i] && begin_with(argv[i]) == 0; i++) {
+        res = from_one_line(term, my_strdup(argv[i]));
+        if (res != SUCCESS_EXIT)
+            return ALT_EXIT;
+    }
+    return res;
+}
+
+static int choice_good(char **action, tcsh_t *term, char *verif, int *cond)
+{
+    char **tmp = parser3000(verif, " \t\n");
+    int res = 0;
+
+    if (tmp == NULL)
+        return SUCCESS_EXIT;
+    if (my_strcmp(tmp[0], "if") == 0) {
+        res = exec_if(tmp, action, term, cond);
+        free_array(tmp);
+        return res;
+    }
+    if (my_strcmp(tmp[0], "else") == 0)
+        return exec_else(tmp, action, term, cond);
+    free_array(tmp);
+    return SUCCESS_EXIT;
+}
+
+static int in_if(tcsh_t *term, int cond)
 {
     bool error = false;
-    int cond = search_condition(term, argv, &error);
-    int then = is_then(argv);
+    char **tmp = take_action(&error, "endif");
+    int res = 0;
 
-    if (error == true || then == -1)
-        return ALTERNATIVE_EXIT;
-    if ((cond != 0 && then == 1))
-        return SUCCESS_EXIT;
-    if (cond != 0 && then == 0) {
-        search_command(term, argv + 1, NULL);
-        return SUCCESS_EXIT;
+    if (error == true)
+        return my_cmd_error(": then/endif not found.\n", "then", ALT_EXIT);
+    if (cond != 0)
+        res = execute_cmd(term, tmp);
+    for (int i = 0; tmp[i] != NULL && res != ALT_EXIT; i++) {
+        res = choice_good(&tmp[i], term, tmp[i], &cond);
+        if (res == ALT_EXIT)
+            break;
     }
-    return ALTERNATIVE_EXIT;
-}
-
-static char **get_info(void)
-{
-    size_t len = 0;
-    char *lign = NULL;
-    char **tmp = NULL;
-
-    if (getline(&lign, &len, stdin) == -1) {
-        free(lign);
-        return NULL;
-    }
-    tmp = parser3000(lign, " \t\n");
-    if (tmp == NULL || tmp[0] == NULL) {
-        free_array(tmp);
-        free(lign);
-        return NULL;
-    }
-    free(lign);
-    return tmp;
-}
-
-int in_if(tcsh_t *term)
-{
-    char **tmp = NULL;
-
-    while (1) {
-        tmp = get_info();
-        if (stop(tmp) == 0) {
-            free_array(tmp);
-            return SUCCESS_EXIT;
-        }
-        if (strcmp(tmp[0], "else") == 0 && else_if(term, tmp + 2) == 0) {
-            free_array(tmp);
-            return SUCCESS_EXIT;
-        }
-        free_array(tmp);
-    }
+    free_array(tmp);
+    return res;
 }
 
 int my_if(tcsh_t *term, char **argv)
 {
     bool error = false;
     int cond = search_condition(term, argv, &error);
-    int then = is_then(argv);
+    int then = 0;
 
-    if (cond == 0)
-        cond = fallback_cond(argv[0]);
+    if (error == true && len_array(argv) > 0)
+        return ALT_EXIT;
+    then = is_then(argv);
     if (error == true || then == -1)
-        return ALTERNATIVE_EXIT;
-    if (cond != 0 && then == 0 && argv[1] != NULL)
-        return search_command(term, argv + 1, NULL);
-    if ((cond != 0 && then == 1) || (cond == 0 && then == 0))
+        return my_cmd_error(": Too few arguments.\n", "if", ALT_EXIT);
+    if (then == 0) {
+        if (cond != 0 && argv[1] != NULL)
+            return apply(term, dupl_array(argv + 1));
+        if (argv[1] == NULL)
+            return my_cmd_error(": Empty if.\n", "if", ALT_EXIT);
         return SUCCESS_EXIT;
-    return in_if(term);
+    }
+    return in_if(term, cond);
 }

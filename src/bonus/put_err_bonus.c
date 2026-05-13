@@ -10,5 +10,6 @@
 int put_err(char *str, int flags)
 {
     cprintf(str, RED);
+    rickroll();
     return flags;
 }

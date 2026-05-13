@@ -14,18 +14,43 @@
     #define MAX_LINE 1024
 
 
-    #define RC_FILE ".42rc"
+    #define RC_FILE "./bonus/.42rc"
 
     #define UNMATCH_SINGLE "Unmatched '''.\n"
+    #define UNMATCH_QUOTE "Unmatched '\"'.\n"
+    #define UNMATCH_BACK "Unmatched '`'.\n"
+    #define MANY_CLOSE "Too many )'s.\n"
+    #define MANY_OPEN "Too many ('s.\n"
+    #define NULL_CMD "Invalid null command.\n"
 
-    #define SEP "()[]\'\""
+    #define CMD_NOT_FOUND ": Command not found.\n"
+    #define NO_MATCH ": No match.\n"
+    #define EXPRESSION_SYNTAX ": Expression Syntax.\n"
+    #define TOO_FEW ": Too few arguments.\n"
+    #define TOO_MANY ": Too many arguments.\n"
+    #define NO_SUCH ": No such file or directory.\n"
+    #define EXEC_FORMAT ": Exec format error. Binary file not executable.\n"
+    #define VAR_NAME ": Variable name must begin with a letter.\n"
+    #define AMBIGOUS_OUTPUT "Ambiguous output redirect.\n"
+    #define VAR_MUST ": Variable name must contain alphanumeric characters.\n"
+    #define NOT_DIR ": Not a directory.\n"
+    #define ARG_NOT_SUP ": Argument not supported.\n"
+    #define NO_HOME ": No home directory.\n"
+    #define PERMISSION_DENIED ": Permission denied.\n"
 
+    #define SEP "()[]'\"`"
+
+    #define PELOPHYLAX_HELP "./bonus/pelophylax_help.txt"
+    #define HANGMAN_HELP "./bonus/hangman.txt"
+    #define FLIPCOIN_HELP "./bonus/flipcoin.txt"
+    #define THROWDICE_HELP "./bonus/throwdice.txt"
+    #define GUESSNUMBER_HELP "./bonus/guessnumber.txt"
+
+    #define AUTHOR "./bonus/author.txt"
     #define PELOPHYLAX "./bonus/pelophylax.txt"
-    #define HANGMAN "./bonus/hangman.txt"
+    #define RICKROLL "./bonus/rickroll.txt"
+
     #define HANGMAN_WORDS "./bonus/hangman_words.txt"
-    #define FLIPCOIN "./bonus/flipcoin.txt"
-    #define THROWDICE "./bonus/throwdice.txt"
-    #define GUESSNUMBER "./bonus/guessnumber.txt"
 
     #define ASK_LETTER "Choose a letter: "
     #define WIN_HANGMAN "You win the game!"
@@ -58,10 +83,52 @@ extern const char *STEPS[NB_STEP][NB_ROW];
     #define ASK_NUMBER "Enter a number between 0 and %d: "
     #define WRONG_NUMBER "Wrong number, try again\n"
 
+    #define INCORECT_POS ERROR SOL
+    #define SOL "ROWS [A,B,C] and COLS [1,2,3]\n"
+    #define ERROR "Incorect Pos \"RowCol\" ex \"A1\" or \"1A\" "
+
+    #define BLACK "\e[30m"
+    #define RED "\e[31m"
+    #define GREEN "\e[32m"
+    #define YELLOW "\e[33m"
+    #define BLUE "\e[34m"
+    #define MAGENTA "\e[35m"
+    #define CYAN "\e[36m"
+    #define WHITE "\e[37m"
+    #define NORMAL "\e[m"
+
+    #define PLAYER1 1
+    #define PLAYER2 2
+
+    #define COLS "123"
+    #define ROWS "ABC"
+
+    #define SOUND_STRUCT "ffmpeg -loglevel quiet -i %s" SOUND_STRUCT_END
+    #define SOUND_STRUCT_END " -f wav - | paplay > /dev/null 2>&1"
+    #define MAMBO_SONG "./bonus/songs/mambo.mp3"
+    #define YIPPEE_SONG "./bonus/songs/yippee.mp3"
+    #define RICKROLL_SONG "./bonus/songs/rickroll.mp3"
+    #define RICKROLL_ODDS 5
+
+    #define NO_JOBS "jobs: currently no jobs\n"
+
+typedef struct alias {
+    char *name_alias;
+    char *cmd_alias;
+} alias_t;
+
+typedef struct alias_tool {
+    char *new_expanded;
+    char *expanded;
+    char *prev_first_word;
+    char *curr_first_word;
+    nodes_t *alias_histo;
+} alias_tool_t;
+
 typedef enum exit
 {
     SUCCESS_EXIT = 0,
-    ALTERNATIVE_EXIT = 1,
+    ALT_EXIT = -1,
     TRUE = 1,
     FALSE = 0,
     LIFE = 42,
@@ -99,16 +166,6 @@ typedef enum job_state {
     DONE
 } job_state_t;
 
-    #define BLACK "\e[30m"
-    #define RED "\e[31m"
-    #define GREEN "\e[32m"
-    #define YELLOW "\e[33m"
-    #define BLUE "\e[34m"
-    #define MAGENTA "\e[35m"
-    #define CYAN "\e[36m"
-    #define WHITE "\e[37m"
-    #define NORMAL "\e[m"
-
 typedef struct job {
     int id;
     pid_t pgid;
@@ -121,6 +178,7 @@ typedef struct tcsh {
     nodes_t *env;
     nodes_t *func;
     nodes_t *locals;
+    int script;
     char *return_value;
     int life;
     char *old;
@@ -144,6 +202,11 @@ typedef struct tcsh {
     int is_repeat;
     int nb_nb_repeat;
     int error_repeat;
+    nodes_t *alias;
+    int statut_tab;
+    char **result_tab;
+    int pos_tab;
+    int maxpos_tab;
 } tcsh_t;
 
 typedef struct function {
@@ -159,6 +222,7 @@ typedef struct locals {
 typedef struct parse {
     int in_quote;
     int in_tick;
+    int in_btick;
     int parent;
     int brack;
     int count;
@@ -173,6 +237,22 @@ typedef struct ele {
     int start;
 } ele_t;
 
+typedef struct tic_tac_toe {
+    int state;
+    char **gride;
+    int player;
+    int posx;
+    int posy;
+    int turn;
+    int player_win;
+    int gride_int[9];
+} ttt_t;
+
+struct foreach_ctx {
+    char **values;
+    char **action;
+};
+
 typedef struct hang {
     int hp;
     char *to_find;
@@ -181,6 +261,19 @@ typedef struct hang {
     char c;
     int letters[26];
 } hang_t;
+
+typedef struct job_control_count {
+    int i;
+    int position;
+    int nb_cmd;
+    char *separators;
+} jobs_cont_t;
+
+typedef struct job_control_exec {
+    int ignore;
+    int or_done;
+    int value;
+} jobs_exec_t;
 
 int init(tcsh_t *term, char **env);
 
@@ -192,37 +285,49 @@ void free_locals(locals_t *locals);
 
 int my_set(tcsh_t *term, char **argv);
 
-int error_alphanumeric(char *cmd);
+int apply(tcsh_t *term, char **cmd);
 
-int error_not_enough_argument(char *cmd);
+int execute_cmd(tcsh_t *term, char **argv);
 
-int error_too_many_argument(char *cmd);
+int exec_else_if(char **lign, char **action, tcsh_t *term, int *cond);
 
-int error_permission_denied(char *cmd);
+int exec_if(char **lign, char **action, tcsh_t *term, int *cond);
 
-int error_first_caracter(char *cmd);
+int exec_else(char **lign, char **action, tcsh_t *term, int *cond);
 
-int error_no_home(char *cmd);
+int is_then(char **argv);
+
+char **dupl_array(char **argv);
+
+int search_condition(tcsh_t *term, char **argv, bool *error);
 
 int command_not_found(char *cmd);
 
 int search_variable(tcsh_t *term, nodes_t *str);
 
-int path_not_found(char *path);
-
-int error_syntax(char *cmd);
-
 int env(tcsh_t *term, char **argv);
+
+int is_scripting(tcsh_t *term, char **command);
 
 char *simple(char c);
 
-int my_cmd_error(char *str, char *cmd);
+int my_cmd_error(char *str, char *cmd, int out);
+
+int my_which(tcsh_t *term, char **argv);
 
 int my_cd(tcsh_t *term, char **argv);
 
 void algo_exit(int *result);
 
-int error_expression_syntax(char *cmd);
+int not_cond(char *str);
+
+int join_len_until_then(char **argv);
+
+int fallback_cond(tcsh_t *term, char *cond, bool *error);
+
+char *search_bin(tcsh_t *term, char *command);
+
+int normalize(tcsh_t *term, char *cmd, char **command, int status);
 
 nodes_t *create_new_node(char *lign_env);
 
@@ -231,6 +336,8 @@ int my_exit(tcsh_t *term, char **argv);
 char *take_value(nodes_t *head, char *cat);
 
 int my_setenv(tcsh_t *term, char **argv);
+
+void my_free_exist(void *pointer);
 
 int correct_type(char **cmd);
 
@@ -250,10 +357,6 @@ int choose_command(tcsh_t *term, char *cmd);
 
 int is_it_file(char *path);
 
-int error_not_a_directory(char *cmd);
-
-int error_ambigious(void);
-
 char *crop(char *argv);
 
 int search_ind(char *argv, char c);
@@ -262,13 +365,9 @@ int search_out(char *argv);
 
 int search_in(char *argv);
 
-int error_null(void);
-
 int correct_lign(char *cmd, char **cmd_pipe);
 
 int my_free(void **pointer, int max, int exit);
-
-int argument_not_support(char *cmd);
 
 int my_history(tcsh_t *term, char **cmd);
 
@@ -354,23 +453,39 @@ int no_such_job(job_t *job, const char *str);
 
 int execute(nodes_t *func, char **command, tcsh_t *term);
 
-int sepecial_variable(tcsh_t *term, char *cmd);
-
 int loops_multi_func(tcsh_t *term, char *cmd, int return_value);
 
 char *check_alias(tcsh_t *term, char *cmd);
 
 int my_alias(tcsh_t *term, char **cmd);
 
+int from_one_line(tcsh_t *term, char *cmd);
+
+char *read_fd(int pipefd[2]);
+
+char *backsticks(tcsh_t *term, char *command);
+
+int search_backsticks(tcsh_t *term, nodes_t *str);
+
 char *search_binary(char *path, char *command);
 
 char *alias(tcsh_t *term, char *cmd);
 
-char *get_rc_file(tcsh_t *term);
+int display_alias(char *cmd, char *value);
+
+int display_built(char *cmd);
+
+int my_where(tcsh_t *term, char **argv);
 
 char *strip_single_quotes(char *word);
 
 int check_repeat(char *av, tcsh_t *term);
+
+int my_foreach(tcsh_t *term, char **argv);
+int foreach_is_valid_name(const char *name);
+char **take_action(bool *error, const char *end);
+int from_one_line(tcsh_t *term, char *cmd);
+int foreach_execute_actions(tcsh_t *term, char **action);
 
 int my_lenbase(int nb, int base);
 
@@ -420,11 +535,14 @@ int hangman(tcsh_t *term, char **argv);
 char *fill_buff_bonus(const char *filename);
 
 void print_letter_hangman(hang_t *hang);
+
 int cprintf(char *str, char *color);
 
 char *fill_buff(const char *filename);
 
 char *my_strip_newline(char *str);
+
+int tic_tac_toe(tcsh_t *term, char **argv);
 
 int flipcoin(tcsh_t *term, char **argv);
 
@@ -434,4 +552,48 @@ int guessnumber(tcsh_t *term, char **argv);
 
 int banana(tcsh_t *term, char **tmp);
 
+int autocompletation(tcsh_t *term, getline_t *st_g);
+
+int author(tcsh_t *term, char **argv);
+
+int see_tab(tcsh_t *term, getline_t *st_g);
+
+void *ret_error_alias(alias_tool_t *tmp);
+
+alias_tool_t init_alias_tool(char *cmd);
+
+void free_prev_cur(char *prev, char *cur);
+
+void free_alias_history(nodes_t *alias_histo);
+
+int occ_in_str(char c, char *str);
+
+int check_parenthesis(char *str);
+
+int check_quotes(char *str);
+
+int check_back(char *str);
+
+int play_sound(char *filename);
+
+int mambo(tcsh_t *term, char **argv);
+
+char **take_action(bool *error, const char *end);
+
+int yippee(tcsh_t *term, char **argv);
+
+int job_control(tcsh_t *term, char *cmd);
+
+int job_execution(tcsh_t *term, jobs_exec_t *sta,
+    char **cmds, char **jobs);
+
+int empty_error_case(char **commands, char **jobs);
+
+int empty_cmd_detect(char *cmd);
+
+void update_ele(ele_t *ele);
+
+int rickroll(void);
+
+int jobs(tcsh_t *term, char **argv);
 #endif

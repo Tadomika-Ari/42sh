@@ -56,7 +56,7 @@ static int error_handling(char *bin, char **command, char **env)
     if (is_it_directory(bin) != 0 ||
         (access(bin, X_OK) == -1 && access(bin, F_OK) == 0))
         return my_free((void *[]){bin, env}, 2,
-            error_permission_denied(command[0]));
+            my_cmd_error(PERMISSION_DENIED, command[0], ALT_EXIT));
     if (access(bin, X_OK) == -1)
         return my_free((void *[]){bin, env}, 2, command_not_found(command[0]));
     return 0;
@@ -65,7 +65,7 @@ static int error_handling(char *bin, char **command, char **env)
 static int child_return(char *bin, char **command, tcsh_t *term, char **env)
 {
     execve(bin, command, env);
-    error_syntax(bin);
+    my_cmd_error(EXEC_FORMAT, bin, ALT_EXIT);
     my_free((void *[]){bin, env}, 2, 0);
     free_array(command);
     free_all(term);
@@ -106,7 +106,7 @@ int exec(char *bin, char **command, tcsh_t *term, char *cmd)
     pid = fork();
     if (pid == 0) {
         setpgid(0, 0);
-        free(cmd);
+        my_free_exist(cmd);
         _exit(child(bin, command, term, env));
     }
     if (pid < 0)

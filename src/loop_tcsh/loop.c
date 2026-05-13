@@ -34,9 +34,13 @@ int loops_multi_func(tcsh_t *term, char *cmd, int return_value)
 {
     char **tmp = NULL;
 
-    tmp = my_str_to_word_array(cmd, ";");
+    tmp = parser3000(cmd, ";");
+    if (!tmp || !tmp[0]) {
+        free(cmd);
+        return 0;
+    }
     for (int i = 0; tmp[i] != NULL; i++) {
-        return_value = choose_command(term, tmp[i]);
+        return_value = job_control(term, tmp[i]);
         if (return_value == FAILURE_EXIT)
             return FAILURE_EXIT;
     }
@@ -49,21 +53,19 @@ int filter_command(tcsh_t *term, int value)
 {
     char *cmd = NULL;
     char *repeat_cmd = NULL;
-    int len = 0;
 
     if (user_entry(term, &cmd) == FAILURE_EXIT || term->life == DEAD)
         return -1;
-    len = my_strlen(cmd);
     if (strncmp(cmd, "repeat ", 7) == 0 || strncmp(cmd, "repeat", 6) == 0) {
         term->nb_nb_repeat = 0;
         check_repeat(cmd, term);
         if (check_error(term, cmd, value) == FAILURE_EXIT)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
         repeat_cmd = cut_len(cmd, 7 + term->nb_nb_repeat);
         free(cmd);
         cmd = repeat_cmd;
         if (cmd == NULL)
-            return ALTERNATIVE_EXIT;
+            return ALT_EXIT;
     }
     return repeat_or_no_repeat(term, cmd, value);
 }
@@ -104,7 +106,7 @@ int running(tcsh_t *term)
 
 int my_sh(char **env)
 {
-    tcsh_t *term = malloc(sizeof(tcsh_t));
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
 
     if (!term)
         return FAILURE_EXIT;

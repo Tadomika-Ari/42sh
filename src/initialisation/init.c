@@ -57,6 +57,12 @@ static int fill_annexe(tcsh_t *term)
     if (push_function(term, my_if, "if") == FAILURE_EXIT)
         return FAILURE_EXIT;
     if (push_function(term, banana, "banana") == FAILURE_EXIT)
+        return FAILURE_EXIT
+    if (push_function(term, my_foreach, "foreach") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_which, "which") == FAILURE_EXIT)
+        return FAILURE_EXIT;
+    if (push_function(term, my_where, "where") == FAILURE_EXIT)
         return FAILURE_EXIT;
     return SUCCESS_EXIT;
 }
@@ -118,6 +124,17 @@ static void init_cursor(tcsh_t *term, char **env)
     term->nb_nb_repeat = 0;
     term->nb_repeat = 0;
     term->error_repeat = 0;
+    term->statut_tab = 0;
+    term->result_tab = NULL;
+    term->pos_tab = 0;
+    term->maxpos_tab = 0;
+}
+
+void init_histo(tcsh_t *term)
+{
+    term->history = NULL;
+    term->len_history = 0;
+    term->check_history = 2;
 }
 
 int init(tcsh_t *term, char **env)
@@ -128,11 +145,11 @@ int init(tcsh_t *term, char **env)
     term->func = NULL;
     term->locals = NULL;
     term->life = LIFE;
+    term->script = 0;
     term->old = NULL;
-    term->history = NULL;
-    term->len_history = 0;
-    term->check_history = 2;
+    init_histo(term);
     term->return_value = simple('0');
+    term->alias = NULL;
     init_jobs(term);
     init_cursor(term, env);
     if (get_env(term, env) == FAILURE_EXIT)

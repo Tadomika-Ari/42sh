@@ -1,0 +1,25 @@
+<< AUTHOR >>
+
+THE PROJECT
+    - 42sh
+
+THE TEAM : "les E téléteubize"
+    - Alcibiade S.
+    - Galya P.
+    - Lucas E.
+    - Ugo P.
+    - Alessandro P.
+
+BONUS COMMANDS
+    - pelophylax
+    - hangman
+    - tic tac toe
+    - flipcoin
+    - guessnumber
+    - throwdice
+    - author
+
+OTHER BONUS
+    - colored text
+
+<< END >>

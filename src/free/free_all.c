@@ -76,14 +76,44 @@ static void free_node_history(nodes_t *head)
     }
 }
 
+void my_free_exist(void *pointer)
+{
+    if (pointer)
+        free(pointer);
+}
+
+static void my_free_alias_node(nodes_t *alias)
+{
+    nodes_t *forward = NULL;
+    alias_t *info = NULL;
+
+    if (!alias)
+        return;
+    forward = alias;
+    while (alias != NULL) {
+        forward = alias->next;
+        if (alias->data) {
+            info = alias->data;
+            my_free_exist(info->cmd_alias);
+            my_free_exist(info->name_alias);
+            my_free_exist(info);
+        }
+        free(alias);
+        alias = forward;
+    }
+}
+
 void free_all(tcsh_t *term)
 {
     if (!term)
         return;
+    if (term->result_tab)
+        free_array(term->result_tab);
     free(term->return_value);
     free_node(term->env);
     free_node_locals(term->locals);
     free_node(term->func);
+    my_free_alias_node(term->alias);
     free_node_history(term->history);
     close(term->fd_rc);
     if (term->old)
