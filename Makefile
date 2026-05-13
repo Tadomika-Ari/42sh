@@ -181,7 +181,7 @@ BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
 SRC2 = src/initialisation/init.c                        \
 		src/loop_tcsh/argument.c			            \
-		scr/error/put_err.c\
+		src/error/put_error.c\
 
 OBJ2 = 	$(SRC2:.c=.o)
 
