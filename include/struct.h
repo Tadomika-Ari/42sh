@@ -551,6 +551,8 @@ int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
 
+int banana(tcsh_t *term, char **tmp);
+
 int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
