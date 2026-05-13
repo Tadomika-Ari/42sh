@@ -103,6 +103,8 @@ Below you will find a table containing the commands and their descriptions.
 | guessnumber |     guess a random number     |
 | mambo |       play mambo sound        |
 | yippee |       play yippee sound       |
+| velkoz |       show velkoz        |
+| banana |       show a ... banana       |
 
 
 ---
