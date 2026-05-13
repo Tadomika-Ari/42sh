@@ -18,7 +18,7 @@ This project was completed over the course of 5 weeks by our team of 5, divided 
 - Redirections
 - Command separators (;)
 - Job control
-- && and ||
+- Logical operators (&& and ||)
 - Parenthesis
 - Inhibitors
 - History management
@@ -26,12 +26,13 @@ This project was completed over the course of 5 weeks by our team of 5, divided 
 - Signal handling
 - Builtin commands
 - Error handling
-
-#### Scripting features
-- If
-- Foreach
 - Which
 - Where
+
+#### Scripting features
+- if
+- foreach
+- repeat
 - Scripting
 
 
@@ -90,7 +91,7 @@ And run with :
 
 ## Bonus builtin commands
 
-Below you will find a table containing the command and it's description.
+Below you will find a table containing the commands and their descriptions.
 
 | Commands   |          Description          |
 |----------|:-----------------------------:|
@@ -110,7 +111,7 @@ Below you will find a table containing the command and it's description.
 Our functions are in a src folder and then divided in folders organized by features :
 
 ```text
-src  
+src/  
  |_alias/  
  |_autocompletion/  
  |_bonus/  
@@ -138,7 +139,7 @@ make tests_run
 ```
 
 ### For more help:
-Try the command with help flag to have a longer help about the command.
+Use the help flag to have a longer help about the command.
 
 ```bash
 the_command -h
