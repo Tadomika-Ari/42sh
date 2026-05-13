@@ -2,7 +2,7 @@
 
 Our project 42SH is a recreation of a Unix shell based on **TCSH**, written entirely in **C**.  
 For this project we chose the shell base created by one of our team members, Alcibiade Streit-Soumaila,  
-and implemented a large selection of **TCSH** features, except for **command group** and **command substitution**.  
+and implemented almost all **TCSH** features, except for **command group** and **command substitution**.  
 
 This project was completed over the course of 5 weeks by our team of 5 members.
 
@@ -151,7 +151,7 @@ Run functional tests with:
 make 
 ```
 
-You can find more information on this section in the readme file present in the test folder.
+You can find more information in the README file in the test folder.
 
 ### For more help:
 Use the help flag to display more information about the command.
