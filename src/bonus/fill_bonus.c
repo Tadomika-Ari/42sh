@@ -30,6 +30,8 @@ int fill_bonus(tcsh_t *term)
         return FAILURE_EXIT;
     if (push_function(term, jobs, "jobs") == FAILURE_EXIT)
         return FAILURE_EXIT;
+    if (push_function(term, banana, "banana") == FAILURE_EXIT)
+        return FAILURE_EXIT;
     if (push_function(term, my_velkoz, "velkoz") == FAILURE_EXIT)
         return FAILURE_EXIT;
     return EXIT_SUCCESS;
