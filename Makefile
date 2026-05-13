@@ -175,7 +175,7 @@ BONUS_SRC = src/bonus/pelophylax.c                      \
 		src/bonus/tic_tac_toe.c                         \
 		src/bonus/jobs.c                                \
 		src/bonus/velkoz.c \
-    src/built_in/banana.c				\
+    	src/built_in/banana.c				\
 
 BONUS_OBJ = 	$(BONUS_SRC:.c=.o)
 
