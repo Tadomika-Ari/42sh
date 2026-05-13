@@ -1518,6 +1518,490 @@ Test(shell, backsticks_echo, .init = redirect_all_std)
     free(term);
 }
 
+Test(shell, foreach_execute_simple, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *actions[] = {"echo hello", "echo world", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    cr_assert_eq(foreach_execute_actions(term, actions), SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, foreach_execute_with_if, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *actions[] = {"if ( 1 ) echo ok", "echo done", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    foreach_execute_actions(term, actions);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, my_cd_missing_home, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
+
+Test(shell, my_cd_parent_dir, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PWD=/tmp", " ");
+    char *argv[] = {"..", NULL};
+
+    my_setenv(term, env);
+    cr_assert_eq(my_cd(term, argv), SUCCESS_EXIT);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, my_bg_percent_not_found, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%99", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_bg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, history_push_and_display, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("history", "\n \t");
+
+    push_to_history(term, "echo one");
+    push_to_history(term, "echo two");
+    cr_assert_eq(my_history(term, &tab[1]), SUCCESS_EXIT);
+    free_array(tab);
+    free_all(term);
+}
+
+Test(shell, is_inihbitor_true, .init = redirect_all_std)
+{
+    cr_assert_eq(is_inihbitor("'hello'"), TRUE);
+}
+
+Test(shell, is_inihbitor_false, .init = redirect_all_std)
+{
+    cr_assert_eq(is_inihbitor("hello"), FALSE);
+}
+
+Test(shell, is_parenthesis_true, .init = redirect_all_std)
+{
+    cr_assert_eq(is_parenthesis("(hello)"), TRUE);
+}
+
+Test(shell, is_parenthesis_false, .init = redirect_all_std)
+{
+    cr_assert_eq(is_parenthesis("hello"), FALSE);
+}
+
+Test(shell, show_array_basic, .init = redirect_all_std)
+{
+    char *arr[] = {"a", "b", "c", NULL};
+
+    show_array(arr);
+}
+
+Test(shell, show_array_null, .init = redirect_all_std)
+{
+    show_array(NULL);
+}
+
+Test(shell, is_sep_found, .init = redirect_all_std)
+{
+    cr_assert_eq(is_sep(' ', " \t\n"), TRUE);
+}
+
+Test(shell, is_sep_not_found, .init = redirect_all_std)
+{
+    cr_assert_eq(is_sep('a', " \t\n"), FALSE);
+}
+
+Test(shell, my_where_with_alias, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *envp[] = {"PATH=/usr/bin:/bin", NULL};
+    char *alias_cmd[] = {"myls", "ls", NULL};
+    char *argv[] = {"myls", NULL};
+
+    init(term, envp);
+    my_alias(term, alias_cmd);
+    my_where(term, argv);
+    free_all(term);
+}
+
+Test(shell, my_where_builtin_with_func_list, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *envp[] = {"PATH=/usr/bin:/bin", NULL};
+    char *argv[] = {"ls", NULL};
+
+    init(term, envp);
+    my_where(term, argv);
+    free_all(term);
+}
+
+Test(shell, my_where_cd_builtin, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *envp[] = {"PATH=/usr/bin:/bin", NULL};
+    char *argv[] = {"cd", NULL};
+
+    init(term, envp);
+    my_where(term, argv);
+    free_all(term);
+}
+
+Test(shell, exec_if_with_then_keyword, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    int pipefd[2];
+    int saved = dup(STDIN_FILENO);
+    char *action[] = {"then", "echo inside", NULL};
+    char *lign[] = {"if", "1", "then", NULL};
+    int cond = 0;
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    pipe(pipefd);
+    write(pipefd[1], "echo inside\nendif\n", 18);
+    close(pipefd[1]);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[0]);
+    exec_if(lign, action, term, &cond);
+    dup2(saved, STDIN_FILENO);
+    close(saved);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, exec_else_with_elif, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char **lign = my_str_to_word_array("else", " ");
+    char *action[] = {"else", "echo else_body", NULL};
+    int cond = 0;
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    exec_else(lign, action, term, &cond);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, else_via_choose_command_if_else, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    int pipefd[2];
+    int saved = dup(STDIN_FILENO);
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    pipe(pipefd);
+    write(pipefd[1], "echo fallback\nendif\n", 20);
+    close(pipefd[1]);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[0]);
+    choose_command(term, my_strdup("if ( 0 ) then"));
+    dup2(saved, STDIN_FILENO);
+    close(saved);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, sweeper_brace_var, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char *set_home[] = {"HOME", "/tmp", NULL};
+    char **res = NULL;
+
+    my_setenv(term, set_home);
+    res = sweeper(term, "echo ${HOME}", &error);
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_local_var, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char *setargs[] = {"myvar", "=", "hello", NULL};
+    char **res = NULL;
+
+    my_set(term, setargs);
+    res = sweeper(term, "echo $myvar", &error);
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_var_mid_string, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char *set_host[] = {"HOST", "myserver", NULL};
+    char **res = NULL;
+
+    my_setenv(term, set_host);
+    res = sweeper(term, "echo user@$HOST", &error);
+    if (res)
+        free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_inhibitor_str, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo 'hello world'", &error);
+
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_single_quoted, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo 'hello world'", &error);
+
+    if (res)
+        free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_double_quoted, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo \"hello world\"", &error);
+
+    cr_assert_not_null(res);
+    free_array(res);
+    free(term);
+}
+
+Test(shell, sweeper_glob_pattern, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    bool error = false;
+    char **res = sweeper(term, "echo src/*.c", &error);
+
+    if (res)
+        free_array(res);
+    free(term);
+}
+
+Test(shell, empty_cmd_and_is_and, .init = redirect_all_std)
+{
+    char *cmds[] = {"", "echo hi", NULL};
+    char *jobs[] = {"&&", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), FALSE);
+}
+
+Test(shell, empty_cmd_and_not_and, .init = redirect_all_std)
+{
+    char *cmds[] = {"", "echo hi", NULL};
+    char *jobs[] = {"", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), TRUE);
+}
+
+Test(shell, empty_error_case_leading_empty, .init = redirect_all_std)
+{
+    char *cmds[] = {"", "echo hi", NULL};
+    char *jobs[] = {"", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), TRUE);
+}
+
+Test(shell, empty_error_case_empty_cmd_after_cmd, .init = redirect_all_std)
+{
+    char *cmds[] = {"echo hi", "", NULL};
+    char *jobs[] = {"&&", "", NULL};
+
+    cr_assert_eq(empty_error_case(cmds, jobs), TRUE);
+}
+
+Test(shell, job_execution_or, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    jobs_exec_t sta = {0};
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    char *cmds[] = {"false_xyz_abc", "echo fallback", NULL};
+    char *jobs_arr[] = {"||", "", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    job_execution(term, &sta, cmds, jobs_arr);
+    free_array(env);
+    free(term);
+}
+
+Test(shell, my_cd_no_home, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
+
+Test(shell, my_cd_too_many_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"/tmp", "/var", NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
+
+Test(shell, my_cd_dash_no_old, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"-", NULL};
+
+    my_cd(term, argv);
+    free(term);
+}
+
+Test(shell, my_setenv_no_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("setenv", "\n \t");
+
+    my_setenv(term, &tab[1]);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_setenv_no_value, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("setenv MYVAR2", "\n \t");
+
+    cr_assert_eq(my_setenv(term, &tab[1]), SUCCESS_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_setenv_replace_existing, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *set1[] = {"MYVAR", "first", NULL};
+    char *set2[] = {"MYVAR", "second", NULL};
+
+    my_setenv(term, set1);
+    cr_assert_eq(my_setenv(term, set2), SUCCESS_EXIT);
+    free(term);
+}
+
+Test(shell, my_setenv_update, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *set1[] = {"X", "1", NULL};
+    char *set2[] = {"Y", "2", NULL};
+    char *set3[] = {"X", "99", NULL};
+
+    my_setenv(term, set1);
+    my_setenv(term, set2);
+    cr_assert_eq(my_setenv(term, set3), SUCCESS_EXIT);
+    free(term);
+}
+
+Test(shell, my_unsetenv_no_args, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **tab = my_str_to_word_array("unsetenv", "\n \t");
+
+    cr_assert_eq(my_unsetenv(term, &tab[1]), ALT_EXIT);
+    free_array(tab);
+    free(term);
+}
+
+Test(shell, my_unsetenv_star_arg, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *argv[] = {"*", NULL};
+
+    cr_assert_eq(my_unsetenv(term, argv), ALT_EXIT);
+    free(term);
+}
+
+Test(shell, my_unsetenv_middle_node, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char *s1[] = {"A", "1", NULL};
+    char *s2[] = {"B", "2", NULL};
+    char *s3[] = {"C", "3", NULL};
+    char *u2[] = {"B", NULL};
+
+    my_setenv(term, s1);
+    my_setenv(term, s2);
+    my_setenv(term, s3);
+    cr_assert_eq(my_unsetenv(term, u2), SUCCESS_EXIT);
+    free(term);
+}
+
+Test(shell, my_bg_percent_empty, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_bg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, my_fg_percent_empty, .init = redirect_all_std)
+{
+    tcsh_t term = {0};
+    char *argv[] = {"%", NULL};
+
+    add_job(&term, 1, "test", STOPPED);
+    my_fg(&term, argv);
+    free_jobs(term.jobs);
+}
+
+Test(shell, my_if_then_false_else_runs, .init = redirect_all_std)
+{
+    tcsh_t *term = calloc(1, sizeof(tcsh_t));
+    char **env = my_str_to_word_array("PATH=/usr/bin:/bin", " ");
+    int pipefd[2];
+    int saved = dup(STDIN_FILENO);
+    char *argv[] = {"0", "then", NULL};
+
+    my_setenv(term, env);
+    term->return_value = my_strdup("0");
+    pipe(pipefd);
+    write(pipefd[1], "echo yes\nelse\necho no\nendif\n", 27);
+    close(pipefd[1]);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[0]);
+    my_if(term, argv);
+    dup2(saved, STDIN_FILENO);
+    close(saved);
+    free_array(env);
+    free(term);
 Test(shell, parser3000_normal_1, .init = redirect_all_std)
 {
     char **tab = parser3000("toto tata", "\n\t ");
