@@ -47,6 +47,7 @@
     #define GUESSNUMBER_HELP "./bonus/guessnumber.txt"
 
     #define AUTHOR "./bonus/author.txt"
+    #define VELKOZ "./bonus/velkoz.txt"
     #define PELOPHYLAX "./bonus/pelophylax.txt"
     #define RICKROLL "./bonus/rickroll.txt"
 
@@ -550,6 +551,8 @@ int throwdice(tcsh_t *term, char **argv);
 
 int guessnumber(tcsh_t *term, char **argv);
 
+int banana(tcsh_t *term, char **tmp);
+
 int autocompletation(tcsh_t *term, getline_t *st_g);
 
 int author(tcsh_t *term, char **argv);
@@ -594,4 +597,7 @@ void update_ele(ele_t *ele);
 int rickroll(void);
 
 int jobs(tcsh_t *term, char **argv);
+
+int my_velkoz(tcsh_t *term, char **cmd);
+
 #endif
